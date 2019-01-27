@@ -1,0 +1,40 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+Linux-bench is a Go application that checks whether The linux operating system is configured securely by running the checks documented in the CIS Linux Benchmark.
+
+Tests are configured with YAML files, making this tool easy to update as test specifications evolve. 
+
+
+## CIS Linux Benchmark support
+
+linux-bench currently supports tests for multiple platforms of Linux (ubntu, rhel and debian).
+linux-bench will determine the test set to run based on the operating system and the boot loader running on the host machine. 
+
+## Installation
+### Installing from sources
+
+Intall [Go](https://golang.org/doc/install), then
+clone this repository and run as follows (assuming your [$GOPATH is set](https://github.com/golang/go/wiki/GOPATH)):
+
+```shell
+go get github.com/aquasecurity/linux-bench
+cd $GOPATH/src/github.com/aquasecurity/linux-bench
+go build -o linux-bench .
+
+# See all supported options
+./linux-bench --help
+
+# Run checks
+./linux-bench
+
+# Run checks for specified linux cis version
+./linux-bench
+
+```
+
+# Tests
+Tests are specified in definition files `cfg/<version>/definitions.yaml.
+Where `<version>` is the version of linux cis for which the test applies.
+
+# Contributing
+We welcome PRs and issue reports. 

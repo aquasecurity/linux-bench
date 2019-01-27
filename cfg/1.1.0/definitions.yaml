@@ -1,0 +1,1530 @@
+---
+controls:
+version: 1.11
+id: 1
+description: "Initial Setup"  
+type: "master"
+groups:
+- id: 1.1
+  description: "Filesystem Configuration"
+  checks:
+    - id: 1.1.2
+      description: "Ensure separate partition exists for /tmp"
+      audit: "mount | grep /tmp"   
+      tests:
+        test_items:
+        - flag: "tmpfs on /tmp type tmpfs (rw,nosuid,nodev,noexec,relatime)"
+          set: true                        
+      remediation: |
+            For new installations, during installation create a custom partition setup and specify a separate partition for `/tmp` .
+            For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
+      scored: true                                            
+            
+    - id: 1.1.6
+      description: "Ensure separate partition exists for /var"
+      audit: "mount | grep /var"   
+      tests:
+        test_items:
+        - flag: "/dev/xvdg1 on /var type ext4 (rw,relatime,data=ordered)"
+          set: true                        
+      remediation: |
+            For new installations, during installation create a custom partition setup and specify a separate partition for `/var` .
+            For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
+      scored: true                                
+            
+    - id: 1.1.7
+      description: "Ensure separate partition exists for /var/tmp"
+      audit: "mount | grep /var/tmp"   
+      tests:
+        test_items:
+        - flag: " on /var/tmp type ext4 (rw,nosuid,nodev,noexec,relatime)"
+          set: true                        
+      remediation: |
+            For new installations, during installation create a custom partition setup and specify a separate partition for `/var/tmp` .
+            For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
+      scored: true                                     
+            
+    - id: 1.1.15
+      description: "Ensure separate partition exists for /var/log"
+      audit: "mount | grep /var/log"   
+      tests:
+        test_items:
+        - flag: "/dev/xvdh1 on /var/log type ext4 (rw,relatime,data=ordered)"
+          set: true                        
+      remediation: |
+            For new installations, during installation create a custom partition setup and specify a separate partition for `/var/log` .
+            For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
+      scored: true                                          
+            
+    - id: 1.1.16
+      description: "Ensure separate partition exists for /var/log/audit"
+      audit: "mount | grep /var/log/audit"   
+      tests:
+        test_items:
+        - flag: "/dev/xvdi1 on /var/log/audit type ext4 (rw,relatime,data=ordered)"
+          set: true                        
+      remediation: |
+            For new installations, during installation create a custom partition setup and specify a separate partition for `/var/log/audit` .
+            For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
+      scored: true                  
+                         
+            
+    - id: 1.1.17
+      description: "Ensure separate partition exists for /home"
+      audit: "mount | grep /home"   
+      tests:
+        test_items:
+        - flag: "/dev/xvdf1 on /home type ext4 (rw,nodev,relatime,data=ordered)"
+          set: true                        
+      remediation: |
+            For new installations, during installation create a custom partition setup and specify a separate partition for `/home` .
+            For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
+      scored: true                  
+            
+- id: 1.1.1
+  description: "Disable unused filesystemsisable unused filesystems"
+  checks:
+    - id: 1.1.1.8.a
+      description: "Ensure mounting of FAT filesystems is disabled"
+      audit: "modprobe -n -v vfat"   
+      tests:
+        test_items:
+        - flag: "install /bin/true"
+          set: true 
+
+      remediation: |
+            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+            
+            install vfat /bin/true
+            
+            Run the following command to unload the `vfat` module:
+            
+            # rmmod vfat
+            
+      scored: true                  
+            
+    - id: 1.1.1.8.b
+      description: "Ensure mounting of FAT filesystems is disabled"
+      audit: "lsmod | grep vfat"   
+      tests:
+        test_items:
+        - flag: ""
+          set: true                        
+      remediation: |
+            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+            
+            install vfat /bin/true
+            
+            Run the following command to unload the `vfat` module:
+            
+            # rmmod vfat
+            
+      scored: true                  
+            
+- id: 1.6
+  description: "Mandatory Access Controlandatory Access Control"
+  checks:
+  - id: 1.6.3
+    description: "Ensure SELinux or AppArmor are installed"
+    sub_checks:
+    - check:
+        audit: "rpm -q libselinux" 
+        constraints:          
+          platform:
+          - rhel7
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: false                  
+        remediation: |
+               Install SELinux or apparmor using the appropriate package manager or manual installation:
+               
+               # yum install libselinux
+               
+               
+               # apt-get install libselinux1
+               
+               
+               # zypper install libselinux
+               
+               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+        scored: false
+    - check:
+        audit: "rpm -q apparmor" 
+        constraints:          
+          platform:
+          - rhel7
+          lsm:
+          - apparmor
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: false                  
+        remediation: |
+               Install SELinux or apparmor using the appropriate package manager or manual installation:
+               
+               # yum install libselinux
+               
+               
+               # apt-get install libselinux1
+               
+               
+               # zypper install libselinux
+               
+               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+        scored: false
+           
+    
+    - check:
+        audit: "dpkg -s libselinux1" 
+        constraints:          
+          platform:
+          - ubuntu
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: false                  
+        remediation: |
+               Install SELinux or apparmor using the appropriate package manager or manual installation:
+               
+               # yum install libselinux
+               
+               
+               # apt-get install libselinux1
+               
+               
+               # zypper install libselinux
+               
+               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+        scored: false
+           
+
+    
+    - check:
+        audit: "dpkg -s apparmor" 
+        constraints:          
+          platform:
+          - ubuntu
+          lsm:
+          - apparmor
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: false                  
+        remediation: |
+               Install SELinux or apparmor using the appropriate package manager or manual installation:
+               
+               # yum install libselinux
+               
+               
+               # apt-get install libselinux1
+               
+               
+               # zypper install libselinux
+               
+               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+        scored: false
+           
+                  
+           
+                
+- id: 1.6.1
+  description: "Configure SELinuxonfigure SELinux"
+  checks:
+  - id: 1.6.1.1
+    description: "Ensure SELinux is not disabled in bootloader configuration"
+    sub_checks:
+    - check:
+        audit: "grep \"^\\s*kernel\" /boot/grub/menu.lst"
+        constraints: 
+          lsm:
+          - selinux
+          boot:
+          - grub
+        tests:
+          bin_op: and
+          test_items:
+          - flag: "selinux=0"
+            set: false            
+          test_items:
+          - flag: "enforcing=0"
+            set: false                                  
+        remediation: |
+            For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `selinux=0` and `enforcing=0` on all `kernel` lines.
+            For `grub2` based systems edit /etc/default/grub and remove all instances of `selinux=0` and `enforcing=0` from all CMDLINE\_LINUX parameters:
+            
+            GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+            GRUB_CMDLINE_LINUX=""
+            
+            Run the following command to update the `grub2` configuration:
+            
+            # update-grub
+            
+      scored: true
+    - check:
+        audit: "grep LINUX /etc/default/grub"
+        constraints: 
+          lsm:
+          - selinux
+          boot:
+          - grub2
+        tests:
+          bin_op: and
+          test_items:
+          - flag: "selinux=0"
+            set: false            
+          test_items:
+          - flag: "enforcing=0"
+            set: false                                  
+        remediation: |
+            For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `selinux=0` and `enforcing=0` on all `kernel` lines.
+            For `grub2` based systems edit /etc/default/grub and remove all instances of `selinux=0` and `enforcing=0` from all CMDLINE\_LINUX parameters:
+            
+            GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+            GRUB_CMDLINE_LINUX=""
+            
+            Run the following command to update the `grub2` configuration:
+            
+            # update-grub
+            
+      scored: true
+  - id: 1.6.1.2.a
+    description: "Ensure the SELinux state is enforcing"
+    sub_checks:
+    - check:
+        audit: "grep SELINUX=enforcing /etc/selinux/config"
+        constraints: 
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "SELINUX=enforcing"
+            set: true            
+        remediation: |
+          For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `selinux=0` and `enforcing=0` on all `kernel` lines.
+          For `grub2` based systems edit /etc/default/grub and remove all instances of `selinux=0` and `enforcing=0` from all CMDLINE\_LINUX parameters:
+          
+          GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+          GRUB_CMDLINE_LINUX=""
+          
+          Run the following command to update the `grub2` configuration:
+          
+          # update-grub
+          
+        scored: true
+  - id: 1.6.1.2.b
+    description: "Ensure the SELinux state is enforcing"
+    sub_checks:
+    - check:
+        audit: "sestatus"
+        constraints: 
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "SELinux status:"
+            compare:
+              op: has
+              value: "enabled"
+            set: true
+          - flag: "Current mode:"
+            compare:
+              op: has
+              value: "enforcing"
+            set: true
+          - flag: "Mode from config file:"
+            compare: 
+              op: has
+              value: "enforcing"
+            set: true            
+        remediation: |
+          For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `selinux=0` and `enforcing=0` on all `kernel` lines.
+          For `grub2` based systems edit /etc/default/grub and remove all instances of `selinux=0` and `enforcing=0` from all CMDLINE\_LINUX parameters:
+          
+          GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+          GRUB_CMDLINE_LINUX=""
+          
+          Run the following command to update the `grub2` configuration:
+          
+          # update-grub
+          
+        scored: true
+  
+  - id: 1.6.1.3.a
+    description: "Ensure SELinux policy is configured"
+    sub_checks:
+    - check:
+        audit: "grep SELINUXTYPE=targeted /etc/selinux/config"
+        constraints: 
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "SELINUXTYPE=targeted"
+            set: true          
+        remediation: |
+          Edit the `/etc/selinux/config` file to set the SELINUXTYPE parameter:
+            
+          SELINUXTYPE=targeted
+          
+        scored: true
+  - id: 1.6.1.3.b
+    description: "Ensure SELinux policy is configured"
+    sub_checks:
+    - check:
+        audit: "sestatus"
+        constraints: 
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "Loaded policy name:"
+            compare:
+              op: has
+              value: "targeted"
+            set: true          
+        remediation: |
+          Edit the `/etc/selinux/config` file to set the SELINUXTYPE parameter:
+            
+          SELINUXTYPE=targeted
+          
+        scored: true  
+
+  
+  - id: 1.6.1.4
+    description: "Ensure SETroubleshoot is not installed"
+    sub_checks:
+    - check:
+        audit: "rpm -q setroubleshoot"
+        constraints: 
+          platform:
+          - rhel7
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: true          
+        remediation: |
+          Uninstall s `etroubleshoot` using the appropriate package manager or manual installation:
+            
+            # yum remove setroubleshoot
+            
+            
+            # apt-get remove setroubleshoot
+            
+            
+            # zypper remove setroubleshoot
+          
+        scored: true 
+    - check:
+        audit: "dpkg -s setroubleshoot"
+        constraints: 
+          platform:
+          - ubuntu
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: true          
+        remediation: |
+          Uninstall s `etroubleshoot` using the appropriate package manager or manual installation:
+            
+            # yum remove setroubleshoot
+            
+            
+            # apt-get remove setroubleshoot
+            
+            
+            # zypper remove setroubleshoot
+          
+        scored: true        
+  - id: 1.6.1.5
+    description: "Ensure the MCS Translation Service (mcstrans) is not installed"
+    sub_checks:
+    - check:
+        audit: "rpm -q mcstrans"
+        constraints: 
+          platform:
+          - rhel7
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: true          
+        remediation: |
+          Uninstall `mcstrans` using the appropriate package manager or manual installation:
+            
+            yum remove mcstrans
+            
+            
+            apt-get remove mcstrans
+            
+            
+            zypper remove mcstrans
+
+          
+        scored: true 
+    - check:
+        audit: "dpkg -s mcstrans"
+        constraints: 
+          platform:
+          - ubuntu
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "is not installed"
+            set: true          
+        remediation: |
+          Uninstall `mcstrans` using the appropriate package manager or manual installation:
+            
+            yum remove mcstrans
+            
+            
+            apt-get remove mcstrans
+            
+            
+            zypper remove mcstrans
+
+          
+        scored: true        
+
+  
+  - id: 1.6.1.6
+    description: "Ensure no unconfined daemons exist"
+    audit: "ps -eZ | egrep \"initrc\" | egrep -vw \"tr|ps|egrep|bash|awk \" | tr ':' ' ' | awk '{ print $NF }'"
+    tests:
+      test_items:
+      - flag: ""
+        set: true                        
+    remediation: |
+          Investigate any unconfined daemons found during the audit action. They may need to have an existing security context assigned to them or a policy built for them.
+    scored: true                  
+               
+          
+- id: 1.6.2
+  description: "Configure AppArmoronfigure AppArmor"
+  checks:
+    - id: 1.6.2.1
+      description: "Ensure AppArmor is not disabled in bootloader configuration"
+      sub_checks:
+      - check:
+          audit: "grep \"^\\s*kernel\" /boot/grub/menu.lst"
+          constraints:
+            lsm:
+            - apparmor
+            boot:
+            - grub
+          tests:
+            test_items:
+            - flag: "apparmor=0"
+              set: false                        
+          remediation: |
+                For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `apparmor=0` on all `kernel` lines.
+                For `grub2` based systems edit /etc/default/grub and remove all instances of `apparmor=0` from all CMDLINE\_LINUX parameters:
+                
+                GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+                GRUB_CMDLINE_LINUX=""
+                
+                Run the following command to update the `grub2` configuration:
+                
+                # update-grub
+                
+          scored: true
+      - check:
+          audit: "grep \"^\\s*LINUX\" /etc/default/grub"
+          constraints:
+            lsm:
+            - apparmor
+            boot:
+            - grub
+          tests:
+            test_items:
+            - flag: "apparmor=0"
+              set: false                        
+          remediation: |
+                For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `apparmor=0` on all `kernel` lines.
+                For `grub2` based systems edit /etc/default/grub and remove all instances of `apparmor=0` from all CMDLINE\_LINUX parameters:
+                
+                GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+                GRUB_CMDLINE_LINUX=""
+                
+                Run the following command to update the `grub2` configuration:
+                
+                # update-grub
+                
+          scored: true  
+    - id: 1.6.2.2
+      description: "Ensure all AppArmor Profiles are enforcing"
+      sub_checks:
+      - check:
+          audit: "apparmor_status"
+          type: manual
+          constraints:
+            lsm:
+            - apparmor
+          tests:                      
+          remediation: |
+                Run the following command to set all profiles to enforce mode:
+            
+                # enforce /etc/apparmor.d/*
+            
+                Any unconfined processes may need to have a profile created or activated for them and then be restarted.
+          scored: true
+      
+- id: 4.1
+  description: "Configure System Accounting (auditd)onfigure System Accounting (auditd)"
+  checks:
+    - id: 4.1.2
+      description: "Ensure auditd service is enabled"
+      sub_checks:
+      - check:
+          audit: "chkconfig --list auditd"   
+          constraints:
+            platform: 
+            - rhel6
+          tests:
+            test_items:
+            - flag: "auditd 0:off 1:off 2:on 3:on 4:on 5:on 6:off"
+              set: true                        
+          remediation: |
+                Run one of the following commands to enable `auditd` :
+                
+                # chkconfig auditd on
+                
+                
+                # systemctl enable auditd
+                
+                
+                # update-rc.d auditd enable
+                
+          scored: true    
+      - check:
+          audit: "systemctl is-enabled auditd"   
+          constraints:
+            platform: 
+            - rhel7
+          tests:
+            test_items:
+            - flag: "enabled"
+              set: true                        
+          remediation: |
+                Run one of the following commands to enable `auditd` :
+                
+                # chkconfig auditd on
+                
+                
+                # systemctl enable auditd
+                
+                
+                # update-rc.d auditd enable
+                
+          scored: true
+      - check:
+          audit: "ls /etc/rc*.d | grep auditd" 
+          type: manual
+          constraints:
+            platform: 
+            - ubuntu
+          tests:
+            test_items:
+            - flag: ""
+              set: true                        
+          remediation: |
+                Run one of the following commands to enable `auditd` :
+                
+                # chkconfig auditd on
+                
+                
+                # systemctl enable auditd
+                
+                
+                # update-rc.d auditd enable
+                
+          scored: true
+    - id: 4.1.3
+      description: "Ensure auditing for processes that start prior to auditd is enabled"
+      sub_checks:
+      - check:
+          audit: "grep \"^\\s*kernel\" /boot/grub/menu.lst"   
+          constraints:
+            boot:
+            - grub
+          tests:
+            test_items:
+            - flag: "audit=1"
+              set: true
+            remediation: |
+                  For `grub` based systems edit `/boot/grub/menu.lst` to include `audit=1` on all `kernel` lines.
+                  For `grub2` based systems edit /etc/default/grub and add audit=1 to GRUB\_CMDLINE\_LINUX:
+                  
+                  GRUB_CMDLINE_LINUX="audit=1"
+                  
+                  Run the following command to update the `grub2` configuration:
+                  
+                  # update-grub
+                
+          scored: true
+      - check:
+          audit: "grep -i linux /etc/default/grub"   
+          constraints:
+            boot:
+            - grub2
+          bin_op: and
+          tests:
+            test_items:
+            - flag: "GRUB_CMDLINE_LINUX="
+              set: true
+            - flag: "audit=1"
+              set: true
+          remediation: |
+                For `grub` based systems edit `/boot/grub/menu.lst` to include `audit=1` on all `kernel` lines.
+                For `grub2` based systems edit /etc/default/grub and add audit=1 to GRUB\_CMDLINE\_LINUX:
+                
+                GRUB_CMDLINE_LINUX="audit=1"
+                
+                Run the following command to update the `grub2` configuration:
+                
+                # update-grub
+                
+          scored: true
+    
+    - id: 4.1.4.a
+      description: "Ensure events that modify date and time information are collected"
+      audit: "grep time-change /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S clock_settime -k time-change"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S clock_settime -k time-change"
+          set: true
+        - flag: "-w /etc/localtime -p wa -k time-change"
+          set: true
+      remediation: |
+            
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
+            -a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change
+            -a always,exit -F arch=b64 -S clock_settime -k time-change
+            -a always,exit -F arch=b32 -S clock_settime -k time-change
+            -w /etc/localtime -p wa -k time-change
+            
+      scored: true 
+      
+    - id: 4.1.4.b
+      description: "Ensure events that modify date and time information are collected"
+      audit: "auditctl -l | grep time-change"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S adjtimex,settimeofday -F key=time-change"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S stime,settimeofday,adjtimex -F key=time-change"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S clock_settime -F key=time-change"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S clock_settime -F key=time-change"
+          set: true
+        - flag: "-w /etc/localtime -p wa -k time-change"
+          set: true                    
+      remediation: |
+            
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change
+            -a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change
+            -a always,exit -F arch=b64 -S clock_settime -k time-change
+            -a always,exit -F arch=b32 -S clock_settime -k time-change
+            -w /etc/localtime -p wa -k time-change
+            
+      scored: true
+    - id: 4.1.5.a
+      description: "Ensure events that modify user/group information are collected"
+      audit: "grep identity /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-w /etc/group -p wa -k identity"
+          set: true  
+        - flag: "-w /etc/passwd -p wa -k identity"
+          set: true
+        - flag: "-w /etc/gshadow -p wa -k identity"
+          set: true
+        - flag: "-w /etc/shadow -p wa -k identity"
+          set: true
+        - flag: "-w /etc/security/opasswd -p wa -k identity"
+          set: true                        
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /etc/group -p wa -k identity
+            -w /etc/passwd -p wa -k identity
+            -w /etc/gshadow -p wa -k identity
+            -w /etc/shadow -p wa -k identity
+            -w /etc/security/opasswd -p wa -k identity
+            
+      scored: true                  
+            
+    - id: 4.1.5.b
+      description: "Ensure events that modify user/group information are collected"
+      audit: "auditctl -l | grep identity"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-w /etc/group -p wa -k identity"
+          set: true  
+        - flag: "-w /etc/passwd -p wa -k identity"
+          set: true
+        - flag: "-w /etc/gshadow -p wa -k identity"
+          set: true
+        - flag: "-w /etc/shadow -p wa -k identity"
+          set: true
+        - flag: "-w /etc/security/opasswd -p wa -k identity"
+          set: true                        
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /etc/group -p wa -k identity
+            -w /etc/passwd -p wa -k identity
+            -w /etc/gshadow -p wa -k identity
+            -w /etc/shadow -p wa -k identity
+            -w /etc/security/opasswd -p wa -k identity
+            
+      scored: true                  
+            
+    - id: 4.1.6.a
+      description: "Ensure events that modify the system's network environment are collected"
+      audit: "grep system-locale /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
+          set: true
+        - flag: "-w /etc/issue -p wa -k system-locale"
+          set: true
+        - flag: "-w /etc/issue.net -p wa -k system-locale"
+          set: true
+        - flag: "-w /etc/hosts -p wa -k system-locale"
+          set: true
+        - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
+          set: true
+      remediation: |    
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
+            -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+            -w /etc/issue -p wa -k system-locale
+            -w /etc/issue.net -p wa -k system-locale
+            -w /etc/hosts -p wa -k system-locale
+            -w /etc/sysconfig/network -p wa -k system-locale
+            
+      scored: true                  
+    
+    - id: 4.1.6.b
+      description: "Ensure events that modify the system's network environment are collected"
+      audit: "grep system-locale /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
+          set: true
+        - flag: "-w /etc/issue -p wa -k system-locale"
+          set: true
+        - flag: "-w /etc/issue.net -p wa -k system-locale"
+          set: true
+        - flag: "-w /etc/hosts -p wa -k system-locale"
+          set: true
+        - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
+          set: true
+      remediation: | 
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
+            -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+            -w /etc/issue -p wa -k system-locale
+            -w /etc/issue.net -p wa -k system-locale
+            -w /etc/hosts -p wa -k system-locale
+            -w /etc/sysconfig/network -p wa -k system-locale
+            
+      scored: true                  
+    
+    - id: 4.1.7.a
+      description: "Ensure events that modify the system's Mandatory Access Controls are collected"
+      sub_checks:
+      - check:
+          audit: "grep MAC-policy /etc/audit/audit.rules"   
+          constraints: 
+            lsm:
+            - selinux
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-w /etc/selinux/ -p wa -k MAC-policy"
+              set: true
+            - flag: "-w /usr/share/selinux/ -p wa -k MAC-policy"
+              set: true                       
+          remediation: |
+                On systems using SELinux add the following line to the `/etc/audit/audit.rules` file:
+                
+                -w /etc/selinux/ -p wa -k MAC-policy
+                -w /usr/share/selinux/ -p wa -k MAC-policy
+                
+          scored: true
+      - check:
+          audit: "grep MAC-policy /etc/audit/audit.rules"  
+          constraints:
+            lsm:
+            - apparmor
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-w /etc/apparmor/ -p wa -k MAC-policy"
+              set: true
+            - flag: "-w /etc/apparmor.d/ -p wa -k MAC-policy"
+              set: true                       
+          remediation: |
+                On systems using AppArmor add the following line to the `/etc/audit/audit.rules` file:
+                
+                -w /etc/apparmor/ -p wa -k MAC-policy
+                -w /etc/apparmor.d/ -p wa -k MAC-policy
+                
+          scored: true
+    - id: 4.1.7.b 
+      description: "Ensure events that modify the system's Mandatory Access Controls are collected"
+      sub_checks:
+      - check:
+          audit: "auditctl -l | grep MAC-policy"   
+          constraints:
+            lsm:
+            - selinux
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-w /etc/selinux -p wa -k MAC-policy"
+              set: true
+            - flag: "-w /usr/share/selinux -p wa -k MAC-policy"
+              set: true                       
+          remediation: |
+                On systems using SELinux add the following line to the `/etc/audit/audit.rules` file:
+                
+                -w /etc/selinux/ -p wa -k MAC-policy
+                -w /usr/share/selinux/ -p wa -k MAC-policy
+                
+          scored: true
+      - check:
+          audit: "auditctl -l | grep MAC-policy"   
+          constraints:
+            lsm:
+            - selinux
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-w /etc/apparmor -p wa -k MAC-policy"
+              set: true
+            - flag: "-w /etc/apparmor.d -p wa -k MAC-policy"
+              set: true                       
+          remediation: |
+                On systems using AppArmor add the following line to the `/etc/audit/audit.rules` file:
+                
+                -w /etc/apparmor/ -p wa -k MAC-policy
+                -w /etc/apparmor.d/ -p wa -k MAC-policy
+                
+          scored: true
+    - id: 4.1.8.a
+      description: "Ensure login and logout events are collected"
+      audit: "grep logins /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-w /var/log/faillog -p wa -k logins"
+          set: true
+        - flag: "-w /var/log/lastlog -p wa -k logins"
+          set: true
+        - flag: "-w /var/log/tallylog -p wa -k logins"
+          set: true                       
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/log/faillog -p wa -k logins
+            -w /var/log/lastlog -p wa -k logins
+            -w /var/log/tallylog -p wa -k logins
+            
+      scored: true                  
+    
+        
+    - id: 4.1.8.b
+      description: "Ensure login and logout events are collected"
+      audit: "auditctl -l | grep logins"   
+      tests:
+        test_items:
+        - flag: "-w /var/log/faillog -p wa -k logins"
+          set: true
+        - flag: "-w /var/log/lastlog -p wa -k logins"
+          set: true
+        - flag: "-w /var/log/tallylog -p wa -k logins"
+          set: true                       
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/log/faillog -p wa -k logins
+            -w /var/log/lastlog -p wa -k logins
+            -w /var/log/tallylog -p wa -k logins
+            
+      scored: true                  
+            
+    - id: 4.1.9.a
+      description: "Ensure session initiation information is collected"
+      audit: "grep session /etc/audit/audit.rules"   
+      tests:
+        test_items:
+        - flag: "-w /var/run/utmp -p wa -k session"
+          set: true                        
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/run/utmp -p wa -k session
+            -w /var/log/wtmp -p wa -k logins
+            -w /var/log/btmp -p wa -k logins
+            
+      scored: true                  
+            
+    - id: 4.1.9.b
+      description: "Ensure session initiation information is collected"
+      audit: "auditctl -l | grep session"   
+      tests:
+        test_items:
+        - flag: "-w /var/run/utmp -p wa -k session"
+          set: true                       
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/run/utmp -p wa -k session
+            -w /var/log/wtmp -p wa -k logins
+            -w /var/log/btmp -p wa -k logins
+            
+      scored: true                  
+            
+    - id: 4.1.9.a
+      description: "Ensure session initiation information is collected"
+      audit: "grep logins /etc/audit/audit.rules"   
+      tests:
+        test_items:
+        - flag: "-w /var/log/wtmp -p wa -k logins"
+          set: true
+        - flag: "-w /var/log/btmp -p wa -k logins"
+          set: true                       
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/run/utmp -p wa -k session
+            -w /var/log/wtmp -p wa -k logins
+            -w /var/log/btmp -p wa -k logins
+            
+      scored: true                  
+            
+    - id: 4.1.9.b
+      description: "Ensure session initiation information is collected"
+      audit: "auditctl -l | grep logins"   
+      tests:
+        test_items:
+        - flag: "-w /var/log/wtmp -p wa -k logins"
+          set: true
+        - flag: "-w /var/log/btmp -p wa -k logins"
+          set: true                        
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/run/utmp -p wa -k session
+            -w /var/log/wtmp -p wa -k logins
+            -w /var/log/btmp -p wa -k logins
+            
+      scored: true                  
+            
+    - id: 4.1.10.a
+      description: "Ensure discretionary access control permission modification events are collected"
+      audit: "grep perm_mod /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod"
+          set: true                      
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+            
+      scored: true
+    - id: 4.1.10.b
+      description: "Ensure discretionary access control permission modification events are collected"
+      audit: "auditctl -l | grep perm_mod"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=500 -F auid!=-1 -F key=perm_mod"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=500 -F auid!=-1 -F key=perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S chown,fchown,lchown,fchownat -F auid>=500 -F auid!=-1 -F key=perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S lchown,fchown,chown,fchownat -F auid>=500 -F auid!=-1 -F key=perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=500 -F auid!=-1 -F key=perm_mod"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=500 -F auid!=-1 -F key=perm_mod"
+          set: true                      
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+            -a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+            
+      scored: true
+    - id: 4.1.11.a
+      description: "Ensure unsuccessful unauthorized file access attempts are collected"
+      audit: "grep access /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access"
+          set: true                                  
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
+            -a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
+            -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+            -a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+            
+      scored: true                  
+    - id: 4.1.11.b
+      description: "Ensure unsuccessful unauthorized file access attempts are collected"
+      audit: "auditctl -l | grep access"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat -F exit=-EACCES -F auid>=500 -F auid!=-1 -F key=access"
+          set: true  
+        - flag: "-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat -F exit=-EACCES -F auid>=500 -F auid!=-1 -F key=access"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat -F exit=-EPERM -F auid>=500 -F auid!=-1 -F key=access"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat -F exit=-EPERM -F auid>=500 -F auid!=-1 -F key=access"
+          set: true                                  
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
+            -a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
+            -a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+            -a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+            
+      scored: true                  
+    - id: 4.1.12
+      description: "Ensure use of privileged commands is collected"
+      audit: "find <partition> -xdev \\( -perm -4000 -o -perm -2000 \\) -type f | awk '{print \"-a always,exit -F path=\" $1 \" -F perm=x -F auid>=500 -F auid!=4294967295 \ -k privileged\" }' "   
+      type: "manual"          
+      remediation: |
+            To remediate this issue, the system administrator will have to execute a find command to locate all the privileged programs and then add an audit line for each one of them. The audit parameters associated with this are as follows:
+            `-F path=" $1 "` - will populate each file name found through the find command and processed by awk. `-F perm=x` - will write an audit record if the file is executed. `-F auid>=500` - will write a record if the user executing the command is not a privileged user. `-F auid!= 4294967295` - will ignore Daemon events
+            All audit records should be tagged with the identifier "privileged".
+            Run the following command replacing _
+            _ with a list of partitions where programs can be executed from on your system:
+            
+            # find 
+            -xdev \( -perm -4000 -o -perm -2000 \) -type f | awk '{print "-a always,exit -F path=" $1 " -F perm=x -F auid>=500 -F auid!=4294967295 -k privileged" }'
+            
+            Add all resulting lines to the `/etc/audit/audit.rules` file.
+      scored: true                  
+                  
+            
+    - id: 4.1.13.a
+      description: "Ensure successful file system mounts are collected"
+      audit: "grep mounts /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k mounts"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=4294967295 -k mounts"
+          set: true                       
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k mounts
+            -a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=4294967295 -k mounts
+            
+      scored: true                  
+
+    - id: 4.1.13.b
+      description: "Ensure successful file system mounts are collected"
+      audit: "auditctl -l | grep mounts"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=-1 -F key=mounts"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=-1 -F key=mounts"
+          set: true                       
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k mounts
+            -a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=4294967295 -k mounts
+            
+      scored: true  
+
+    - id: 4.1.14.a
+      description: "Ensure file deletion events by users are collected"
+      audit: "grep delete /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete"
+          set: true              
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+            -a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+            
+      scored: true                  
+
+    - id: 4.1.14.b
+      description: "Ensure file deletion events by users are collected"
+      audit: "auditctl -l | grep delete"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-a always,exit -F arch=b64 -S rename,unlink,unlinkat,renameat -F auid>=500 -F auid!=-1 -F key=delete"
+          set: true
+        - flag: "-a always,exit -F arch=b32 -S unlink,rename,unlinkat,renameat -F auid>=500 -F auid!=-1 -F key=delete"
+          set: true              
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+            -a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+            
+      scored: true                                     
+
+    - id: 4.1.15.a
+      description: "Ensure changes to system administration scope (sudoers) is collected"
+      audit: "grep scope /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-w /etc/sudoers -p wa -k scope"
+          set: true
+        - flag: "-w /etc/sudoers.d/ -p wa -k scope"
+          set: true                       
+      remediation: |
+            Add the following line to the `/etc/audit/audit.rules` file:
+            
+            -w /etc/sudoers -p wa -k scope
+            -w /etc/sudoers.d/ -p wa -k scope
+            
+      scored: true                  
+            
+    - id: 4.1.15.b
+      description: "Ensure changes to system administration scope (sudoers) is collected"
+      audit: "auditctl -l | grep scope"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-w /etc/sudoers -p wa -k scope"
+          set: true
+        - flag: "-w /etc/sudoers.d -p wa -k scope"
+          set: true                       
+      remediation: |
+            Add the following line to the `/etc/audit/audit.rules` file:
+            
+            -w /etc/sudoers -p wa -k scope
+            -w /etc/sudoers.d/ -p wa -k scope
+            
+      scored: true                     
+      remediation: |
+            Add the following line to the `/etc/audit/audit.rules` file:
+            
+            -w /etc/sudoers -p wa -k scope
+            -w /etc/sudoers.d/ -p wa -k scope
+            
+      scored: true                  
+            
+    - id: 4.1.16.a
+      description: "Ensure system administrator actions (sudolog) are collected"
+      audit: "grep actions /etc/audit/audit.rules"   
+      tests:
+        test_items:
+        - flag: "-w /var/log/sudo.log -p wa -k actions"
+          compare:
+            op: eq
+            value: "-w /var/log/sudo.log -p wa -k actions"
+          set: true                        
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/log/sudo.log -p wa -k actions
+            
+      scored: true                  
+            
+    - id: 4.1.16.b
+      description: "Ensure system administrator actions (sudolog) are collected"
+      audit: "auditctl -l | grep actions"   
+      tests:
+        test_items:
+        - flag: "-w /var/log/sudo.log -p wa -k actions"
+          set: true                      
+      remediation: |
+            Add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /var/log/sudo.log -p wa -k actions
+            
+      scored: true                  
+            
+    - id: 4.1.17.a
+      description: "Ensure kernel module loading and unloading is collected"
+      audit: "grep modules /etc/audit/audit.rules"   
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-w /sbin/insmod -p x -k modules"
+          set: true
+        - flag: "-w /sbin/rmmod -p x -k modules"
+          set: true
+        - flag: "-w /sbin/modprobe -p x -k modules"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S init_module -S delete_module -k modules"
+          set: true                        
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /sbin/insmod -p x -k modules
+            -w /sbin/rmmod -p x -k modules
+            -w /sbin/modprobe -p x -k modules
+            -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
+            
+      scored: true                  
+
+    - id: 4.1.17.b
+      description: "Ensure kernel module loading and unloading is collected"
+      audit: "auditctl -l | grep modules" 
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "-w /sbin/insmod -p x -k modules"
+          set: true
+        - flag: "-w /sbin/rmmod -p x -k modules"
+          set: true
+        - flag: "-w /sbin/modprobe -p x -k modules"
+          set: true
+        - flag: "-a always,exit -F arch=b64 -S init_module,delete_module -F key=modules"
+          set: true                        
+      remediation: |
+            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+            
+            -w /sbin/insmod -p x -k modules
+            -w /sbin/rmmod -p x -k modules
+            -w /sbin/modprobe -p x -k modules
+            -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
+            
+      scored: true
+
+      scored: true              
+    - id: 4.1.18
+      description: "Ensure the audit configuration is immutable"
+      audit: "grep ^\\s*[^#] /etc/audit/audit.rules | tail -1"   
+      tests:
+        test_items:
+        - flag: "-e 2"
+          set: true                        
+      remediation: |
+            Add the following line to the end of the `/etc/audit/audit.rules` file.
+            
+            -e 2
+            
+      scored: true                  
+                           
+            
+- id: 4.1.1
+  description: "Configure Data Retentiononfigure Data Retention"
+  checks:
+    - id: 4.1.1.1
+      description: "Ensure audit log storage size is configured"
+      audit: "grep max_log_file /etc/audit/auditd.conf"   
+      type: "manual"
+      tests:
+        test_items:
+        - flag: "max_log_file"
+          compare:
+            op: has
+            value: "<MB>"
+          set: true                        
+      remediation: |
+            Set the following parameter in `/etc/audit/auditd.conf` in accordance with site policy:
+            
+            max_log_file = 
+            
+      scored: false                  
+            
+    - id: 4.1.1.2.a
+      description: "Ensure system is disabled when audit logs are full"
+      audit: "grep ^space_left_action /etc/audit/auditd.conf"   
+      tests:
+        test_items:
+        - flag: "space_left_action = email"
+          set: true                        
+      remediation: |
+            Set the following parameters in `/etc/audit/auditd.conf:` 
+            
+            space_left_action = email
+            action_mail_acct = root
+            admin_space_left_action = halt
+            
+      scored: true                  
+            
+    - id: 4.1.1.2.b
+      description: "Ensure system is disabled when audit logs are full"
+      audit: "grep action_mail_acct /etc/audit/auditd.conf"   
+      tests:
+        test_items:
+        - flag: "action_mail_acct = root"
+          set: true                        
+      remediation: |
+            Set the following parameters in `/etc/audit/auditd.conf:` 
+            
+            space_left_action = email
+            action_mail_acct = root
+            admin_space_left_action = halt
+            
+      scored: true                  
+            
+    - id: 4.1.1.2.c
+      description: "Ensure system is disabled when audit logs are full"
+      audit: "grep admin_space_left_action /etc/audit/auditd.conf"   
+      tests:
+        test_items:
+        - flag: "admin_space_left_action = halt"
+          set: true                        
+      remediation: |
+            Set the following parameters in `/etc/audit/auditd.conf:` 
+            
+            space_left_action = email
+            action_mail_acct = root
+            admin_space_left_action = halt
+            
+      scored: true                  
+            
+    - id: 4.1.1.3
+      description: "Ensure audit logs are not automatically deleted"
+      audit: "grep max_log_file_action /etc/audit/auditd.conf"   
+      tests:
+        test_items:
+        - flag: "max_log_file_action = keep_logs"
+          set: true                        
+      remediation: |
+            Set the following parameter in `/etc/audit/auditd.conf:` 
+            
+            max_log_file_action = keep_logs
+            
+      scored: true                              
+- id: 5.4
+  description: "User Accounts and Environmentser Accounts and Environment"
+  checks:
+    - id: 5.4.5.a
+      description: "Ensure default user shell timeout is 900 seconds or less"
+      audit: "grep ^TMOUT /etc/bashrc"
+      tests:
+        test_items:
+        - flag: "TMOUT"
+          compare:
+            op: lte
+            value: "900"
+          set: true                        
+      remediation: |
+            Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
+            
+            TMOUT=600
+            
+      scored: true                  
+            
+    - id: 5.4.5.b
+      description: "Ensure default user shell timeout is 900 seconds or less"
+      audit: "grep ^TMOUT /etc/profile"   
+      tests:
+        test_items:
+        - flag: "TMOUT"
+          compare:
+            op: lte
+            value: "900"
+          set: true                        
+      remediation: |
+            Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
+            
+            TMOUT=600
+            
+      scored: true                  
+            
+- id: 6.1
+  description: "System File Permissionsystem File Permissions"
+  checks:
+    - id: 6.1.1.a
+      description: "Audit system file permissions"
+      audit: "rpm -Va --nomtime --nosize --nomd5 --nolinkto > <filename>"   
+      skip: true
+      type: "manual"            
+      remediation: |
+            Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.
+      scored: false                  
+            
+    - id: 6.1.1.b
+      description: "Audit system file permissions"
+      audit: "dpkg --verify > <filename>"   
+      skip: true
+      type: "manual"      
+      remediation: |
+            Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.
+      scored: false                  
