@@ -86,41 +86,51 @@ groups:
   checks:
     - id: 1.1.1.8.a
       description: "Ensure mounting of FAT filesystems is disabled"
-      audit: "modprobe -n -v vfat"   
-      tests:
-        test_items:
-        - flag: "install /bin/true"
-          set: true 
-
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+      sub_checks:
+      - check:
+          audit: "modprobe -n -v vfat"
+          constraints:
+            platform:
+            - rhel7
+          tests:
+            test_items:
+            - flag : "install /bin/true"
+              set: true
             
-            install vfat /bin/true
+          remediation: |
+              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+              
+              install vfat /bin/true
             
-            Run the following command to unload the `vfat` module:
+              Run the following command to unload the `vfat` module:
+              
+              # rmmod vfat
             
-            # rmmod vfat
-            
-      scored: true                  
-            
+      scored: true
     - id: 1.1.1.8.b
       description: "Ensure mounting of FAT filesystems is disabled"
-      audit: "lsmod | grep vfat"   
-      tests:
-        test_items:
-        - flag: ""
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+      sub_checks:
+      - check:
+          audit: "lsmod | grep vfat"
+          constraints:
+            platform:
+            - rhel7
+          tests:
+            test_items:
+            - flag : ""
+              set: true
             
-            install vfat /bin/true
+          remediation: |
+              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+              
+              install vfat /bin/true
             
-            Run the following command to unload the `vfat` module:
+              Run the following command to unload the `vfat` module:
+              
+              # rmmod vfat
             
-            # rmmod vfat
-            
-      scored: true                  
-            
+      scored: true           
+    
 - id: 1.6
   description: "Mandatory Access Controlandatory Access Control"
   checks:
@@ -150,7 +160,6 @@ groups:
                # zypper install libselinux
                
                The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-        scored: false
     - check:
         audit: "rpm -q apparmor" 
         constraints:          
@@ -174,9 +183,6 @@ groups:
                # zypper install libselinux
                
                The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-        scored: false
-           
-    
     - check:
         audit: "dpkg -s libselinux1" 
         constraints:          
@@ -200,10 +206,6 @@ groups:
                # zypper install libselinux
                
                The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-        scored: false
-           
-
-    
     - check:
         audit: "dpkg -s apparmor" 
         constraints:          
@@ -227,11 +229,7 @@ groups:
                # zypper install libselinux
                
                The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-        scored: false
-           
-                  
-           
-                
+    scored: false   
 - id: 1.6.1
   description: "Configure SELinuxonfigure SELinux"
   checks:
@@ -263,8 +261,6 @@ groups:
             Run the following command to update the `grub2` configuration:
             
             # update-grub
-            
-      scored: true
     - check:
         audit: "grep LINUX /etc/default/grub"
         constraints: 
@@ -290,8 +286,7 @@ groups:
             Run the following command to update the `grub2` configuration:
             
             # update-grub
-            
-      scored: true
+    scored: true
   - id: 1.6.1.2.a
     description: "Ensure the SELinux state is enforcing"
     sub_checks:
@@ -314,8 +309,7 @@ groups:
           Run the following command to update the `grub2` configuration:
           
           # update-grub
-          
-        scored: true
+    scored: true
   - id: 1.6.1.2.b
     description: "Ensure the SELinux state is enforcing"
     sub_checks:
@@ -351,9 +345,7 @@ groups:
           Run the following command to update the `grub2` configuration:
           
           # update-grub
-          
-        scored: true
-  
+    scored: true
   - id: 1.6.1.3.a
     description: "Ensure SELinux policy is configured"
     sub_checks:
@@ -370,8 +362,7 @@ groups:
           Edit the `/etc/selinux/config` file to set the SELINUXTYPE parameter:
             
           SELINUXTYPE=targeted
-          
-        scored: true
+    scored: true
   - id: 1.6.1.3.b
     description: "Ensure SELinux policy is configured"
     sub_checks:
@@ -391,8 +382,7 @@ groups:
           Edit the `/etc/selinux/config` file to set the SELINUXTYPE parameter:
             
           SELINUXTYPE=targeted
-          
-        scored: true  
+    scored: true  
 
   
   - id: 1.6.1.4
@@ -419,8 +409,6 @@ groups:
             
             
             # zypper remove setroubleshoot
-          
-        scored: true 
     - check:
         audit: "dpkg -s setroubleshoot"
         constraints: 
@@ -442,8 +430,7 @@ groups:
             
             
             # zypper remove setroubleshoot
-          
-        scored: true        
+    scored: true        
   - id: 1.6.1.5
     description: "Ensure the MCS Translation Service (mcstrans) is not installed"
     sub_checks:
@@ -452,8 +439,6 @@ groups:
         constraints: 
           platform:
           - rhel7
-          lsm:
-          - selinux
         tests:
           test_items:
           - flag: "is not installed"
@@ -468,19 +453,14 @@ groups:
             
             
             zypper remove mcstrans
-
-          
-        scored: true 
     - check:
         audit: "dpkg -s mcstrans"
         constraints: 
           platform:
           - ubuntu
-          lsm:
-          - selinux
         tests:
           test_items:
-          - flag: "is not installed"
+          - flag: ""
             set: true          
         remediation: |
           Uninstall `mcstrans` using the appropriate package manager or manual installation:
@@ -491,12 +471,8 @@ groups:
             apt-get remove mcstrans
             
             
-            zypper remove mcstrans
-
-          
-        scored: true        
-
-  
+            zypper remove mcstrans 
+    scored: true
   - id: 1.6.1.6
     description: "Ensure no unconfined daemons exist"
     audit: "ps -eZ | egrep \"initrc\" | egrep -vw \"tr|ps|egrep|bash|awk \" | tr ':' ' ' | awk '{ print $NF }'"
@@ -536,15 +512,13 @@ groups:
                 Run the following command to update the `grub2` configuration:
                 
                 # update-grub
-                
-          scored: true
       - check:
-          audit: "grep \"^\\s*LINUX\" /etc/default/grub"
+          audit: "grep LINUX /etc/default/grub"
           constraints:
             lsm:
             - apparmor
             boot:
-            - grub
+            - grub2
           tests:
             test_items:
             - flag: "apparmor=0"
@@ -559,8 +533,7 @@ groups:
                 Run the following command to update the `grub2` configuration:
                 
                 # update-grub
-                
-          scored: true  
+      scored: true  
     - id: 1.6.2.2
       description: "Ensure all AppArmor Profiles are enforcing"
       sub_checks:
@@ -577,7 +550,7 @@ groups:
                 # enforce /etc/apparmor.d/*
             
                 Any unconfined processes may need to have a profile created or activated for them and then be restarted.
-          scored: true
+      scored: true
       
 - id: 4.1
   description: "Configure System Accounting (auditd)onfigure System Accounting (auditd)"
@@ -603,9 +576,7 @@ groups:
                 # systemctl enable auditd
                 
                 
-                # update-rc.d auditd enable
-                
-          scored: true    
+                # update-rc.d auditd enable   
       - check:
           audit: "systemctl is-enabled auditd"   
           constraints:
@@ -625,8 +596,6 @@ groups:
                 
                 
                 # update-rc.d auditd enable
-                
-          scored: true
       - check:
           audit: "ls /etc/rc*.d | grep auditd" 
           type: manual
@@ -647,8 +616,7 @@ groups:
                 
                 
                 # update-rc.d auditd enable
-                
-          scored: true
+      scored: true
     - id: 4.1.3
       description: "Ensure auditing for processes that start prior to auditd is enabled"
       sub_checks:
@@ -670,8 +638,6 @@ groups:
                   Run the following command to update the `grub2` configuration:
                   
                   # update-grub
-                
-          scored: true
       - check:
           audit: "grep -i linux /etc/default/grub"   
           constraints:
@@ -693,9 +659,7 @@ groups:
                 Run the following command to update the `grub2` configuration:
                 
                 # update-grub
-                
-          scored: true
-    
+      scored: true
     - id: 4.1.4.a
       description: "Ensure events that modify date and time information are collected"
       audit: "grep time-change /etc/audit/audit.rules"   
@@ -807,64 +771,128 @@ groups:
             
     - id: 4.1.6.a
       description: "Ensure events that modify the system's network environment are collected"
-      audit: "grep system-locale /etc/audit/audit.rules"   
-      tests:
-        bin_op: and
-        test_items:
-        - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
-          set: true  
-        - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
-          set: true
-        - flag: "-w /etc/issue -p wa -k system-locale"
-          set: true
-        - flag: "-w /etc/issue.net -p wa -k system-locale"
-          set: true
-        - flag: "-w /etc/hosts -p wa -k system-locale"
-          set: true
-        - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
-          set: true
-      remediation: |    
-            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
-            
-            -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
-            -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
-            -w /etc/issue -p wa -k system-locale
-            -w /etc/issue.net -p wa -k system-locale
-            -w /etc/hosts -p wa -k system-locale
-            -w /etc/sysconfig/network -p wa -k system-locale
-            
-      scored: true                  
-    
+      sub_checks:
+      - check:
+          audit: "grep system-locale /etc/audit/audit.rules"   
+          constraints:          
+            platform:
+            - rhel7
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
+              set: true  
+            - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
+              set: true
+            - flag: "-w /etc/issue -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/issue.net -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/hosts -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
+              set: true
+          remediation: |    
+                For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+                
+                -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
+                -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+                -w /etc/issue -p wa -k system-locale
+                -w /etc/issue.net -p wa -k system-locale
+                -w /etc/hosts -p wa -k system-locale
+                -w /etc/sysconfig/network -p wa -k system-locale               
+      - check:
+          audit: "grep system-locale /etc/audit/audit.rules"   
+          constraints:          
+            platform:
+            - ubuntu
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
+              set: true  
+            - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
+              set: true
+            - flag: "-w /etc/issue -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/issue.net -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/hosts -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/network -p wa -k system-locale"
+              set: true
+          remediation: |    
+                For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+                
+                -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
+                -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+                -w /etc/issue -p wa -k system-locale
+                -w /etc/issue.net -p wa -k system-locale
+                -w /etc/hosts -p wa -k system-locale
+                -w /etc/network -p wa -k system-locale
+      scored: true
     - id: 4.1.6.b
       description: "Ensure events that modify the system's network environment are collected"
-      audit: "grep system-locale /etc/audit/audit.rules"   
-      tests:
-        bin_op: and
-        test_items:
-        - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
-          set: true  
-        - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
-          set: true
-        - flag: "-w /etc/issue -p wa -k system-locale"
-          set: true
-        - flag: "-w /etc/issue.net -p wa -k system-locale"
-          set: true
-        - flag: "-w /etc/hosts -p wa -k system-locale"
-          set: true
-        - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
-          set: true
-      remediation: | 
-            For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
-            
-            -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
-            -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
-            -w /etc/issue -p wa -k system-locale
-            -w /etc/issue.net -p wa -k system-locale
-            -w /etc/hosts -p wa -k system-locale
-            -w /etc/sysconfig/network -p wa -k system-locale
-            
+      sub_checks:
+      - check:
+          audit: "grep system-locale /etc/audit/audit.rules"   
+          constraints:          
+            platform:
+            - rhel7
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
+              set: true  
+            - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
+              set: true
+            - flag: "-w /etc/issue -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/issue.net -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/hosts -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
+              set: true
+          remediation: | 
+                For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+                
+                -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
+                -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+                -w /etc/issue -p wa -k system-locale
+                -w /etc/issue.net -p wa -k system-locale
+                -w /etc/hosts -p wa -k system-locale
+                -w /etc/sysconfig/network -p wa -k system-locale               
+      - check:
+          audit: "grep system-locale /etc/audit/audit.rules"   
+          constraints:          
+            platform:
+            - ubuntu
+          tests:
+            bin_op: and
+            test_items:
+            - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
+              set: true  
+            - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
+              set: true
+            - flag: "-w /etc/issue -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/issue.net -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/hosts -p wa -k system-locale"
+              set: true
+            - flag: "-w /etc/network -p wa -k system-locale"
+              set: true
+          remediation: | 
+                For 64 bit systems add the following lines to the `/etc/audit/audit.rules` file:
+                
+                -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
+                -a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+                -w /etc/issue -p wa -k system-locale
+                -w /etc/issue.net -p wa -k system-locale
+                -w /etc/hosts -p wa -k system-locale
+                -w /etc/network -p wa -k system-locale
       scored: true                  
-    
     - id: 4.1.7.a
       description: "Ensure events that modify the system's Mandatory Access Controls are collected"
       sub_checks:
@@ -885,8 +913,6 @@ groups:
                 
                 -w /etc/selinux/ -p wa -k MAC-policy
                 -w /usr/share/selinux/ -p wa -k MAC-policy
-                
-          scored: true
       - check:
           audit: "grep MAC-policy /etc/audit/audit.rules"  
           constraints:
@@ -905,7 +931,7 @@ groups:
                 -w /etc/apparmor/ -p wa -k MAC-policy
                 -w /etc/apparmor.d/ -p wa -k MAC-policy
                 
-          scored: true
+      scored: true
     - id: 4.1.7.b 
       description: "Ensure events that modify the system's Mandatory Access Controls are collected"
       sub_checks:
@@ -926,13 +952,11 @@ groups:
                 
                 -w /etc/selinux/ -p wa -k MAC-policy
                 -w /usr/share/selinux/ -p wa -k MAC-policy
-                
-          scored: true
       - check:
           audit: "auditctl -l | grep MAC-policy"   
           constraints:
             lsm:
-            - selinux
+            - apparmor
           tests:
             bin_op: and
             test_items:
@@ -946,7 +970,7 @@ groups:
                 -w /etc/apparmor/ -p wa -k MAC-policy
                 -w /etc/apparmor.d/ -p wa -k MAC-policy
                 
-          scored: true
+      scored: true
     - id: 4.1.8.a
       description: "Ensure login and logout events are collected"
       audit: "grep logins /etc/audit/audit.rules"   
@@ -1476,21 +1500,41 @@ groups:
   checks:
     - id: 5.4.5.a
       description: "Ensure default user shell timeout is 900 seconds or less"
-      audit: "grep ^TMOUT /etc/bashrc"
-      tests:
-        test_items:
-        - flag: "TMOUT"
-          compare:
-            op: lte
-            value: "900"
-          set: true                        
-      remediation: |
-            Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
+      sub_checks:
+      - check:
+          audit: "grep ^TMOUT /etc/bashrc"
+          constraints:
+            platform: 
+            - rhel7
+          tests:
+            test_items:
+            - flag: "TMOUT"
+              compare:
+                op: lte
+                value: "900"
+              set: true                        
+        remediation: |
+              Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
             
-            TMOUT=600
+              TMOUT=600                  
+      - check:
+          audit: "grep ^TMOUT /etc/bash.bashrc"
+          constraints:
+            platform: 
+            - ubuntu
+          tests:
+            test_items:
+            - flag: "TMOUT"
+              compare:
+                op: lte
+                value: "900"
+              set: true                        
+        remediation: |
+              Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
             
-      scored: true                  
+              TMOUT=600
             
+      scored: true      
     - id: 5.4.5.b
       description: "Ensure default user shell timeout is 900 seconds or less"
       audit: "grep ^TMOUT /etc/profile"   

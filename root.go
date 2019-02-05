@@ -41,7 +41,7 @@ var (
 var RootCmd = &cobra.Command{
 	Use:   "linux-bench",
 	Short: "linux-bench is a Go application that checks whether the linux operating system is deployed securely",
-	Long:  `This tool runs the CIS Linux Benchmark (https://www.cisecurity.org/benchmark/linux/)`,
+	Long:  `This tool runs the CIS Linux Benchmark (https://www.cisecurity.org/cis-benchmarks)`,
 	Run:   app,
 }
 

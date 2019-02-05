@@ -1,14 +1,20 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Linux-bench is a Go application that checks whether The linux operating system is configured securely by running the checks documented in the CIS Linux Benchmark.
+Linux-bench is a Go application that checks whether The linux operating system is configured securely by running the checks documented in the CIS Distribution Independent Linux Benchmark.
 
 Tests are configured with YAML files, making this tool easy to update as test specifications evolve. 
 
 
 ## CIS Linux Benchmark support
 
-linux-bench currently supports tests for multiple platforms of Linux (ubntu, rhel and debian).
-linux-bench will determine the test set to run based on the operating system and the boot loader running on the host machine. 
+linux-bench currently supports tests for benchmark version 1.1.0 only.
+
+linux-bench will determine the test set to run on the host machine based on the following:
+##### Operating system platform - ubuntu/debian/rhel/coreos
+##### Boot loader - grub/grub2
+##### System logging tool - rsyslog/syslog-ng
+##### Lsm - selinux/apparmor
+
 
 ## Installation
 ### Installing from sources
@@ -28,12 +34,12 @@ go build -o linux-bench .
 ./linux-bench
 
 # Run checks for specified linux cis version
-./linux-bench
-
+./linux-bench --version <version>
 ```
 
 # Tests
-Tests are specified in definition files `cfg/<version>/definitions.yaml.
+Tests are specified in definition files `cfg/<version>/definitions.yaml.`
+
 Where `<version>` is the version of linux cis for which the test applies.
 
 # Contributing
