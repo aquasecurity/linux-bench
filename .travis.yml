@@ -1,0 +1,8 @@
+---
+language: go
+
+notifications:
+  email: false
+
+script:
+  - go test ./...
