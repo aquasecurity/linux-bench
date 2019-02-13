@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/aquasecurity/linux-bench.svg?branch=master)](https://travis-ci.org/aquasecurity/linux-bench)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Linux-bench is a Go application that checks whether The linux operating system is configured securely by running the checks documented in the CIS Distribution Independent Linux Benchmark.
