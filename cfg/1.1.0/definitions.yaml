@@ -6,10 +6,10 @@ description: "Initial Setup"
 type: "master"
 groups:
 - id: 1.8
-  description: "Initial Setupnitial Setup"
+  description: "Initial Setup"
   checks:
     - id: 1.8
-      description: "Initial Setupnitial Setup"
+      description: "Initial Setup"
       sub_checks:
       - check:
           audit: "yum check-update"
