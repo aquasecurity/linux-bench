@@ -5,40 +5,258 @@ id: 1
 description: "Initial Setup"  
 type: "master"
 groups:
-- id: 1.8
-  description: "Initial Setup"
-  checks:
-    - id: 1.8
-      description: "Initial Setup"
-      sub_checks:
-      - check:
-          audit: "yum check-update"
-          type: manual
-          constraints:          
-              platform:
-              - rhel7
-          remediation: |
-                Use your package manager to update all packages on the system according to site policy.
-      - check:
-          audit: "apt-get -s upgrade"
-          type: manual
-          constraints:          
-              platform:
-              - ubuntu
-          remediation: |
-                Use your package manager to update all packages on the system according to site policy.
-      - check:
-          audit: "zypper list-updates"
-          type: manual
-          constraints:          
-              platform:
-              - opensuse
-          remediation: |
-                Use your package manager to update all packages on the system according to site policy.
-      scored: false
 - id: 1.1
   description: "Filesystem Configuration"
   checks:
+    - id: 1.1.1
+      description: "Disable unused filesystems"
+      checks:
+      - id: 1.1.1.1.a
+        description: "Ensure mounting of cramfs filesystems is disabled"
+        audit: "modprobe -n -v cramfs"
+        tests:
+          test_items:
+          - flag: "install /bin/true"
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install cramfs /bin/true
+          Run the following command to unload the `cramfs` module:
+          # rmmod cramfs
+        scored: true
+      - id: 1.1.1.1.b
+        description: "Ensure mounting of cramfs filesystems is disabled"
+        audit: "lsmod | grep cramfs"
+        tests:
+          test_items:
+          - flag: ""
+            compare:
+              op: eq
+              value: ""
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install cramfs /bin/true
+          Run the following command to unload the `cramfs` module:
+          # rmmod cramfs
+        scored: true
+      - id: 1.1.1.2.a
+        description: "Ensure mounting of freevxfs filesystems is disabled"
+        audit: "modprobe -n -v freevxfs"
+        tests:
+          test_items:
+          - flag: "install /bin/true"
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install freevxfs /bin/true
+          Run the following command to unload the `freevxfs` module:
+          # rmmod freevxfs
+        scored: true
+      - id: 1.1.1.2.b
+        description: "Ensure mounting of freevxfs filesystems is disabled"
+        audit: "lsmod | grep freevxfs"
+        tests:
+          test_items:
+          - flag: ""
+            compare:
+              op: eq
+              value: ""
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install freevxfs /bin/true
+          Run the following command to unload the `freevxfs` module:
+          # rmmod freevxfs
+        scored: true
+      - id: 1.1.1.3.a
+        description: "Ensure mounting of jffs2 filesystems is disabled"
+        audit: "modprobe -n -v jffs2"
+        tests:
+          test_items:
+          - flag: "install /bin/true"
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install jffs2 /bin/true
+          Run the following command to unload the `jffs2` module:
+          # rmmod jffs2
+        scored: true
+      - id: 1.1.1.3.b
+        description: "Ensure mounting of jffs2 filesystems is disabled"
+        audit: "lsmod | grep jffs2"
+        tests:
+          test_items:
+          - flag: ""
+            compare:
+              op: eq
+              value: ""
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install jffs2 /bin/true
+          Run the following command to unload the `jffs2` module:
+          # rmmod jffs2
+        scored: true
+      - id: 1.1.1.4.a
+        description: "Ensure mounting of hfs filesystems is disabled"
+        audit: "modprobe -n -v hfs"
+        tests:
+          test_items:
+          - flag: "install /bin/true"
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install hfs /bin/true
+          Run the following command to unload the `hfs` module:
+          # rmmod hfs
+        scored: true
+      - id: 1.1.1.4.b
+        description: "Ensure mounting of hfs filesystems is disabled"
+        audit: "lsmod | grep hfs"
+        tests:
+          test_items:
+          - flag: ""
+            compare:
+              op: eq
+              value: ""
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install hfs /bin/true
+          Run the following command to unload the `hfs` module:
+          # rmmod hfs
+        scored: true
+      - id: 1.1.1.5.a
+        description: "Ensure mounting of hfsplus filesystems is disabled"
+        audit: "modprobe -n -v hfsplus"
+        tests:
+          test_items:
+          - flag: "install /bin/true"
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install hfsplus /bin/true
+          Run the following command to unload the `hfsplus` module:
+          # rmmod hfsplus
+        scored: true
+      - id: 1.1.1.5.b
+        description: "Ensure mounting of hfsplus filesystems is disabled"
+        audit: "lsmod | grep hfsplus"
+        tests:
+          test_items:
+          - flag: ""
+            compare:
+              op: eq
+              value: ""
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install hfsplus /bin/true
+          Run the following command to unload the `hfsplus` module:
+          # rmmod hfsplus
+        scored: true
+      - id: 1.1.1.6.a
+        description: "Ensure mounting of squashfs filesystems is disabled"
+        sub_checks:
+        - check:
+            audit: "modprobe -n -v squashfs"
+            constraints:
+              platform:
+              - rhel7
+            tests:
+              test_items:
+              - flag: "install /bin/true"
+                set: true
+            remediation: |
+              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+              install squashfs /bin/true
+              Run the following command to unload the `squashfs` module:
+              # rmmod squashfs
+        scored: true
+      - id: 1.1.1.6.b
+        description: "Ensure mounting of squashfs filesystems is disabled"
+        sub_checks:
+        - check:
+            audit: "lsmod | grep squashfs"
+            constraints:
+              platform:
+              - rhel7
+            tests:
+              test_items:
+              - flag: ""
+                set: true
+            remediation: |
+              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+              install squashfs /bin/true
+              Run the following command to unload the `squashfs` module:
+              # rmmod squashfs
+        scored: true
+      - id: 1.1.1.7.a
+        description: "Ensure mounting of udf filesystems is disabled"
+        audit: "modprobe -n -v udf"
+        tests:
+          test_items:
+          - flag: "install /bin/true"
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install udf /bin/true
+          Run the following command to unload the `udf` module:
+          # rmmod udf
+        scored: true
+      - id: 1.1.1.7.b
+        description: "Ensure mounting of udf filesystems is disabled"
+        audit: "lsmod | grep udf"
+        tests:
+          test_items:
+          - flag: ""
+            compare:
+              op: eq
+              value: ""
+            set: true
+        remediation: |
+          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+          install udf /bin/true
+          Run the following command to unload the `udf` module:
+          # rmmod udf
+        scored: true
+      - id: 1.1.1.8.a
+        description: "Ensure mounting of FAT filesystems is disabled"
+        sub_checks:
+        - check:
+            audit: "modprobe -n -v vfat"
+            constraints:
+              platform:
+              - rhel7
+            tests:
+              test_items:
+              - flag: "install /bin/true"
+                set: true
+            remediation: |
+              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+              install vfat /bin/true
+              Run the following command to unload the `vfat` module:
+              # rmmod vfat
+        scored: true
+      - id: 1.1.1.8.b
+        description: "Ensure mounting of FAT filesystems is disabled"
+        sub_checks:
+        - check:
+            audit: "lsmod | grep vfat"
+            constraints:
+              platform:
+              - rhel7
+            tests:
+              test_items:
+              - flag: ""
+                set: true
+            remediation: |
+              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
+              install vfat /bin/true
+              Run the following command to unload the `vfat` module:
+              # rmmod vfat
+        scored: true
     - id: 1.1.2
       description: "Ensure separate partition exists for /tmp"
       audit: "mount | grep /tmp"   
@@ -226,8 +444,7 @@ groups:
             # mount -o remount,noexec /var/tmp
             
       scored: true                                            
-            
-    
+
     - id: 1.1.15
       description: "Ensure separate partition exists for /var/log"
       audit: "mount | grep /var/log"   
@@ -305,7 +522,6 @@ groups:
             # mount -o remount,nosuid /dev/shm
             
       scored: true                  
-            
 
     - id: 1.1.21
       description: "Ensure noexec option set on /dev/shm partition"
@@ -427,337 +643,7 @@ groups:
                 
                 
                 # update-rc.d autofs disable  
-      scored: true                  
-- id: 1.1.1
-  description: "Disable unused filesystems"
-  checks:
-    - id: 1.1.1.1.a
-      description: "Ensure mounting of cramfs filesystems is disabled"
-      audit: "modprobe -n -v cramfs"   
-      tests:
-        test_items:
-        - flag: "install /bin/true"
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install cramfs /bin/true
-            
-            Run the following command to unload the `cramfs` module:
-            
-            # rmmod cramfs
-            
-      scored: true                  
-            
-    - id: 1.1.1.1.b
-      description: "Ensure mounting of cramfs filesystems is disabled"
-      audit: "lsmod | grep cramfs"   
-      tests:
-        test_items:
-        - flag: ""
-          compare:
-            op: eq
-            value: ""
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install cramfs /bin/true
-            
-            Run the following command to unload the `cramfs` module:
-            
-            # rmmod cramfs
-            
-      scored: true                  
-            
-    - id: 1.1.1.2.a
-      description: "Ensure mounting of freevxfs filesystems is disabled"
-      audit: "modprobe -n -v freevxfs"   
-      tests:
-        test_items:
-        - flag: "install /bin/true"
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install freevxfs /bin/true
-            
-            Run the following command to unload the `freevxfs` module:
-            
-            # rmmod freevxfs
-            
-      scored: true                  
-            
-    - id: 1.1.1.2.b
-      description: "Ensure mounting of freevxfs filesystems is disabled"
-      audit: "lsmod | grep freevxfs"   
-      tests:
-        test_items:
-        - flag: ""
-          compare:
-            op: eq
-            value: ""
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install freevxfs /bin/true
-            
-            Run the following command to unload the `freevxfs` module:
-            
-            # rmmod freevxfs
-            
-      scored: true                  
-            
-    - id: 1.1.1.3.a
-      description: "Ensure mounting of jffs2 filesystems is disabled"
-      audit: "modprobe -n -v jffs2"   
-      tests:
-        test_items:
-        - flag: "install /bin/true"
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install jffs2 /bin/true
-            
-            Run the following command to unload the `jffs2` module:
-            
-            # rmmod jffs2
-            
-      scored: true                  
-            
-    - id: 1.1.1.3.b
-      description: "Ensure mounting of jffs2 filesystems is disabled"
-      audit: "lsmod | grep jffs2"   
-      tests:
-        test_items:
-        - flag: ""
-          compare:
-            op: eq
-            value: ""
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install jffs2 /bin/true
-            
-            Run the following command to unload the `jffs2` module:
-            
-            # rmmod jffs2
-            
-      scored: true                  
-            
-    - id: 1.1.1.4.a
-      description: "Ensure mounting of hfs filesystems is disabled"
-      audit: "modprobe -n -v hfs"   
-      tests:
-        test_items:
-        - flag: "install /bin/true"
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install hfs /bin/true
-            
-            Run the following command to unload the `hfs` module:
-            
-            # rmmod hfs
-            
-      scored: true                  
-            
-    - id: 1.1.1.4.b
-      description: "Ensure mounting of hfs filesystems is disabled"
-      audit: "lsmod | grep hfs"   
-      tests:
-        test_items:
-        - flag: ""
-          compare:
-            op: eq
-            value: ""
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install hfs /bin/true
-            
-            Run the following command to unload the `hfs` module:
-            
-            # rmmod hfs
-            
-      scored: true                  
-            
-    - id: 1.1.1.5.a
-      description: "Ensure mounting of hfsplus filesystems is disabled"
-      audit: "modprobe -n -v hfsplus"   
-      tests:
-        test_items:
-        - flag: "install /bin/true"
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install hfsplus /bin/true
-            
-            Run the following command to unload the `hfsplus` module:
-            
-            # rmmod hfsplus
-            
-      scored: true                  
-            
-    - id: 1.1.1.5.b
-      description: "Ensure mounting of hfsplus filesystems is disabled"
-      audit: "lsmod | grep hfsplus"   
-      tests:
-        test_items:
-        - flag: ""
-          compare:
-            op: eq
-            value: ""
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install hfsplus /bin/true
-            
-            Run the following command to unload the `hfsplus` module:
-            
-            # rmmod hfsplus
-            
-      scored: true                  
-            
-    - id: 1.1.1.6.a
-      description: "Ensure mounting of squashfs filesystems is disabled"
-      sub_checks:
-      - check:
-          audit: "modprobe -n -v squashfs"
-          constraints:
-            platform:
-            - rhel7
-          tests:
-            test_items:
-            - flag : "install /bin/true"
-              set: true
-            
-          remediation: |
-              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-              
-              install squashfs /bin/true
-            
-              Run the following command to unload the `squashfs` module:
-              
-              # rmmod squashfs
-            
       scored: true
-    - id: 1.1.1.6.b
-      description: "Ensure mounting of squashfs filesystems is disabled"
-      sub_checks:
-      - check:
-          audit: "lsmod | grep squashfs"
-          constraints:
-            platform:
-            - rhel7
-          tests:
-            test_items:
-            - flag : ""
-              set: true
-            
-          remediation: |
-              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-              
-              install squashfs /bin/true
-            
-              Run the following command to unload the `squashfs` module:
-              
-              # rmmod squashfs
-            
-      scored: true      
-
-    - id: 1.1.1.7.a
-      description: "Ensure mounting of udf filesystems is disabled"
-      audit: "modprobe -n -v udf"   
-      tests:
-        test_items:
-        - flag: "install /bin/true"
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install udf /bin/true
-            
-            Run the following command to unload the `udf` module:
-            
-            # rmmod udf
-            
-      scored: true                  
-            
-    - id: 1.1.1.7.b
-      description: "Ensure mounting of udf filesystems is disabled"
-      audit: "lsmod | grep udf"   
-      tests:
-        test_items:
-        - flag: ""
-          compare:
-            op: eq
-            value: ""
-          set: true                        
-      remediation: |
-            Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-            
-            install udf /bin/true
-            
-            Run the following command to unload the `udf` module:
-            
-            # rmmod udf
-            
-      scored: true
-    - id: 1.1.1.8.a
-      description: "Ensure mounting of FAT filesystems is disabled"
-      sub_checks:
-      - check:
-          audit: "modprobe -n -v vfat"
-          constraints:
-            platform:
-            - rhel7
-          tests:
-            test_items:
-            - flag : "install /bin/true"
-              set: true
-            
-          remediation: |
-              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-              
-              install vfat /bin/true
-            
-              Run the following command to unload the `vfat` module:
-              
-              # rmmod vfat
-            
-      scored: true
-    - id: 1.1.1.8.b
-      description: "Ensure mounting of FAT filesystems is disabled"
-      sub_checks:
-      - check:
-          audit: "lsmod | grep vfat"
-          constraints:
-            platform:
-            - rhel7
-          tests:
-            test_items:
-            - flag : ""
-              set: true
-            
-          remediation: |
-              Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-              
-              install vfat /bin/true
-            
-              Run the following command to unload the `vfat` module:
-              
-              # rmmod vfat
-            
-      scored: true      
-            
 - id: 1.2
   description: "Configure Software Updates"
   checks:
@@ -765,58 +651,58 @@ groups:
       description: "Ensure package manager repositories are configured"
       sub_checks:
       - check:
-          audit: "yum repo-list"   
-          constraints: 
+          audit: "yum repo-list"
+          constraints:
             platform:
             - rhel7
-          type: manual            
+          type: manual
           remediation: |
                 Configure your package manager repositories according to site policy.
       - check:
-          audit: "apt-cache policy"   
-          constraints: 
+          audit: "apt-cache policy"
+          constraints:
             platform:
             - ubuntu
-          type: manual            
+          type: manual
           remediation: |
                 Configure your package manager repositories according to site policy.
       - check:
-          audit: "zypper repos"   
-          constraints: 
+          audit: "zypper repos"
+          constraints:
             platform:
             - opensuse
-          type: manual            
+          type: manual
           remediation: |
                 Configure your package manager repositories according to site policy.
-      scored: false
-    - id: 1.2.2
-      description: "Ensure GPG keys are configured"
-      sub_checks:
-      - check:
-          audit: "rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}'"   
-          constraints: 
-            platform:
-            - rhel7
-          type: manual            
-          remediation: |
-                Update your package manager GPG keys in accordance with site policy.
-      - check:
-          audit: "apt-key list"   
-          constraints: 
-            platform:
-            - ubuntu
-          type: manual            
-          remediation: |
-                Update your package manager GPG keys in accordance with site policy.
-      - check:
-          audit: "zypper repos"   
-          constraints: 
-            platform:
-            - opensuse
-          type: manual            
-          remediation: |
-                Update your package manager GPG keys in accordance with site policy.
-      scored: false
+        scored: false
+      - id: 1.2.2
+        description: "Ensure GPG keys are configured"
+        sub_checks:
+        - check:
+            audit: "rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}'"
+            constraints:
+              platform:
+              - rhel7
+            type: manual
+            remediation: |
+                  Update your package manager GPG keys in accordance with site policy.
+        - check:
+            audit: "apt-key list"
+            constraints:
+              platform:
+              - ubuntu
+            type: manual
+            remediation: |
+                  Update your package manager GPG keys in accordance with site policy.
+        - check:
+            audit: "zypper repos"
+            constraints:
+              platform:
+              - opensuse
+            type: manual
+            remediation: |
+                  Update your package manager GPG keys in accordance with site policy.
+        scored: false
 - id: 1.3
   description: "Filesystem Integrity Checking"
   checks:
@@ -1273,102 +1159,6 @@ groups:
 - id: 1.6
   description: "Mandatory Access Control"
   checks:
-  - id: 1.6.3
-    description: "Ensure SELinux or AppArmor are installed"
-    sub_checks:
-    - check:
-        audit: "rpm -q libselinux" 
-        constraints:          
-          platform:
-          - rhel7
-          lsm:
-          - selinux
-        tests:
-          test_items:
-          - flag: "is not installed"
-            set: false                  
-        remediation: |
-               Install SELinux or apparmor using the appropriate package manager or manual installation:
-               
-               # yum install libselinux
-               
-               
-               # apt-get install libselinux1
-               
-               
-               # zypper install libselinux
-               
-               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-    - check:
-        audit: "rpm -q apparmor" 
-        constraints:          
-          platform:
-          - rhel7
-          lsm:
-          - apparmor
-        tests:
-          test_items:
-          - flag: "is not installed"
-            set: false                  
-        remediation: |
-               Install SELinux or apparmor using the appropriate package manager or manual installation:
-               
-               # yum install libselinux
-               
-               
-               # apt-get install libselinux1
-               
-               
-               # zypper install libselinux
-               
-               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-    - check:
-        audit: "dpkg -s libselinux1" 
-        constraints:          
-          platform:
-          - ubuntu
-          lsm:
-          - selinux
-        tests:
-          test_items:
-          - flag: "is not installed"
-            set: false                  
-        remediation: |
-               Install SELinux or apparmor using the appropriate package manager or manual installation:
-               
-               # yum install libselinux
-               
-               
-               # apt-get install libselinux1
-               
-               
-               # zypper install libselinux
-               
-               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-    - check:
-        audit: "dpkg -s apparmor" 
-        constraints:          
-          platform:
-          - ubuntu
-          lsm:
-          - apparmor
-        tests:
-          test_items:
-          - flag: "install ok installed"
-            set: true                  
-        remediation: |
-               Install SELinux or apparmor using the appropriate package manager or manual installation:
-               
-               # yum install libselinux
-               
-               
-               # apt-get install libselinux1
-               
-               
-               # zypper install libselinux
-               
-               The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-    scored: false   
 - id: 1.6.1
   description: "Configure SELinux"
   checks:
@@ -1624,9 +1414,7 @@ groups:
         set: true                        
     remediation: |
           Investigate any unconfined daemons found during the audit action. They may need to have an existing security context assigned to them or a policy built for them.
-    scored: true                  
-               
-          
+    scored: true
 - id: 1.6.2
   description: "Configure AppArmor"
   checks:
@@ -1694,70 +1482,81 @@ groups:
                 Any unconfined processes may need to have a profile created or activated for them and then be restarted.
       scored: true
       
-
+- id: 1.6.3
+  description: "Ensure SELinux or AppArmor are installed"
+  sub_checks:
+  - check:
+      audit: "rpm -q libselinux"
+      constraints:
+        platform:
+        - rhel7
+        lsm:
+        - selinux
+      tests:
+        test_items:
+        - flag: "is not installed"
+          set: false
+      remediation: |
+        Install SELinux or apparmor using the appropriate package manager or manual installation:
+        # yum install libselinux
+        # apt-get install libselinux1
+        # zypper install libselinux
+        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+  - check:
+      audit: "rpm -qapparmor"
+      constraints:
+        platform:
+        - rhel7
+        lsm:
+        - apparmor
+      tests:
+        test_items:
+        - flag: "is not installed"
+          set: false
+      remediation: |
+        Install SELinux or apparmor using the appropriate package manager or manual installation:
+        # yum install libselinux
+        # apt-get install libselinux1
+        # zypper install libselinux
+        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+  - check:
+      audit: "dpkg -s libselinux1"
+      constraints:
+        platform:
+        - ubuntu
+        lsm:
+        - selinux
+      tests:
+        test_items:
+        - flag: "is not installed"
+          set: false
+      remediation: |
+        Install SELinux or apparmor using the appropriate package manager or manual installation:
+        # yum install libselinux
+        # apt-get install libselinux1
+        # zypper install libselinux
+        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+  - check:
+      audit: "dpkg -s apparmor"
+      constraints:
+        platform:
+        - ubuntu
+        lsm:
+        - apparmor
+      tests:
+        test_items:
+        - flag: "install ok installed"
+          set: true
+      remediation: |
+        Install SELinux or apparmor using the appropriate package manager or manual installation:
+        # yum install libselinux
+        # apt-get install libselinux1
+        # zypper install libselinux
+        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+  scored: false
 - id: 1.7
   description: "Warning Banners"
   checks:
-    - id: 1.7.2.a
-      description: "Ensure GDM login banner is configured"
-      audit: "cat /etc/dconf/profile/gdm"   
-      tests:
-        bin_op: and
-        test_items:
-        - flag: "user-db:user"
-          set: true
-        - flag: "system-db:gdm"
-          set: true
-        - flag: "file-db:/usr/share/gdm/greeter-dconf-defaults"
-          set: true                        
-      remediation: |
-            Create the `/etc/dconf/profile/gdm` file with the following contents:
-            
-            user-db:user
-            system-db:gdm
-            file-db:/usr/share/gdm/greeter-dconf-defaults
-            
-            Create or edit the `banner-message-enable` and `banner-message-text` options in `/etc/dconf/db/gdm.d/01-banner-message`:
-            
-            [org/gnome/login-screen]
-            banner-message-enable=true
-            banner-message-text='Authorized uses only. All activity may be monitored and reported.'
-            
-            Run the following command to update the system databases:
-            
-            # dconf update
-            
-      scored: true      
-      
-    - id: 1.7.2.b
-      description: "Ensure GDM login banner is configured"
-      audit: "grep -h banner /etc/dconf/db/gdm.d/01-banner-message /etc/dconf/db/gdm.d/*"   
-      tests:
-        bin_op: and
-        test_items:     
-        - flag: "banner-message-enable"
-          set: true    
-        - flag: "banner-message-text"
-          set: true          
-      remediation: |
-            Create the `/etc/dconf/profile/gdm` file with the following contents:
-            
-            user-db:user
-            system-db:gdm
-            file-db:/usr/share/gdm/greeter-dconf-defaults
-            
-            Create or edit the `banner-message-enable` and `banner-message-text` options in `/etc/dconf/db/gdm.d/01-banner-message`:
-            
-            [org/gnome/login-screen]
-            banner-message-enable=true
-            banner-message-text='Authorized uses only. All activity may be monitored and reported.'
-            
-            Run the following command to update the system databases:
-            
-            # dconf update
-            
-      scored: true        
-            
 - id: 1.7.1
   description: "Command Line Warning Banners"
   checks:
@@ -1985,7 +1784,6 @@ groups:
         # chown root:root /etc/issue 
         # chmod 644 /etc/issue
       scored: true                  
-            
 
     - id: 1.7.1.6
       description: "Ensure permissions on /etc/issue.net are configured"
@@ -1998,8 +1796,86 @@ groups:
         Run the following commands to set permissions on /etc/issue.net : 
         # chown root:root /etc/issue.net 
         # chmod 644 /etc/issue.net
-      scored: false                  
-             
+      scored: false
+
+    - id: 1.7.2.a
+      description: "Ensure GDM login banner is configured"
+      audit: "cat /etc/dconf/profile/gdm"
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "user-db:user"
+          set: true
+        - flag: "system-db:gdm"
+          set: true
+        - flag: "file-db:/usr/share/gdm/greeter-dconf-defaults"
+          set: true
+      remediation: |
+        Create the `/etc/dconf/profile/gdm` file with the following contents:
+        user-db:user
+        system-db:gdm
+        file-db:/usr/share/gdm/greeter-dconf-defaults
+        Create or edit the `banner-message-enable` and `banner-message-text` options in `/etc/dconf/db/gdm.d/01-banner-message`:
+        [org/gnome/login-screen]
+        banner-message-enable=true
+        banner-message-text='Authorized uses only. All activity may be monitored and reported.'
+        Run the following command to update the system databases:
+        # dconf update
+      scored: true
+    - id: 1.7.2.b
+      description: "Ensure GDM login banner is configured"
+      audit: "grep -h banner /etc/dconf/db/gdm.d/01-banner-message /etc/dconf/db/gdm.d/*"
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "banner-message-enable"
+          set: true
+        - flag: "banner-message-text"
+          set: true
+      remediation: |
+        Create the `/etc/dconf/profile/gdm` file with the following contents:
+        user-db:user
+        system-db:gdm
+        file-db:/usr/share/gdm/greeter-dconf-defaults
+        Create or edit the `banner-message-enable` and `banner-message-text` options in `/etc/dconf/db/gdm.d/01-banner-message`:
+        [org/gnome/login-screen]
+        banner-message-enable=true
+        banner-message-text='Authorized uses only. All activity may be monitored and reported.'
+        Run the following command to update the system databases:
+        # dconf update
+      scored: true
+- id: 1.8
+  description: "Ensure updates, patches, and additional security software are installed (Not Scored)"
+  checks:
+  - id: 1.8
+    description: "Periodically patches are released for included software either due to security flaws or to include additional functionality"
+    sub_checks:
+    - check:
+        audit: "yum check-update"
+        type: manual
+        constraints:
+          platform:
+          - rhel7
+        remediation: |
+          Use your package manager to update all packages on the system according to site policy.
+    - check:
+        audit: "apt-get -s upgrade"
+        type: manual
+        constraints:
+          platform:
+          - ubuntu
+        remediation: |
+          Use your package manager to update all packages on the system according to site policy.
+    - check:
+        audit: "zypper list-updates"
+        type: manual
+        constraints:
+          platform:
+          - opensuse
+        remediation: |
+          Use your package manager to update all packages on the system according to site policy.
+    scored: false
+
 - id: 2
   description: "Services"
 - id: 2.1
@@ -3952,31 +3828,6 @@ groups:
       scored: true                  
 - id: 3
   description: "Network Configuration"
-  checks:
-    - id: 3.7.a
-      description: "Ensure wireless interfaces are disabled"
-      audit: "iwconfig"   
-      type: manual           
-      remediation: |
-            Run the following command to disable any wireless interfaces:
-                        
-            # ip link set  down
-            
-            Disable any wireless interfaces in your network configuration.
-      scored: false                  
-            
-    - id: 3.7.b
-      description: "Ensure wireless interfaces are disabled"
-      audit: "ip link show up"   
-      type: manual         
-      remediation: |
-            Run the following command to disable any wireless interfaces:
-                        
-            # ip link set  down
-            
-            Disable any wireless interfaces in your network configuration.
-      scored: false                  
-            
 - id: 3.1
   description: "Network Parameters (Host Only)etwork Parameters (Host Only)"
   checks:
@@ -5266,17 +5117,36 @@ groups:
                         
             # iptables -A INPUT -p  --dport  -m state --state NEW -j ACCEPT
             
-      scored: true                  
+      scored: true
+- id: 3.7
+  description: "Ensure wireless interfaces are disabled (Not Scored)"
+  checks:
+  - id: 3.7.a
+    description: "Ensure wireless interfaces are disabled"
+    audit: "iwconfig"
+    type: manual
+    remediation: |
+      Run the following command to disable any wireless interfaces:
+
+      # ip link set  down
+
+      Disable any wireless interfaces in your network configuration.
+    scored: false
+
+  - id: 3.7.b
+    description: "Ensure wireless interfaces are disabled"
+    audit: "ip link show up"
+    type: manual
+    remediation: |
+      Run the following command to disable any wireless interfaces:
+
+      # ip link set  down
+
+      Disable any wireless interfaces in your network configuration.
+    scored: false
+
 - id: 4
   description: "Logging and Auditing"
-  checks:
-    - id: 4.3
-      description: "Ensure logrotate is configured"
-      audit: "cat /etc/logrotate.conf; cat /etc/logrotate.d/* ;"   
-      type: manual           
-      remediation: |
-            Edit `/etc/logrotate.conf` and `/etc/logrotate.d/*` to ensure logs are rotated according to site policy.
-      scored: true                  
 - id: 4.1
   description: "Configure System Accounting (auditd)"
   checks:
@@ -6686,58 +6556,18 @@ groups:
                             Run the following command to reload the `syslog-ng` configuration:
                 
                 # pkill -HUP syslog-ng
-      scored: true                  
+      scored: true
+- id: 4.3
+  checks:
+  - id: 4.3
+    description: "Ensure logrotate is configured"
+    audit: "cat /etc/logrotate.conf; cat /etc/logrotate.d/* ;"
+    type: manual
+    remediation: |
+      Edit `/etc/logrotate.conf` and `/etc/logrotate.d/*` to ensure logs are rotated according to site policy.
+    scored: true
 - id: 5
   description: "Access, Authentication and Authorization"
-  checks:
-    - id: 5.5
-      description: "Ensure root login is restricted to system console"
-      audit: "cat /etc/securetty"   
-      type: manual            
-      remediation: |
-            Remove entries for any consoles that are not in a physically secure location.
-      scored: true                  
-            
-    - id: 5.6.a
-      description: "Ensure access to the su command is restricted"
-      audit: "grep pam_wheel.so /etc/pam.d/su"   
-      tests:
-        test_items:
-        - flag: "auth"
-          compare:
-          op: eq
-          value: "sufficient      pam_wheel.so trust use_uid"
-          set: true                        
-      remediation: |
-            Add the following line to the `/etc/pam.d/su` file:
-            
-            auth required pam_wheel.so use_uid
-            
-            Create a comma separated list of users in the wheel statement in the `/etc/group` file:
-            
-            wheel:x:10:root,
-            
-      scored: true                  
-            
-    - id: 5.6.b
-      description: "Ensure access to the su command is restricted"
-      audit: "grep wheel /etc/group"   
-      type: manual
-      tests:
-        test_items:
-        - flag: "wheel:x:10:root,<user list>"
-          set: true       
-      remediation: |
-            Add the following line to the `/etc/pam.d/su` file:
-            
-            auth required pam_wheel.so use_uid
-            
-            Create a comma separated list of users in the wheel statement in the `/etc/group` file:
-            
-            wheel:x:10:root,
-            
-      scored: true                  
-            
 - id: 5.1
   description: "Configure cron"
   checks:
@@ -7365,6 +7195,269 @@ groups:
 - id: 5.4
   description: "User Accounts and Environment"
   checks:
+    - id: 5.4.1
+      description: "Set Shadow Password Suite Parameters"
+      checks:
+      - id: 5.4.1.1.a
+        description: "Ensure password expiration is 365 days or less"
+        audit: "grep ^PASS_MAX_DAYS /etc/login.defs"
+        tests:
+          bin_op: and
+          test_items:
+          - flag: "PASS_MAX_DAYS"
+            set: true
+            flag: "90"
+            set: true
+        remediation: |
+          Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
+
+          PASS_MAX_DAYS 90
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --maxdays 90
+
+        scored: true
+
+      - id: 5.4.1.1.b
+        description: "Ensure password expiration is 365 days or less"
+        audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"
+        type: manual
+        tests:
+          test_items:
+          - flag: "<list of users>"
+            set: true
+        remediation: |
+          Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
+
+          PASS_MAX_DAYS 90
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --maxdays 90
+
+        scored: true
+
+      - id: 5.4.1.1.c
+        description: "Ensure password expiration is 365 days or less"
+        audit: "chage --list <user>"
+        type: manual
+        tests:
+          test_items:
+          - flag: "Maximum number of days between password change          : 90"
+            set: true
+        remediation: |
+          Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
+
+          PASS_MAX_DAYS 90
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --maxdays 90
+
+        scored: true
+
+      - id: 5.4.1.2.a
+        description: "Ensure minimum days between password changes is 7 or more"
+        audit: "grep ^PASS_MIN_DAYS /etc/login.defs"
+        tests:
+          bin_op: and
+          test_items:
+          - flag: "PASS_MIN_DAYS"
+            set: true
+            flag: "7"
+            set: true
+        remediation: |
+          Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
+
+          PASS_MIN_DAYS 7
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --mindays 7
+
+        scored: true
+
+      - id: 5.4.1.2.b
+        description: "Ensure minimum days between password changes is 7 or more"
+        audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"
+        type: manual
+        tests:
+          test_items:
+          - flag: "<list of users>"
+            set: true
+        remediation: |
+          Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
+
+          PASS_MIN_DAYS 7
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --mindays 7
+
+        scored: true
+
+      - id: 5.4.1.2.c
+        description: "Ensure minimum days between password changes is 7 or more"
+        audit: "chage --list "
+        type: manual
+        tests:
+          test_items:
+          - flag: "Minimum number of days between password change : 7"
+            set: true
+        remediation: |
+          Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
+
+          PASS_MIN_DAYS 7
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --mindays 7
+
+        scored: true
+
+      - id: 5.4.1.3.a
+        description: "Ensure password expiration warning days is 7 or more"
+        audit: "grep ^PASS_WARN_AGE /etc/login.defs"
+        tests:
+          bin_op: and
+          test_items:
+          - flag: "PASS_WARN_AGE"
+            set: true
+            flag: "7"
+            set: true
+        remediation: |
+          Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
+
+          PASS_WARN_AGE 7
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --warndays 7
+
+        scored: true
+
+      - id: 5.4.1.3.b
+        description: "Ensure minimum days between password changes is 7 or more"
+        audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"
+        type: manual
+        tests:
+          test_items:
+          - flag: "<list of users>"
+            set: true
+        remediation: |
+          Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
+
+          PASS_WARN_AGE 7
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --warndays 7
+
+        scored: true
+
+      - id: 5.4.1.3.c
+        description: "Ensure minimum days between password changes is 7 or more"
+        audit: "chage --list <user>"
+        type: manual
+        tests:
+          test_items:
+          - flag: "Number of days of warning before password expires : 7"
+            set: true
+        remediation: |
+          Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
+
+          PASS_MIN_DAYS 7
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --mindays 7
+
+        scored: true
+
+      - id: 5.4.1.4.a
+        description: "Ensure inactive password lock is 30 days or less"
+        audit: "useradd -D | grep INACTIVE"
+        tests:
+          test_items:
+          - flag: "INACTIVE"
+            compare:
+              op: lte
+              value: 30
+            set: true
+        remediation: |
+          Run the following command to set the default password inactivity period to 30 days:
+
+          # useradd -D -f 30
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --inactive 30
+
+        scored: true
+
+      - id: 5.4.1.4.b
+        description: "Ensure inactive password lock is 30 days or less"
+        audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"
+        type: manual
+        tests:
+          test_items:
+          - flag: "<list of users>"
+            set: true
+        remediation: |
+          Run the following command to set the default password inactivity period to 30 days:
+
+          # useradd -D -f 30
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --inactive 30
+
+        scored: true
+
+      - id: 5.4.1.4.c
+        description: "Ensure inactive password lock is 30 days or less"
+        audit: "chage --list <user>"
+        type: manual
+        tests:
+          test_items:
+          - flag: "Password inactive : <date>"
+            set: true
+        remediation: |
+          Run the following command to set the default password inactivity period to 30 days:
+
+          # useradd -D -f 30
+
+          Modify user parameters for all users with a password set to match:
+
+          # chage --inactive 30
+
+        scored: true
+
+      - id: 5.4.1.5.a
+        description: "Ensure all users last password change date is in the past"
+        audit: "cat /etc/shadow | cut -d: -f1"
+        type: manual
+        tests:
+          test_items:
+          - flag: "<list of users>"
+            set: true
+        remediation: |
+          Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.
+        scored: true
+
+      - id: 5.4.1.5.b
+        description: "Ensure all users last password change date is in the past"
+        audit: "chage --list <user>"
+        type: manual
+        tests:
+          test_items:
+          - flag: "Last Change : <date>"
+            set: true
+        type: manual
+        remediation: |
+          Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.
+        scored: true
     - id: 5.4.2
       description: "Ensure system accounts are non-login"
       audit: "egrep -v \"^\\+\" /etc/passwd | awk -F: '($1!=\"root\" && $1!=\"sync\" && $1!=\"shutdown\" && $1!=\"halt\" && $3<500 && $7!=\"/sbin/nologin\" && $7!=\"/bin/false\") {print}'"   
@@ -7505,271 +7598,58 @@ groups:
             
             TMOUT=600
             
-      scored: true        
-- id: 5.4.1
+      scored: true
+- id: 5.5
   description: "Set Shadow Password Suite Parameters"
   checks:
-    - id: 5.4.1.1.a
-      description: "Ensure password expiration is 365 days or less"
-      audit: "grep ^PASS_MAX_DAYS /etc/login.defs" 
-      tests:
-        bin_op: and
-        test_items:
-        - flag: "PASS_MAX_DAYS"
-          set: true                        
-          flag: "90"
-          set: true
-      remediation: |
-            Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
-            
-            PASS_MAX_DAYS 90
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --maxdays 90 
-            
-      scored: true
-      
-    - id: 5.4.1.1.b
-      description: "Ensure password expiration is 365 days or less"
-      audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"
+    - id: 5.5.1
+      description: "Ensure root login is restricted to system console"
+      audit: "cat /etc/securetty"
       type: manual
-      tests:
-        test_items:
-        - flag: "<list of users>"
-          set: true 
       remediation: |
-            Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
-            
-            PASS_MAX_DAYS 90
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --maxdays 90
-            
+        Remove entries for any consoles that are not in a physically secure location.
       scored: true
 
-    - id: 5.4.1.1.c
-      description: "Ensure password expiration is 365 days or less"
-      audit: "chage --list <user>"
-      type: manual  
-      tests:
-        test_items:
-        - flag: "Maximum number of days between password change          : 90"
-          set: true 
-      remediation: |
-            Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
-            
-            PASS_MAX_DAYS 90
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --maxdays 90
-            
-      scored: true            
-            
-    - id: 5.4.1.2.a
-      description: "Ensure minimum days between password changes is 7 or more"
-      audit: "grep ^PASS_MIN_DAYS /etc/login.defs"   
-      tests:
-        bin_op: and
-        test_items:
-        - flag: "PASS_MIN_DAYS"
-          set: true                        
-          flag: "7"
-          set: true
-      remediation: |
-            Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
-            
-            PASS_MIN_DAYS 7
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --mindays 7 
-            
-      scored: true                  
-            
-    - id: 5.4.1.2.b
-      description: "Ensure minimum days between password changes is 7 or more"
-      audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"   
-      type: manual                       
-      tests:
-        test_items:
-        - flag: "<list of users>"
-          set: true
-      remediation: |
-            Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
-            
-            PASS_MIN_DAYS 7
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --mindays 7 
-            
-      scored: true                  
-            
-    - id: 5.4.1.2.c
-      description: "Ensure minimum days between password changes is 7 or more"
-      audit: "chage --list "   
-      type: manual 
-      tests:
-        test_items:
-        - flag: "Minimum number of days between password change : 7"
-          set: true      
-      remediation: |
-            Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
-            
-            PASS_MIN_DAYS 7
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --mindays 7 
-            
-      scored: true                  
-            
-    - id: 5.4.1.3.a
-      description: "Ensure password expiration warning days is 7 or more"
-      audit: "grep ^PASS_WARN_AGE /etc/login.defs"   
-      tests:
-        bin_op: and
-        test_items:
-        - flag: "PASS_WARN_AGE"
-          set: true                        
-          flag: "7"
-          set: true
-      remediation: |
-            Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
-            
-            PASS_WARN_AGE 7
-            
-            Modify user parameters for all users with a password set to match:
-                        
-            # chage --warndays 7 
-            
-      scored: true                  
-           
-    - id: 5.4.1.3.b
-      description: "Ensure minimum days between password changes is 7 or more"
-      audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"   
-      type: manual                       
-      tests:
-        test_items:
-        - flag: "<list of users>"
-          set: true 
-      remediation: |
-            Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
-            
-            PASS_WARN_AGE 7
-            
-            Modify user parameters for all users with a password set to match:
-                        
-            # chage --warndays 7 
-            
-      scored: true                  
-            
-    - id: 5.4.1.3.c
-      description: "Ensure minimum days between password changes is 7 or more"
-      audit: "chage --list <user>"   
-      type: manual 
-      tests:
-        test_items:
-        - flag: "Number of days of warning before password expires : 7"
-          set: true      
-      remediation: |
-            Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
-            
-            PASS_MIN_DAYS 7
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --mindays 7 
-            
-      scored: true       
-            
-    - id: 5.4.1.4.a
-      description: "Ensure inactive password lock is 30 days or less"
-      audit: "useradd -D | grep INACTIVE"   
-      tests:
-        test_items:
-        - flag: "INACTIVE"
-          compare:
-            op: lte
-            value: 30
-          set: true                        
-      remediation: |
-            Run the following command to set the default password inactivity period to 30 days:
-            
-            # useradd -D -f 30
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --inactive 30 
-            
-      scored: true                  
-            
-    - id: 5.4.1.4.b
-      description: "Ensure inactive password lock is 30 days or less"
-      audit: "egrep ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1"   
-      type: manual                       
-      tests:
-        test_items:
-        - flag: "<list of users>"
-          set: true                        
-      remediation: |
-            Run the following command to set the default password inactivity period to 30 days:
-            
-            # useradd -D -f 30
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --inactive 30 
-            
-      scored: true                  
-            
-    - id: 5.4.1.4.c
-      description: "Ensure inactive password lock is 30 days or less"
-      audit: "chage --list <user>"   
-      type: manual    
-      tests:
-        test_items:
-        - flag: "Password inactive : <date>"
-          set: true      
-      remediation: |
-            Run the following command to set the default password inactivity period to 30 days:
-            
-            # useradd -D -f 30
-            
-            Modify user parameters for all users with a password set to match:
-            
-            # chage --inactive 30 
-            
-      scored: true                  
-      
-    - id: 5.4.1.5.a
-      description: "Ensure all users last password change date is in the past"
-      audit: "cat /etc/shadow | cut -d: -f1"
-      type: manual        
-      tests:
-        test_items:
-        - flag: "<list of users>"
-          set: true                              
-      remediation: |
-            Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.
-      scored: true
+- id: 5.6.a
+  description: "Ensure access to the su command is restricted"
+  audit: "grep pam_wheel.so /etc/pam.d/su"
+  tests:
+    test_items:
+    - flag: "auth"
+      compare:
+      op: eq
+      value: "sufficient      pam_wheel.so trust use_uid"
+      set: true
+  remediation: |
+    Add the following line to the `/etc/pam.d/su` file:
 
-    - id: 5.4.1.5.b
-      description: "Ensure all users last password change date is in the past"
-      audit: "chage --list <user>"
-      type: manual
-      tests:
-        test_items:
-        - flag: "Last Change : <date>"
-          set: true
-      type: manual            
-      remediation: |
-            Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.
-      scored: true         
-            
+    auth required pam_wheel.so use_uid
+
+    Create a comma separated list of users in the wheel statement in the `/etc/group` file:
+
+    wheel:x:10:root,
+
+  scored: true
+
+- id: 5.6.b
+  description: "Ensure access to the su command is restricted"
+  audit: "grep wheel /etc/group"
+  type: manual
+  tests:
+    test_items:
+    - flag: "wheel:x:10:root,<user list>"
+      set: true
+  remediation: |
+    Add the following line to the `/etc/pam.d/su` file:
+
+    auth required pam_wheel.so use_uid
+
+    Create a comma separated list of users in the wheel statement in the `/etc/group` file:
+
+    wheel:x:10:root,
+
+  scored: true
+
 - id: 6
   description: "System Maintenance"
 - id: 6.1
