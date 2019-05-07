@@ -262,7 +262,7 @@ groups:
       audit: "mount | grep /tmp"   
       tests:
         test_items:
-        - flag: "tmpfs on /tmp type tmpfs (rw,nosuid,nodev,noexec,relatime)"
+        - flag: "tmpfs on /tmp type tmpfs"
           set: true                        
       remediation: |
             For new installations, during installation create a custom partition setup and specify a separate partition for `/tmp` .
@@ -987,11 +987,15 @@ groups:
   checks:
     - id: 1.5.1.a
       description: "Ensure core dumps are restricted"
-      audit: "grep -h ^* /etc/security/limits.conf /etc/security/limits.d/*"   
+      audit: "grep -h ^[^#].*hard[[:blank:]]*core /etc/security/limits.conf /etc/security/limits.d/*"   
       tests:
-        test_items:
-        - flag: "hard core 0"
-          set: true                        
+        tests:
+        bin_op: and
+        test_items:                     
+        - flag: "hard"
+          set: true
+        - flag: "core"
+          set: true                   
       remediation: |
             Add the following line to `/etc/security/limits.conf` or a `/etc/security/limits.d/*` file:
             
@@ -7180,10 +7184,10 @@ groups:
             
     - id: 5.3.4
       description: "Ensure password hashing algorithm is SHA-512"
-      audit: "grep password /etc/pam.d/common-password /etc/pam.d/system-auth /etc/pam.d/password-auth"   
+      audit: "grep -E ^[^#].*sha512  /etc/pam.d/common-password /etc/pam.d/system-auth /etc/pam.d/password-auth"   
       tests:
         test_items:
-        - flag: "password    sufficient    pam_unix.so sha512"
+        - flag: "sha512"
           set: true                                  
       remediation: |
             Set password hashing algorithm to sha512. Many distributions provide tools for updating PAM configuration, consult your documentation for details. If no tooling is provided edit the appropriate `/etc/pam.d/` configuration file and add or modify the `pam_unix.so` lines to include the sha512 option:
