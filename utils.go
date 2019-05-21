@@ -104,11 +104,16 @@ func GetLSM() (lsm string, err error) {
 func getPlatformVersion(output, platform string) string {
 	flagRe := regexp.MustCompile("version_id" + `=([^ \n]*)`)
 	vals := flagRe.FindStringSubmatch(output)
-
+	if vals == nil {
+		flagRe := regexp.MustCompile("version" + `=([^ \n]*)`)
+		vals = flagRe.FindStringSubmatch(output)
+	}
 	if len(vals) > 1 {
 		switch platform {
 		case "rhel":
 			return vals[1][:1] // Get the major version only, examaple: 7.6 will return 7
+		case "ubuntu":
+			return vals[1][:2] // Get the major version only, examaple: 18.04 will return 18
 		default:
 			return ""
 		}
