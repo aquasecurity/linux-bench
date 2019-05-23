@@ -51,7 +51,7 @@ func outputResults(controls *check.Controls, summary check.Summary) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(string(out))
+		util.PrintOutput(string(out), outputFile)
 	} else {
 		util.PrettyPrint(controls, summary, noRemediations, includeTestOutput)
 	}
