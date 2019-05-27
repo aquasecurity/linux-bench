@@ -564,7 +564,7 @@ groups:
             
     - id: 1.1.25
       description: "Ensure sticky bit is set on all world-writable directories"
-      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d \\( -perm -0002 -a ! -perm -1000 \\) 2>/dev/null"   
+      audit: "./1.1.25.sh"   
       tests:
         test_items:
         - flag: ""
@@ -7820,7 +7820,7 @@ groups:
             
     - id: 6.1.10.a
       description: "Ensure no world writable files exist"
-      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002"   
+      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002 | head -n 100"   
       tests:
         test_items:
         - flag: ""
@@ -7842,7 +7842,7 @@ groups:
 
     - id: 6.1.11.a
       description: "Ensure no unowned files or directories exist"
-      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser"   
+      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser | head -n 100"   
       tests:
         test_items:
         - flag: ""
@@ -7864,7 +7864,7 @@ groups:
             
     - id: 6.1.12.a
       description: "Ensure no ungrouped files or directories exist"
-      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup"   
+      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup | head -n 100"   
       tests:
         test_items:
         - flag: ""
@@ -7886,7 +7886,7 @@ groups:
             
     - id: 6.1.13.a
       description: "Audit SUID executables"
-      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000"   
+      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000 | head -n 100"   
       type: manual
       tests:
         test_items:
@@ -7909,7 +7909,7 @@ groups:
             
     - id: 6.1.14.a
       description: "Audit SGID executables"
-      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000"   
+      audit: "df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000 | head -n 100"   
       type: manual 
       tests:
         test_items:
