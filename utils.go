@@ -102,12 +102,8 @@ func GetLSM() (lsm string, err error) {
 }
 
 func getPlatformVersion(output, platform string) string {
-	flagRe := regexp.MustCompile("version_id" + `=([^ \n]*)`)
+	flagRe := regexp.MustCompile(`version[_id]*=([^ \n]*)`)
 	vals := flagRe.FindStringSubmatch(output)
-	if vals == nil {
-		flagRe := regexp.MustCompile("version" + `=([^ \n]*)`)
-		vals = flagRe.FindStringSubmatch(output)
-	}
 	if len(vals) > 1 {
 		switch platform {
 		case "rhel":
