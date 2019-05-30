@@ -262,7 +262,7 @@ groups:
       audit: "mount | grep /tmp"   
       tests:
         test_items:
-        - flag: "tmpfs on /tmp type tmpfs "
+        - flag: "tmpfs on /tmp type tmpfs"
           set: true                        
       remediation: |
             For new installations, during installation create a custom partition setup and specify a separate partition for `/tmp` .
