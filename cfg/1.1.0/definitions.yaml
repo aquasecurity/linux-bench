@@ -606,7 +606,8 @@ groups:
           constraints: 
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "disabled"
@@ -662,7 +663,8 @@ groups:
           audit: "apt-cache policy"
           constraints:
             platform:
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           type: manual
           remediation: |
                 Configure your package manager repositories according to site policy.
@@ -690,7 +692,8 @@ groups:
             audit: "apt-key list"
             constraints:
               platform:
-              - ubuntu
+              - ubuntu16
+              - ubuntu18
             type: manual
             remediation: |
                   Update your package manager GPG keys in accordance with site policy.
@@ -737,10 +740,34 @@ groups:
           audit: "dpkg -s aide"   
           constraints: 
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:
             - flag: "install ok installed"
+              set: true                        
+          remediation: |
+                Install AIDE using the appropriate package manager or manual installation:
+                            
+                # yum install aide
+                
+                
+                # apt-get install aide
+                
+                
+                # zypper install aide
+                
+                Configure AIDE as appropriate for your environment. Consult the AIDE documentation for options.
+                            Initialize AIDE:
+                            
+                # aide --init
+      - check:
+          audit: "apt-cache show aide"   
+          constraints: 
+            platform:
+            - ubuntu18
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
               set: true                        
           remediation: |
                 Install AIDE using the appropriate package manager or manual installation:
@@ -989,13 +1016,12 @@ groups:
       description: "Ensure core dumps are restricted"
       audit: "grep -h ^[^#].*hard[[:blank:]]*core /etc/security/limits.conf /etc/security/limits.d/*"   
       tests:
-        tests:
         bin_op: and
         test_items:                     
         - flag: "hard"
           set: true
         - flag: "core"
-          set: true                   
+          set: true
       remediation: |
             Add the following line to `/etc/security/limits.conf` or a `/etc/security/limits.d/*` file:
             
@@ -1140,7 +1166,7 @@ groups:
           audit: "dpkg -s prelink"
           constraints: 
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:
             - flag: "install ok installed"
@@ -1159,6 +1185,29 @@ groups:
             
             
             zypper remove prelink 
+      - check:
+          audit: "apt-cache show prelink"
+          constraints: 
+            platform:
+            - ubuntu18
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
+              set: false          
+          remediation: |
+            Run the following command to restore binaries to normal:
+                        
+            # prelink -ua
+            
+            Uninstall `prelink` using the appropriate package manager or manual installation:
+            
+            yum remove prelink
+            
+            
+            apt-get remove prelink
+            
+            
+            zypper remove prelink
       scored: true                           
 - id: 1.6
   description: "Mandatory Access Control"
@@ -1346,13 +1395,34 @@ groups:
         audit: "dpkg -s setroubleshoot"
         constraints: 
           platform:
-          - ubuntu
+          - ubuntu16
           lsm:
           - selinux
         tests:
           test_items:
           - flag: "is not installed"
             set: true          
+        remediation: |
+          Uninstall s `etroubleshoot` using the appropriate package manager or manual installation:
+            
+            # yum remove setroubleshoot
+            
+            
+            # apt-get remove setroubleshoot
+            
+            
+            # zypper remove setroubleshoot
+    - check:
+        audit: "apt-cache show setroubleshoot"
+        constraints: 
+          platform:
+          - ubuntu18
+          lsm:
+          - selinux
+        tests:
+          test_items:
+          - flag: "Installed-Size:"
+            set: false          
         remediation: |
           Uninstall s `etroubleshoot` using the appropriate package manager or manual installation:
             
@@ -1390,7 +1460,7 @@ groups:
         audit: "dpkg -s mcstrans"
         constraints: 
           platform:
-          - ubuntu
+          - ubuntu16
         tests:
           test_items:
           - flag: "install ok installed"
@@ -1405,6 +1475,25 @@ groups:
             
             
             zypper remove mcstrans 
+    - check:
+        audit: "apt-cache show mcstrans"
+        constraints: 
+          platform:
+          - ubuntu18
+        tests:
+          test_items:
+          - flag: "Installed-Size:"
+            set: false          
+        remediation: |
+          Uninstall `mcstrans` using the appropriate package manager or manual installation:
+            
+            yum remove mcstrans
+            
+            
+            apt-get remove mcstrans
+            
+            
+            zypper remove mcstrans
     scored: true
   - id: 1.6.1.6
     description: "Ensure no unconfined daemons exist"
@@ -1507,7 +1596,7 @@ groups:
         # zypper install libselinux
         The previous commands install SELinux, use the appropriate package if AppArmor is desired.
   - check:
-      audit: "rpm -qapparmor"
+      audit: "rpm -q apparmor"
       constraints:
         platform:
         - rhel7
@@ -1527,7 +1616,7 @@ groups:
       audit: "dpkg -s libselinux1"
       constraints:
         platform:
-        - ubuntu
+        - ubuntu16
         lsm:
         - selinux
       tests:
@@ -1544,7 +1633,7 @@ groups:
       audit: "dpkg -s apparmor"
       constraints:
         platform:
-        - ubuntu
+        - ubuntu16
         lsm:
         - apparmor
       tests:
@@ -1557,6 +1646,41 @@ groups:
         # apt-get install libselinux1
         # zypper install libselinux
         The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+  - check:
+      audit: "apt-cache show libselinux1"
+      constraints:
+        platform:
+        - ubuntu18
+        lsm:
+        - selinux
+      tests:
+        test_items:
+        - flag: "Installed-Size:"
+          set: true
+      remediation: |
+        Install SELinux or apparmor using the appropriate package manager or manual installation:
+        # yum install libselinux
+        # apt-get install libselinux1
+        # zypper install libselinux
+        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+  - check:
+      audit: "apt-cache show apparmor"
+      constraints:
+        platform:
+        - ubuntu18
+        lsm:
+        - apparmor
+      tests:
+        test_items:
+        - flag: "Installed-Size:"
+          set: true
+      remediation: |
+        Install SELinux or apparmor using the appropriate package manager or manual installation:
+        # yum install libselinux
+        # apt-get install libselinux1
+        # zypper install libselinux
+        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+
   scored: false
 - id: 1.7
   description: "Warning Banners"
@@ -1867,7 +1991,8 @@ groups:
         type: manual
         constraints:
           platform:
-          - ubuntu
+          - ubuntu16
+          - ubuntu18
         remediation: |
           Use your package manager to update all packages on the system according to site policy.
     - check:
@@ -2182,7 +2307,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2247,10 +2373,29 @@ groups:
           audit: "dpkg -l xserver-xorg*"
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           tests:          
             test_items:
             - flag: "ii"
+              set: false                                 
+          remediation: |
+                Remove the X Windows System packages using the appropriate package manager or manual installation:
+                            
+                yum remove xorg-x11*
+                
+                
+                apt-get remove xserver-xorg*
+                
+                
+                zypper remove xorg-x11*
+      - check:
+          audit: "apt-cache show xserver-xorg*"
+          constraints:          
+            platform:
+            - ubuntu18
+          tests:          
+            test_items:
+            - flag: "Installed-Size:"
               set: false                                 
           remediation: |
                 Remove the X Windows System packages using the appropriate package manager or manual installation:
@@ -2290,7 +2435,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2353,7 +2499,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2416,7 +2563,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2479,7 +2627,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2543,7 +2692,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2607,7 +2757,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2671,7 +2822,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2734,7 +2886,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2797,7 +2950,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2860,7 +3014,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2923,7 +3078,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -2986,7 +3142,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -3049,7 +3206,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -3140,7 +3298,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -3203,7 +3362,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -3272,10 +3432,32 @@ groups:
           audit: "dpkg -s ntp"
           constraints: 
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:
             - flag: "install ok installed"
+              set: true    
+          remediation: |
+                On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
+                            
+                # yum install ntp
+                
+                
+                # apt-get install ntp
+                
+                
+                # zypper install ntp
+                
+                The previous commands install NTP, use the appropriate package if chrony is desired.
+                            On virtual systems where host based time synchronization is available consult your virtualization software documentation and setup host based synchronization.
+      - check:
+          audit: "apt-cache show ntp"
+          constraints: 
+            platform:
+            - ubuntu18
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
               set: true    
           remediation: |
                 On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
@@ -3322,7 +3504,7 @@ groups:
           audit: "dpkg -s chrony"           
           constraints: 
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:
             - flag: "install ok installed"
@@ -3340,6 +3522,29 @@ groups:
                 
                 The previous commands install NTP, use the appropriate package if chrony is desired.
                             On virtual systems where host based time synchronization is available consult your virtualization software documentation and setup host based synchronization.
+      - check:
+          audit: "apt-cache show chrony"           
+          constraints: 
+            platform:
+            - ubuntu18
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
+              set: true    
+          remediation: |
+                On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
+                            
+                # yum install ntp
+                
+                
+                # apt-get install ntp
+                
+                
+                # zypper install ntp
+                
+                The previous commands install NTP, use the appropriate package if chrony is desired.
+                            On virtual systems where host based time synchronization is available consult your virtualization software documentation and setup host based synchronization.
+
       scored: false                  
     - id: 2.2.1.2.a
       description: "Ensure ntp is configured"
@@ -3447,7 +3652,8 @@ groups:
           audit: "grep ^OPTIONS /etc/default/ntp"        
           constraints:
             platform:
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "OPTIONS=\"-u ntp:ntp\""
@@ -3514,7 +3720,8 @@ groups:
           audit: "grep ^NTPD_OPTIONS /etc/default/ntp"        
           constraints:
             platform:
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "NTPD_OPTIONS=\"-u ntp:ntp\""
@@ -3640,7 +3847,7 @@ groups:
           audit: "dpkg -s ypbind"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:        
             - flag: "install ok installed"  
@@ -3656,7 +3863,26 @@ groups:
                 
                 zypper remove ypbind
           set: true                                     
-
+      - check:
+          audit: "apt-cache show ypbind"   
+          constraints:          
+            platform:
+            - ubuntu18
+          tests:
+            test_items:        
+            - flag: "Installed-Size:"  
+              set: false
+          remediation: |
+               Uninstall `ypbind` using the appropriate package manager or manual installation:
+            
+                yum remove ypbind
+                
+                
+                apt-get remove ypbind
+                
+                
+                zypper remove ypbind
+          set: true
       scored: true                        
     - id: 2.3.2
       description: "Ensure rsh client is not installed"
@@ -3685,7 +3911,7 @@ groups:
           audit: "dpkg -s rsh-client rsh-redone-client"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:        
             - flag: "install ok installed"  
@@ -3701,6 +3927,26 @@ groups:
                 
                 zypper remove rsh
           set: true                                     
+      - check:
+          audit: "apt-cache show rsh-client rsh-redone-client"   
+          constraints:          
+            platform:
+            - ubuntu18
+          tests:
+            test_items:        
+            - flag: "Installed-Size:"  
+              set: false
+          remediation: |
+               Uninstall `rsh` using the appropriate package manager or manual installation:
+            
+                yum remove rsh
+                
+                
+                apt-get remove rsh
+                
+                
+                zypper remove rsh
+          set: true
       scored: true    
     - id: 2.3.3
       description: "Ensure talk client is not installed"
@@ -3729,10 +3975,29 @@ groups:
           audit: "dpkg -s talk"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:        
             - flag: "install ok installed"  
+              set: false
+          remediation: |
+                Uninstall `talk` using the appropriate package manager or manual installation:
+            
+                yum remove talk
+            
+            
+                apt-get remove talk
+            
+            
+                zypper remove talk
+      - check:
+          audit: "apt-cache show talk"   
+          constraints:          
+            platform:
+            - ubuntu18
+          tests:
+            test_items:        
+            - flag: "Installed-Size:"  
               set: false
           remediation: |
                 Uninstall `talk` using the appropriate package manager or manual installation:
@@ -3772,10 +4037,29 @@ groups:
           audit: "dpkg -s telnet"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:        
             - flag: "install ok installed"  
+              set: false
+          remediation: |
+                Uninstall `telnet` using the appropriate package manager or manual installation:
+                
+                # yum remove telnet
+                
+                
+                # apt-get remove telnet
+                
+                
+                # zypper remove telnet
+      - check:
+          audit: "apt-cache show telnet"   
+          constraints:          
+            platform:
+            - ubuntu18
+          tests:
+            test_items:        
+            - flag: "Installed-Size:"  
               set: false
           remediation: |
                 Uninstall `telnet` using the appropriate package manager or manual installation:
@@ -3814,10 +4098,29 @@ groups:
           audit: "dpkg -s openldap-clients"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           tests:
             test_items:        
             - flag: "install ok installed"
+              set: false
+          remediation: |
+                Uninstall `openldap-clients` using the appropriate package manager or manual installation:
+                
+                # yum remove openldap-clients
+                
+                
+                # apt-get remove openldap-clients
+                
+                
+                # zypper remove openldap-clients
+      - check:
+          audit: "apt-cache show openldap-clients"   
+          constraints:          
+            platform:
+            - ubuntu18
+          tests:
+            test_items:        
+            - flag: "Installed-Size:"
               set: false
           remediation: |
                 Uninstall `openldap-clients` using the appropriate package manager or manual installation:
@@ -4740,10 +5043,29 @@ groups:
           audit: "dpkg -s tcpd"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           tests:  
             test_items:
             - flag: "install ok installed"
+              set: true
+          remediation: |
+                Install TCP Wrappers using the appropriate package manager or manual installation:
+                
+                yum install tcp_wrappers
+                
+                
+                apt-get install tcpd
+                
+                
+                zypper install tcpd
+      - check:
+          audit: "apt-cache show tcpd"   
+          constraints:          
+            platform:
+            - ubuntu18
+          tests:  
+            test_items:
+            - flag: "Installed-Size:"
               set: true
           remediation: |
                 Install TCP Wrappers using the appropriate package manager or manual installation:
@@ -4984,11 +5306,31 @@ groups:
           audit: "dpkg -s iptables"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
           
           tests:
             test_items:
             - flag: "install ok installed"
+              set: true                       
+          remediation: |
+                Install `iptables` using the appropriate package manager or manual installation:
+                
+                # yum install iptables
+                
+                
+                # apt-get install iptables
+                
+                
+                # zypper install iptables
+      - check:
+          audit: "apt-cache show iptables"   
+          constraints:          
+            platform:
+            - ubuntu18
+          
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
               set: true                       
           remediation: |
                 Install `iptables` using the appropriate package manager or manual installation:
@@ -5181,7 +5523,8 @@ groups:
           constraints:
             platform: 
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -5408,7 +5751,8 @@ groups:
           audit: "grep system-locale /etc/audit/audit.rules"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             bin_op: and
             test_items:
@@ -5470,7 +5814,8 @@ groups:
           audit: "grep system-locale /etc/audit/audit.rules"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             bin_op: and
             test_items:
@@ -6153,7 +6498,7 @@ groups:
           audit: "dpkg -s rsyslog"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
             syslog:
             - rsyslog
           tests:
@@ -6176,12 +6521,58 @@ groups:
           audit: "dpkg -s syslog-ng"   
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
             syslog:
             - syslog-ng
           tests:
             test_items:
             - flag: "install ok installed"
+              set: true
+          remediation: |
+                Install rsyslog or `syslog-ng` using the appropriate package manager or manual installation:
+                
+                # yum install rsyslog
+                
+                
+                # apt-get install rsyslog
+                
+                
+                # zypper install rsyslog
+                
+                The previous commands install `rsyslog` , use the appropriate package if `syslog-ng` is desired.
+      - check:
+          audit: "apt-cache show rsyslog"   
+          constraints:          
+            platform:
+            - ubuntu18
+            syslog:
+            - rsyslog
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
+              set: true
+          remediation: |
+                Install rsyslog or `syslog-ng` using the appropriate package manager or manual installation:
+                
+                # yum install rsyslog
+                
+                
+                # apt-get install rsyslog
+                
+                
+                # zypper install rsyslog
+                
+                The previous commands install `rsyslog` , use the appropriate package if `syslog-ng` is desired.
+      - check:
+          audit: "apt-cache show syslog-ng"   
+          constraints:          
+            platform:
+            - ubuntu18
+            syslog:
+            - syslog-ng
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
               set: true
           remediation: |
                 Install rsyslog or `syslog-ng` using the appropriate package manager or manual installation:
@@ -6235,7 +6626,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -6425,7 +6817,8 @@ groups:
           constraints:          
             platform:
             - rhel7
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
             syslog:
             - syslog-ng
           tests:
@@ -6620,7 +7013,8 @@ groups:
           audit: "systemctl is-enabled cron"
           constraints:          
             platform:
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -7184,7 +7578,7 @@ groups:
             
     - id: 5.3.4
       description: "Ensure password hashing algorithm is SHA-512"
-      audit: "grep -E ^[^#].*sha512  /etc/pam.d/common-password /etc/pam.d/system-auth /etc/pam.d/password-auth"   
+      audit: "grep -E ^[^#].*sha512 /etc/pam.d/common-password /etc/pam.d/system-auth /etc/pam.d/password-auth"   
       tests:
         test_items:
         - flag: "sha512"
@@ -7526,7 +7920,8 @@ groups:
           audit: "grep umask /etc/bash.bashrc" 
           constraints:
             platform:
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "umask 027"
@@ -7573,7 +7968,8 @@ groups:
           audit: "grep ^TMOUT /etc/bash.bashrc"
           constraints:
             platform: 
-            - ubuntu
+            - ubuntu16
+            - ubuntu18
           tests:
             test_items:
             - flag: "TMOUT"
@@ -7675,7 +8071,15 @@ groups:
           type: "manual"      
           constraints:
             platform:
-            - ubuntu
+            - ubuntu16
+          remediation: |
+                Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.
+      - check:
+          audit: "apt-get source > <filename>"
+          type: "manual"      
+          constraints:
+            platform:
+            - ubuntu18
           remediation: |
                 Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.
       scored: false
@@ -8238,4 +8642,4 @@ groups:
       remediation: |
             Remove all users from the shadow group, and change the primary group of any users with shadow as their primary group.
       scored: true                  
-  
+ 
