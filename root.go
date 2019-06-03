@@ -35,6 +35,7 @@ var (
 	checkList         string
 	jsonFmt           bool
 	includeTestOutput bool
+	outputFile        string
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -74,6 +75,7 @@ func init() {
 	RootCmd.Flags().StringVarP(&cfgDir, "config-dir", "D", "cfg", "directory to get benchmark definitions")
 	RootCmd.PersistentFlags().BoolVar(&jsonFmt, "json", false, "Prints the results as JSON")
 	RootCmd.PersistentFlags().BoolVar(&includeTestOutput, "include-test-output", false, "Prints the test's output")
+	RootCmd.PersistentFlags().StringVar(&outputFile, "outputfile", "", "Writes the JSON results to output file")
 	RootCmd.PersistentFlags().StringVarP(
 		&checkList,
 		"check",
