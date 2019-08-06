@@ -2,8 +2,8 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Coverage Status][cov-img]][cov]
 
-[cov-img]: https://codecov.io/github/aquasecurity/docker-bench/branch/master/graph/badge.svg
-[cov]: https://codecov.io/github/aquasecurity/docker-bench
+[cov-img]: https://codecov.io/github/aquasecurity/linux-bench/branch/master/graph/badge.svg
+[cov]: https://codecov.io/github/aquasecurity/linux-bench
 
 Linux-bench is a Go application that checks whether The linux operating system is configured securely by running the checks documented in the CIS Distribution Independent Linux Benchmark.
 
