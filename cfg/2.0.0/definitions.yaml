@@ -1099,7 +1099,7 @@ groups:
       audit: "sysctl fs.suid_dumpable"   
       tests:
         test_items:
-        - flag: "fs.suid_dumpable ="
+        - flag: "fs.suid_dumpable"
           compare:
             op: eq
             value: "0"
@@ -1129,7 +1129,7 @@ groups:
       audit: "grep -h \"fs\\.suid_dumpable\" /etc/sysctl.conf /etc/sysctl.d/* | head -n 1"   
       tests:
         test_items:
-        - flag: "fs.suid_dumpable ="
+        - flag: "fs.suid_dumpable"
           compare:
             op: eq
             value: "0"
@@ -1203,7 +1203,10 @@ groups:
       audit: "sysctl kernel.randomize_va_space"   
       tests:
         test_items:
-        - flag: "kernel.randomize_va_space = 2"
+        - flag: "kernel.randomize_va_space"
+          compare:
+            op: eq
+            value: "2"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -1221,7 +1224,10 @@ groups:
       audit: "grep \"kernel\\.randomize_va_space\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "kernel.randomize_va_space = 2"
+        - flag: "kernel.randomize_va_space"
+          compare:
+            op: eq
+            value: "2"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -1435,10 +1441,16 @@ groups:
           tests:
             bin_op: and
             test_items:
-            - flag: "selinux=0"
+            - flag: "selinux"
+              compare:
+                op: eq
+                value: "0"
               set: false            
             test_items:
-            - flag: "enforcing=0"
+            - flag: "enforcing"
+              compare:
+                op: eq
+                value: "0"
               set: false                                  
           remediation: |
               For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `selinux=0` and `enforcing=0` on all `kernel` lines.
@@ -1460,10 +1472,16 @@ groups:
           tests:
             bin_op: and
             test_items:
-            - flag: "selinux=0"
+            - flag: "selinux"
+              compare:
+                op: eq
+                value: "0"
               set: false            
             test_items:
-            - flag: "enforcing=0"
+            - flag: "enforcing"
+              compare:
+                op: eq
+                value: "0"
               set: false                                  
           remediation: |
               For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `selinux=0` and `enforcing=0` on all `kernel` lines.
@@ -1725,7 +1743,10 @@ groups:
             - grub
           tests:
             test_items:
-            - flag: "apparmor=0"
+            - flag: "apparmor"
+              compare:
+                op: eq
+                value: "0"
               set: false                        
           remediation: |
                 For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `apparmor=0` on all `kernel` lines.
@@ -1746,7 +1767,10 @@ groups:
             - grub2
           tests:
             test_items:
-            - flag: "apparmor=0"
+            - flag: "apparmor"
+              compare:
+                op: eq
+                value: "0"
               set: false                        
           remediation: |
                 For `grub` based systems edit `/boot/grub/menu.lst` and remove all instances of `apparmor=0` on all `kernel` lines.
@@ -1898,7 +1922,7 @@ groups:
       scored: true
     - id: 1.7.2
       description: "Ensure GDM login banner is configured"
-      audit: "cat /etc/gdm3/greeter.dconf-defaults"
+      audit: "grep -v ^#.* /etc/gdm3/greeter.dconf-defaults"
       tests:
         bin_op: and
         test_items:
@@ -2246,9 +2270,10 @@ groups:
           audit: "systemctl is-enabled xinetd" 
           constraints:          
             platform:
-            - rhel7
-            - ubuntu16
             - ubuntu18
+            #- rhel7
+            #- ubuntu16
+            #- ubuntu18
           tests:
             test_items:
             - flag: "enabled"
@@ -3622,7 +3647,7 @@ groups:
     - id: 2.2.15
       description: "Ensure mail transfer agent is configured for local-only mode"
       audit: | 
-            ss -lntu | grep -E ':25\\s' | grep -E -v '\\s(127.0.0.1\|::1):25\\s'  
+            ss -lntu | grep -E ':25\\s' | grep -E -v '\\s(127.0.0.1|::1):25\\s'  
       tests:
         test_items:
         - flag: ""
@@ -4097,7 +4122,10 @@ groups:
       audit: "sysctl net.ipv4.ip_forward"   
       tests:
         test_items:
-        - flag: "net.ipv4.ip_forward = 0"
+        - flag: "net.ipv4.ip_forward"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4119,7 +4147,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.ip_forward\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.ip_forward = 0"
+        - flag: "net.ipv4.ip_forward"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4140,7 +4171,10 @@ groups:
       audit: "sysctl net.ipv6.conf.all.forwarding"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.forwarding = 0"
+        - flag: "net.ipv6.conf.all.forwarding"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4161,7 +4195,10 @@ groups:
       audit: "grep \"net\\.ipv6\\.conf\\.all\\.forwarding\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.forwarding = 0"
+        - flag: "net.ipv6.conf.all.forwarding"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4182,7 +4219,10 @@ groups:
       audit: "sysctl net.ipv4.conf.all.send_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.send_redirects = 0"
+        - flag: "net.ipv4.conf.all.send_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4203,7 +4243,10 @@ groups:
       audit: "sysctl net.ipv4.conf.default.send_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.send_redirects = 0"
+        - flag: "net.ipv4.conf.default.send_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4224,7 +4267,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.all\\.send_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.send_redirects = 0"
+        - flag: "net.ipv4.conf.all.send_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4245,7 +4291,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.default\\.send_redirects /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.send_redirects = 0"
+        - flag: "net.ipv4.conf.default.send_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4272,7 +4321,7 @@ groups:
         - flag: "net.ipv4.conf.all.accept_source_route"
           compare:
             op: eq
-            value: 0
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4300,8 +4349,8 @@ groups:
         test_items:
         - flag: "net.ipv4.conf.default.accept_source_route"
           compare:
-          op: eq
-          value: 0
+            op: eq
+            value: 0
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4324,10 +4373,13 @@ groups:
             
     - id: 3.2.1.c
       description: "Ensure source routed packets are not accepted"
-      audit: "grep \"net\\.ipv4\\.conf\\.all\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep -h \"net\\.ipv4\\.conf\\.all\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/* | head -n 1"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.accept_source_route = 0"
+        - flag: "net.ipv4.conf.all.accept_source_route"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4353,7 +4405,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.default\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.accept_source_route = 0"
+        - flag: "net.ipv4.conf.default.accept_source_route"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4374,12 +4429,15 @@ groups:
             
       scored: true                  
             
-    - id: 3.1.2.e
+    - id: 3.2.1.e
       description: "Ensure packet redirect sending is disabled"
       audit: "sysctl net.ipv6.conf.all.accept_source_route"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.accept_source_route = 0"
+        - flag: "net.ipv6.conf.all.accept_source_route"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4400,12 +4458,15 @@ groups:
             
       scored: true                  
             
-    - id: 3.1.2.f
+    - id: 3.2.1.f
       description: "Ensure packet redirect sending is disabled"
       audit: "sysctl net.ipv6.conf.default.accept_source_route"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.default.accept_source_route = 0"
+        - flag: "net.ipv6.conf.default.accept_source_route"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4426,12 +4487,15 @@ groups:
             
       scored: true                  
             
-    - id: 3.1.2.g
+    - id: 3.2.1.g
       description: "Ensure packet redirect sending is disabled"
       audit: "grep \"net\\.ipv6\\.conf\\.all\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.accept_source_route = 0"
+        - flag: "net.ipv6.conf.all.accept_source_route"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4452,12 +4516,15 @@ groups:
             
       scored: true                  
             
-    - id: 3.1.2.h
+    - id: 3.2.1.h
       description: "Ensure packet redirect sending is disabled"
       audit: "grep \"net\\.ipv6\\.conf\\.default\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.default.accept_source_route = 0"
+        - flag: "net.ipv6.conf.default.accept_source_route"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4483,7 +4550,10 @@ groups:
       audit: "sysctl net.ipv4.conf.all.accept_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.accept_redirects = 0"
+        - flag: "net.ipv4.conf.all.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4509,7 +4579,10 @@ groups:
       audit: "sysctl net.ipv4.conf.default.accept_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.accept_redirects = 0"
+        - flag: "net.ipv4.conf.default.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4535,7 +4608,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.all\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.accept_redirects = 0"
+        - flag: "net.ipv4.conf.all.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4561,7 +4637,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.default\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.accept_redirects = 0"
+        - flag: "net.ipv4.conf.default.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4587,7 +4666,10 @@ groups:
       audit: "sysctl net.ipv6.conf.all.accept_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.accept_redirects = 0"
+        - flag: "net.ipv6.conf.all.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4613,7 +4695,10 @@ groups:
       audit: "sysctl net.ipv6.conf.default.accept_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.default.accept_redirects = 0"
+        - flag: "net.ipv6.conf.default.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4639,7 +4724,10 @@ groups:
       audit: "grep \"net\\.ipv6\\.conf\\.all\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.accept_redirects = 0"
+        - flag: "net.ipv6.conf.all.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4665,7 +4753,10 @@ groups:
       audit: "grep \"net\\.ipv6\\.conf\\.default\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.default.accept_redirects = 0"
+        - flag: "net.ipv6.conf.default.accept_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4692,7 +4783,10 @@ groups:
       audit: "sysctl net.ipv4.conf.all.secure_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.secure_redirects = 0"
+        - flag: "net.ipv4.conf.all.secure_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4713,7 +4807,10 @@ groups:
       audit: "sysctl net.ipv4.conf.default.secure_redirects"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.secure_redirects = 0"
+        - flag: "net.ipv4.conf.default.secure_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4734,7 +4831,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.all\\.secure_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.secure_redirects = 0"
+        - flag: "net.ipv4.conf.all.secure_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4755,7 +4855,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.default\\.secure_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.secure_redirects = 0"
+        - flag: "net.ipv4.conf.default.secure_redirects"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4776,7 +4879,10 @@ groups:
       audit: "sysctl net.ipv4.conf.all.log_martians"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.log_martians = 1"
+        - flag: "net.ipv4.conf.all.log_martians"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4797,7 +4903,10 @@ groups:
       audit: "sysctl net.ipv4.conf.default.log_martians"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.log_martians = 1"
+        - flag: "net.ipv4.conf.default.log_martians"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4818,7 +4927,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.all\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.log_martians = 1"
+        - flag: "net.ipv4.conf.all.log_martians"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4839,7 +4951,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.default\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.log_martians = 1"
+        - flag: "net.ipv4.conf.default.log_martians"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4860,7 +4975,10 @@ groups:
       audit: "sysctl net.ipv4.icmp_echo_ignore_broadcasts"   
       tests:
         test_items:
-        - flag: "net.ipv4.icmp_echo_ignore_broadcasts = 1"
+        - flag: "net.ipv4.icmp_echo_ignore_broadcasts"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4879,7 +4997,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.icmp_echo_ignore_broadcasts\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.icmp_echo_ignore_broadcasts = 1"
+        - flag: "net.ipv4.icmp_echo_ignore_broadcasts"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4898,7 +5019,10 @@ groups:
       audit: "sysctl net.ipv4.icmp_ignore_bogus_error_responses"   
       tests:
         test_items:
-        - flag: "net.ipv4.icmp_ignore_bogus_error_responses = 1"
+        - flag: "net.ipv4.icmp_ignore_bogus_error_responses"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4917,7 +5041,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.icmp_ignore_bogus_error_responses\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.icmp_ignore_bogus_error_responses = 1"
+        - flag: "net.ipv4.icmp_ignore_bogus_error_responses"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4936,7 +5063,10 @@ groups:
       audit: "sysctl net.ipv4.conf.all.rp_filter"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.rp_filter = 1"
+        - flag: "net.ipv4.conf.all.rp_filter"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4957,7 +5087,10 @@ groups:
       audit: "sysctl net.ipv4.conf.default.rp_filter"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.rp_filter = 1"
+        - flag: "net.ipv4.conf.default.rp_filter"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4978,7 +5111,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.all\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.rp_filter = 1"
+        - flag: "net.ipv4.conf.all.rp_filter"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -4999,7 +5135,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.conf\\.default\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.default.rp_filter = 1"
+        - flag: "net.ipv4.conf.default.rp_filter"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -5020,7 +5159,10 @@ groups:
       audit: "sysctl net.ipv4.tcp_syncookies"   
       tests:
         test_items:
-        - flag: "net.ipv4.tcp_syncookies = 1"
+        - flag: "net.ipv4.tcp_syncookies"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -5039,7 +5181,10 @@ groups:
       audit: "grep \"net\\.ipv4\\.tcp_syncookies\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.tcp_syncookies = 1"
+        - flag: "net.ipv4.tcp_syncookies"
+          compare:
+            op: eq
+            value: "1"
           set: true                        
       remediation: |
             Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -5058,7 +5203,10 @@ groups:
       audit: "sysctl net.ipv6.conf.all.accept_ra"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.accept_ra = 0"
+        - flag: "net.ipv6.conf.all.accept_ra"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -5079,7 +5227,10 @@ groups:
       audit: "sysctl net.ipv6.conf.default.accept_ra"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.default.accept_ra = 0"
+        - flag: "net.ipv6.conf.default.accept_ra"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -5100,7 +5251,10 @@ groups:
       audit: "grep \"net\\.ipv6\\.conf\\.all\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.all.accept_ra = 0"
+        - flag: "net.ipv6.conf.all.accept_ra"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
@@ -5121,7 +5275,10 @@ groups:
       audit: "grep \"net\\.ipv6\\.conf\\.default\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv6.conf.default.accept_ra = 0"
+        - flag: "net.ipv6.conf.default.accept_ra"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
