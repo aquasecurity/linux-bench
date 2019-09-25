@@ -1126,7 +1126,7 @@ groups:
             
     - id: 1.5.1.c
       description: "Ensure core dumps are restricted"
-      audit: "grep -h \"fs\\.suid_dumpable\" /etc/sysctl.conf /etc/sysctl.d/* | head -n 1"   
+      audit: "grep \"fs\\.suid_dumpable\" /etc/sysctl.conf /etc/sysctl.d/* | head -n 1"   
       tests:
         test_items:
         - flag: "fs.suid_dumpable"
@@ -4144,7 +4144,7 @@ groups:
             
     - id: 3.1.1.b
       description: "Ensure IP forwarding is disabled"
-      audit: "grep \"net\\.ipv4\\.ip_forward\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.ip_forward\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.ip_forward"
@@ -4192,7 +4192,7 @@ groups:
       scored: true
     - id: 3.1.1.d
       description: "Ensure IP forwarding is disabled"
-      audit: "grep \"net\\.ipv6\\.conf\\.all\\.forwarding\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv6\\.conf\\.all\\.forwarding\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv6.conf.all.forwarding"
@@ -4264,7 +4264,7 @@ groups:
             
     - id: 3.1.2.c
       description: "Ensure packet redirect sending is disabled"
-      audit: "grep \"net\\.ipv4\\.conf\\.all\\.send_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.send_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.all.send_redirects"
@@ -4288,7 +4288,7 @@ groups:
             
     - id: 3.1.2.d
       description: "Ensure packet redirect sending is disabled"
-      audit: "grep \"net\\.ipv4\\.conf\\.default\\.send_redirects /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.send_redirects /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.default.send_redirects"
@@ -4373,7 +4373,7 @@ groups:
             
     - id: 3.2.1.c
       description: "Ensure source routed packets are not accepted"
-      audit: "grep -h \"net\\.ipv4\\.conf\\.all\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/* | head -n 1"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.all.accept_source_route"
@@ -4402,7 +4402,7 @@ groups:
             
     - id: 3.2.1.d
       description: "Ensure source routed packets are not accepted"
-      audit: "grep \"net\\.ipv4\\.conf\\.default\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.default.accept_source_route"
@@ -4489,7 +4489,7 @@ groups:
             
     - id: 3.2.1.g
       description: "Ensure packet redirect sending is disabled"
-      audit: "grep \"net\\.ipv6\\.conf\\.all\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv6\\.conf\\.all\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv6.conf.all.accept_source_route"
@@ -4518,7 +4518,7 @@ groups:
             
     - id: 3.2.1.h
       description: "Ensure packet redirect sending is disabled"
-      audit: "grep \"net\\.ipv6\\.conf\\.default\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv6\\.conf\\.default\\.accept_source_route\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv6.conf.default.accept_source_route"
@@ -4605,7 +4605,7 @@ groups:
             
     - id: 3.2.2.c
       description: "Ensure ICMP redirects are not accepted"
-      audit: "grep \"net\\.ipv4\\.conf\\.all\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.all.accept_redirects"
@@ -4634,7 +4634,7 @@ groups:
             
     - id: 3.2.2.d
       description: "Ensure ICMP redirects are not accepted"
-      audit: "grep \"net\\.ipv4\\.conf\\.default\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.default.accept_redirects"
@@ -4721,7 +4721,7 @@ groups:
             
     - id: 3.2.2.g
       description: "Ensure ICMP redirects are not accepted"
-      audit: "grep \"net\\.ipv6\\.conf\\.all\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv6\\.conf\\.all\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv6.conf.all.accept_redirects"
@@ -4750,7 +4750,7 @@ groups:
             
     - id: 3.2.2.h
       description: "Ensure ICMP redirects are not accepted"
-      audit: "grep \"net\\.ipv6\\.conf\\.default\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv6\\.conf\\.default\\.accept_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv6.conf.default.accept_redirects"
@@ -4828,7 +4828,7 @@ groups:
             
     - id: 3.2.3.c
       description: "Ensure secure ICMP redirects are not accepted"
-      audit: "grep \"net\\.ipv4\\.conf\\.all\\.secure_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.secure_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.all.secure_redirects"
@@ -4852,7 +4852,7 @@ groups:
             
     - id: 3.2.3.d
       description: "Ensure secure ICMP redirects are not accepted"
-      audit: "grep \"net\\.ipv4\\.conf\\.default\\.secure_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.secure_redirects\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.default.secure_redirects"
@@ -4924,7 +4924,7 @@ groups:
             
     - id: 3.2.4.c
       description: "Ensure suspicious packets are logged"
-      audit: "grep \"net\\.ipv4\\.conf\\.all\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.all.log_martians"
@@ -4948,7 +4948,7 @@ groups:
             
     - id: 3.2.4.d
       description: "Ensure suspicious packets are logged"
-      audit: "grep \"net\\.ipv4\\.conf\\.default\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.default.log_martians"
@@ -4994,7 +4994,7 @@ groups:
             
     - id: 3.2.5.b
       description: "Ensure broadcast ICMP requests are ignored"
-      audit: "grep \"net\\.ipv4\\.icmp_echo_ignore_broadcasts\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.icmp_echo_ignore_broadcasts\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.icmp_echo_ignore_broadcasts"
@@ -5038,7 +5038,7 @@ groups:
             
     - id: 3.2.6.b
       description: "Ensure bogus ICMP responses are ignored"
-      audit: "grep \"net\\.ipv4\\.icmp_ignore_bogus_error_responses\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.icmp_ignore_bogus_error_responses\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.icmp_ignore_bogus_error_responses"
@@ -5108,7 +5108,7 @@ groups:
             
     - id: 3.2.7.c
       description: "Ensure Reverse Path Filtering is enabled"
-      audit: "grep \"net\\.ipv4\\.conf\\.all\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.all.rp_filter"
@@ -5132,7 +5132,7 @@ groups:
             
     - id: 3.2.7.d
       description: "Ensure Reverse Path Filtering is enabled"
-      audit: "grep \"net\\.ipv4\\.conf\\.default\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.conf.default.rp_filter"
@@ -5178,7 +5178,7 @@ groups:
             
     - id: 3.2.8.b
       description: "Ensure TCP SYN Cookies is enabled"
-      audit: "grep \"net\\.ipv4\\.tcp_syncookies\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv4\\.tcp_syncookies\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv4.tcp_syncookies"
@@ -5248,7 +5248,7 @@ groups:
             
     - id: 3.2.9.c
       description: "Ensure IPv6 router advertisements are not accepted"
-      audit: "grep \"net\\.ipv6\\.conf\\.all\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv6\\.conf\\.all\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv6.conf.all.accept_ra"
@@ -5272,7 +5272,7 @@ groups:
             
     - id: 3.2.9.d
       description: "Ensure IPv6 router advertisements are not accepted"
-      audit: "grep \"net\\.ipv6\\.conf\\.default\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*\"net\\.ipv6\\.conf\\.default\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
         - flag: "net.ipv6.conf.default.accept_ra"
@@ -5292,48 +5292,8 @@ groups:
             # sysctl -w net.ipv6.conf.default.accept_ra=0
             # sysctl -w net.ipv6.route.flush=1
             
-      scored: true                  
-            
+      scored: true 
 
-      description: "Ensure IPv6 is disabled"
-      sub_checks:
-      - check:
-          audit: "grep kernel /boot/grub/menu.lst"   
-          constraints:          
-            boot:
-            - grub
-          tests:  
-            test_items:
-            - flag: "ipv6.disable=1"
-              set: false
-          remediation: |
-                For `grub` based systems edit `/boot/grub/menu.lst` and remove add `ipv6.disable=1` to all `kernel` lines.
-                            For `grub2` based systems edit `/etc/default/grub` and remove add `ipv6.disable=1` to the `GRUB_CMDLINE_LINUX` parameters:
-                
-                GRUB_CMDLINE_LINUX="ipv6.disable=1"
-                
-                Run the following command to update the `grub2` configuration:
-                
-                # update-grub
-      - check:
-          audit: "grep LINUX /etc/default/grub"   
-          constraints:          
-            boot:
-            - grub2
-          tests:  
-            test_items:
-            - flag: "ipv6.disable=1"
-              set: false
-          remediation: |
-                For `grub` based systems edit `/boot/grub/menu.lst` and remove add `ipv6.disable=1` to all `kernel` lines.
-                            For `grub2` based systems edit `/etc/default/grub` and remove add `ipv6.disable=1` to the `GRUB_CMDLINE_LINUX` parameters:
-                
-                GRUB_CMDLINE_LINUX="ipv6.disable=1"
-                
-                Run the following command to update the `grub2` configuration:
-                
-                # update-grub
-      scored: false
 - id: 3.3
   description: "TCP Wrappers"
   checks:
@@ -5619,6 +5579,8 @@ groups:
             # iptables -P INPUT DROP
             # iptables -P OUTPUT DROP
             # iptables -P FORWARD DROP
+      scored: true
+      
     - id: 3.5.1.2.a
       description: "Ensure IPv6 loopback traffic is configured"
       audit: "ip6tables -L INPUT -v -n" 
@@ -5661,8 +5623,6 @@ groups:
             # ip6tables -A INPUT -s ::1 -j DROP
             
       scored: true 
-    
-      scored: true
     - id: 3.5.1.3
       description: "Ensure IPv6 outbound and established connections are configured"
       audit: "ip6tables -L -v -n"   
@@ -5939,6 +5899,7 @@ groups:
             # grub2-mkconfig –o /boot/grub2/grub.cfg
             or
             # update-grub
+          
       - check:
           audit: "grep \"^\\s*linux\" /boot/grub2/grub.cfg | grep -v ipv6.disabled=1"
           constraints:
@@ -7195,21 +7156,21 @@ groups:
             Storage=persistent
             
       scored: true
-- id: 4.2.3
-  description: "Ensure permissions on all logfiles are configured"
-  audit: "find /var/log -type f -ls"   
-  type: manual                        
-  remediation: |
-        Run the following commands to set permissions on all existing log files: 
-        find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +    
-  scored: true
-- id: 4.3
-  description: "Ensure logrotate is configured"
-  audit: "cat /etc/logrotate.conf; cat /etc/logrotate.d/* ;"
-  type: manual
-  remediation: |
-    Edit `/etc/logrotate.conf` and `/etc/logrotate.d/*` to ensure logs are rotated according to site policy.
-  scored: false
+    - id: 4.2.3
+      description: "Ensure permissions on all logfiles are configured"
+      audit: "find /var/log -type f -ls"   
+      type: manual                        
+      remediation: |
+            Run the following commands to set permissions on all existing log files: 
+            find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +    
+      scored: true
+    - id: 4.3
+      description: "Ensure logrotate is configured"
+      audit: "cat /etc/logrotate.conf; cat /etc/logrotate.d/* ;"
+      type: manual
+      remediation: |
+        Edit `/etc/logrotate.conf` and `/etc/logrotate.d/*` to ensure logs are rotated according to site policy.
+      scored: false
 - id: 5
   description: "Access, Authentication and Authorization"
 - id: 5.1
@@ -7378,8 +7339,8 @@ groups:
       audit: "stat /etc/cron.deny"   
       tests:
         test_items:
-        - flag: "stat: cannot stat '/etc/cron.deny': No such file or directory"
-          set: true                        
+        - flag: "File: /etc/cron.deny"
+          set: false                        
       remediation: |
             Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
             
@@ -7399,8 +7360,8 @@ groups:
       audit: "stat /etc/at.deny"   
       tests:
         test_items:
-        - flag: "stat: cannot stat '/etc/at.deny': No such file or directory"
-          set: true                        
+        - flag: "File: /etc/at.deny"
+          set: false                        
       remediation: |
             Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
             
@@ -7548,7 +7509,10 @@ groups:
       audit: "sshd -T | grep maxauthtries"   
       tests:
         test_items:
-        - flag: "MaxAuthTries 4"
+        - flag: "maxauthtries"
+          compare:
+            op: lte
+            value: "4"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
@@ -7562,7 +7526,7 @@ groups:
       audit: "sshd -T | grep ignorerhosts"   
       tests:
         test_items:
-        - flag: "IgnoreRhosts yes"
+        - flag: "ignorerhosts yes"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
@@ -7577,12 +7541,12 @@ groups:
       audit: "sshd -T | grep hostbasedauthentication"   
       tests:
         test_items:
-        - flag: "HostbasedAuthentication no"
+        - flag: "hostbasedauthentication no"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
             
-            HostbasedAuthentication no
+            hostbasedauthentication no
             
       scored: true                  
                          
@@ -7592,12 +7556,12 @@ groups:
       audit: "sshd -T | grep permitrootlogin"   
       tests:
         test_items:
-        - flag: "PermitRootLogin no"
+        - flag: "permitrootlogin no"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
             
-            PermitRootLogin no
+            permitrootlogin no
             
       scored: true                  
             
@@ -7608,12 +7572,12 @@ groups:
       audit: "sshd -T | grep permitemptypasswords"   
       tests:
         test_items:
-        - flag: "PermitEmptyPasswords no"
+        - flag: "permitemptypasswords no"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
             
-            PermitEmptyPasswords no
+            permitemptypasswords no
             
       scored: true                  
             
@@ -7622,12 +7586,12 @@ groups:
       audit: "sshd -T | grep permituserenvironment"   
       tests:
         test_items:
-        - flag: "PermitUserEnvironment no"
+        - flag: "permituserenvironment no"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
             
-            PermitUserEnvironment no
+            permituserenvironment no
             
       scored: true                  
                             
@@ -7734,13 +7698,16 @@ groups:
       audit: "sshd -T | grep clientaliveinterval"   
       tests:
         test_items:
-        - flag: "ClientAliveInterval 300"
+        - flag: "clientaliveinterval"
+          compare:
+            op: lte
+            value: "300"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameters according to site policy:
             
-            ClientAliveInterval 300
-            ClientAliveCountMax 0
+            clientaliveinterval 300
+            clientalivecountmax 0
             
       scored: true                  
             
@@ -7749,13 +7716,16 @@ groups:
       audit: "sshd -T | grep clientalivecountmax"   
       tests:
         test_items:
-        - flag: "ClientAliveCountMax 0"
+        - flag: "clientalivecountmax"
+          compare:
+            op: lte
+            value: "3"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameters according to site policy:
             
-            ClientAliveInterval 300
-            ClientAliveCountMax 0
+            clientaliveinterval 300
+            clientalivecountmax 0
             
       scored: true                  
             
@@ -7764,12 +7734,15 @@ groups:
       audit: "sshd -T | grep logingracetime"   
       tests:
         test_items:
-        - flag: "LoginGraceTime 60"
+        - flag: "logingracetime"
+          compare:
+            op: lte
+            value: "60"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
             
-            LoginGraceTime 60
+            logingracetime 60
             
       scored: true                  
                
@@ -7851,12 +7824,12 @@ groups:
       audit: "sshd -T | grep banner"   
       tests:
         test_items:
-        - flag: "Banner /etc/issue.net"
+        - flag: "banner /etc/issue.net"
           set: true                        
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
             
-            Banner /etc/issue.net
+            banner /etc/issue.net
             
       scored: true                  
     - id: 5.2.20
@@ -7875,11 +7848,11 @@ groups:
       audit: "sshd -T | grep -i allowtcpforwarding"   
       tests:
         test_items:
-        - flag: "AllowTcpForwarding no"
+        - flag: "allowtcpforwarding no"
           set: true                        
       remediation: |
             Edit the /etc/ssh/sshd_config file to set the parameter as follows: 
-            AllowTcpForwarding no
+            allowtcpforwarding no
       scored: true 
     - id: 5.2.22
       description: "Ensure SSH MaxStartups is configured"
@@ -7894,7 +7867,10 @@ groups:
       audit: "sshd -T | grep -i maxsessions"   
       tests:
         test_items:
-        - flag: "maxsessions 4"
+        - flag: "maxsessions"
+          compare:
+            op: lte
+            value: "4"
           set: true                        
       remediation: |
             Edit the /etc/ssh/sshd_config file to set the parameter as follows: 
@@ -7984,12 +7960,12 @@ groups:
       description: "Ensure password expiration is 365 days or less"
       audit: "grep ^PASS_MAX_DAYS /etc/login.defs"
       tests:
-        bin_op: and
         test_items:
         - flag: "PASS_MAX_DAYS"
-          set: true
-          flag: "365"
-          set: true
+          compare:
+            op: lte
+            value: "365"
+          set: true  
       remediation: |
         Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
 
@@ -8024,12 +8000,13 @@ groups:
       description: "Ensure minimum days between password changes is 7 or more"
       audit: "grep ^PASS_MIN_DAYS /etc/login.defs"
       tests:
-        bin_op: and
         test_items:
         - flag: "PASS_MIN_DAYS"
+          compare:
+            op: gte
+            value: "7"
           set: true
-          flag: "7"
-          set: true
+        
       remediation: |
         Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
 
@@ -8064,11 +8041,11 @@ groups:
       description: "Ensure password expiration warning days is 7 or more"
       audit: "grep ^PASS_WARN_AGE /etc/login.defs"
       tests:
-        bin_op: and
         test_items:
         - flag: "PASS_WARN_AGE"
-          set: true
-          flag: "7"
+          compare:
+            op: gte
+            value: "7"
           set: true
       remediation: |
         Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
@@ -8145,17 +8122,17 @@ groups:
       tests:
         test_items:
         - flag: ""
-        compare:
-          op: eq
-          value: ""
-        set: true
+          compare:
+            op: eq
+            value: ""
+          set: true
       remediation: |
         Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.
       scored: true
 
-    - id: 5.4.2
+    - id: 5.4.2.a
       description: "Ensure system accounts are non-login"
-      audit: "egrep -v \"^\\+\" /etc/passwd | awk -F: '($1!=\"root\" && $1!=\"sync\" && $1!=\"shutdown\" && $1!=\"halt\" && $3<500 && $7!=\"/sbin/nologin\" && $7!=\"/bin/false\") {print}'"   
+      audit: "awk -F: '($1!=\"root\" && $1!=\"sync\" && $1!=\"shutdown\" && $1!=\"halt\" && $1!~/^\\+/ && $3<'\"$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\"' && $7!=\"'\"$(which nologin)\"'\" && $7!=\"/bin/false\") {print}' /etc/passwd"   
       tests:
         test_items:
         - flag: ""
@@ -8164,24 +8141,39 @@ groups:
             value: ""
           set: true                                  
       remediation: |
-            Set the shell for any accounts returned by the audit script to `/sbin/nologin` :
-                        
-            # usermod -s /sbin/nologin 
-            
-            The following script will automatically set all user shells required to `/sbin/nologin` and lock the `sync` , `shutdown` , and `halt` users:
-                        
-            #!/bin/bash
-                        for user in `awk -F: '($3 < 500) {print $1 }' /etc/passwd` ; do
-            if [ $user != "root" ]; then
-            usermod -L $user
-            if [ $user != "sync" ] && [ $user != "shutdown" ] & then
-            usermod -s /sbin/nologin $user
-            fi
-            fi
-            done
+            Run the commands appropriate for your distribution: 
+            Set the shell for any accounts returned by the audit to nologin:
+            # usermod -s $(which nologin) <user>
+            Lock any non root accounts returned by the audit: 
+            # usermod -L <user>
+            The following command will set all system accounts to a non login shell: 
+            awk -F: '($1!="root" && $1!="sync" && $1!="shutdown" && $1!="halt" && $1!~/^\+/ && $3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"' && $7!="'"$(which nologin)"'" && $7!="/bin/false") {print $1}' /etc/passwd | while read user do usermod -s $(which nologin) $user done
+            The following command will automatically lock not root system accounts: 
+            awk -F: '($1!="root" && $1!~/^\+/ && $3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"') {print $1}' /etc/passwd | xargs -I '{}' passwd -S '{}' | awk '($2!="L" && $2!="LK") {print $1}' | while read user do usermod -L $user done
             
       scored: true                  
+    - id: 5.4.2.b
+      description: "Ensure system accounts are non-login"
+      audit: "awk -F: '($1!=\"root\" && $1!~/^\\+/ && $3<'\"$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\"') {print $1}' /etc/passwd | xargs -I '{}' passwd -S '{}' | awk '($2!=\"L\" && $2!=\"LK\") {print $1}'"   
+      tests:
+        test_items:
+        - flag: ""
+          compare:
+            op: eq
+            value: ""
+          set: true                                  
+      remediation: |
+            Run the commands appropriate for your distribution: 
+            Set the shell for any accounts returned by the audit to nologin:
+            # usermod -s $(which nologin) <user>
+            Lock any non root accounts returned by the audit: 
+            # usermod -L <user>
+            The following command will set all system accounts to a non login shell: 
+            awk -F: '($1!="root" && $1!="sync" && $1!="shutdown" && $1!="halt" && $1!~/^\+/ && $3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"' && $7!="'"$(which nologin)"'" && $7!="/bin/false") {print $1}' /etc/passwd | while read user do usermod -s $(which nologin) $user done
+            The following command will automatically lock not root system accounts: 
+            awk -F: '($1!="root" && $1!~/^\+/ && $3<'"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"') {print $1}' /etc/passwd | xargs -I '{}' passwd -S '{}' | awk '($2!="L" && $2!="LK") {print $1}' | while read user do usermod -L $user done
             
+      scored: true   
     - id: 5.4.3
       description: "Ensure default group for the root account is GID 0"
       audit: "grep ^root: /etc/passwd | cut -f4 -d:"   
@@ -8307,45 +8299,49 @@ groups:
         Remove entries for any consoles that are not in a physically secure location.
       scored: true
 
-- id: 5.6.a
-  description: "Ensure access to the su command is restricted"
-  audit: "grep pam_wheel.so /etc/pam.d/su"
-  tests:
-    test_items:
-    - flag: "auth"
-      compare:
-        op: eq
-        value: "sufficient      pam_wheel.so trust use_uid"
-      set: true
-  remediation: |
-    Add the following line to the `/etc/pam.d/su` file:
+    - id: 5.6.a
+      description: "Ensure access to the su command is restricted"
+      audit: "grep pam_wheel.so /etc/pam.d/su"
+      tests:
+        bin_op: and
+        test_items:
+        - flag: "auth"
+          set: true
+        - flag: "required"
+          set: true
+        - flag: "pam_wheel.so"
+          set: true
+        - flag: "use_uid"
+          set: true
+      remediation: |
+        Add the following line to the `/etc/pam.d/su` file:
 
-    auth required pam_wheel.so use_uid
+        auth required pam_wheel.so use_uid
 
-    Create a comma separated list of users in the wheel statement in the `/etc/group` file:
+        Create a comma separated list of users in the wheel statement in the `/etc/group` file:
 
-    wheel:x:10:root,
+        wheel:x:10:root,
 
-  scored: true
+      scored: true
 
-- id: 5.6.b
-  description: "Ensure access to the su command is restricted"
-  audit: "grep wheel /etc/group"
-  type: manual
-  tests:
-    test_items:
-    - flag: "wheel:x:10:root,<user list>"
-      set: true
-  remediation: |
-    Add the following line to the `/etc/pam.d/su` file:
+    - id: 5.6.b
+      description: "Ensure access to the su command is restricted"
+      audit: "grep wheel /etc/group"
+      type: manual
+      tests:
+        test_items:
+        - flag: "wheel:x:10:root,<user list>"
+          set: true
+      remediation: |
+        Add the following line to the `/etc/pam.d/su` file:
 
-    auth required pam_wheel.so use_uid
+        auth required pam_wheel.so use_uid
 
-    Create a comma separated list of users in the wheel statement in the `/etc/group` file:
+        Create a comma separated list of users in the wheel statement in the `/etc/group` file:
 
-    wheel:x:10:root,
+        wheel:x:10:root,
 
-  scored: true
+      scored: true
 
 - id: 6
   description: "System Maintenance"
@@ -8462,7 +8458,7 @@ groups:
             Run the following command to set permissions on `/etc/passwd-` :
             
             # chown root:root /etc/passwd-
-            # chmod u-x,go-wx /etc/passwd-
+            # chmod u-x,go-rwx /etc/passwd-
             
       scored: true                  
             
