@@ -7697,12 +7697,18 @@ groups:
       description: "Ensure SSH Idle Timeout Interval is configured"
       audit: "sshd -T | grep clientaliveinterval"   
       tests:
+        bin_op: and
         test_items:
         - flag: "clientaliveinterval"
           compare:
             op: lte
             value: "300"
-          set: true                        
+          set: true 
+        - flag: "clientaliveinterval"
+          compare:
+            op: gte
+            value: "1"
+          set: true
       remediation: |
             Edit the `/etc/ssh/sshd_config` file to set the parameters according to site policy:
             
