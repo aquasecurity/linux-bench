@@ -4312,10 +4312,13 @@ groups:
             
     - id: 3.2.1.c
       description: "Ensure source routed packets are not accepted"
-      audit: "grep net.ipv4.conf.all.accept_source_route /etc/sysctl.conf /etc/sysctl.d/*"   
+      audit: "grep ^\\s*net.ipv4.conf.all.accept_source_route /etc/sysctl.conf /etc/sysctl.d/*"   
       tests:
         test_items:
-        - flag: "net.ipv4.conf.all.accept_source_route = 0"
+        - flag: "net.ipv4.conf.all.accept_source_route"
+          compare:
+            op: eq
+            value: "0"
           set: true                        
       remediation: |
             Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
