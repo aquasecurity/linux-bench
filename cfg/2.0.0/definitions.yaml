@@ -1446,7 +1446,6 @@ groups:
                 op: eq
                 value: "0"
               set: false            
-            test_items:
             - flag: "enforcing"
               compare:
                 op: eq
