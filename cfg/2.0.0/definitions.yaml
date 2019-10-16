@@ -7338,8 +7338,8 @@ groups:
       audit: "stat /etc/cron.deny"   
       tests:
         test_items:
-        - flag: "File: /etc/cron.deny"
-          set: false                        
+        - flag: "stat: cannot stat '/etc/cron.deny': No such file or directory"
+          set: true                      
       remediation: |
             Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
             
@@ -7359,8 +7359,8 @@ groups:
       audit: "stat /etc/at.deny"   
       tests:
         test_items:
-        - flag: "File: /etc/at.deny"
-          set: false                        
+        - flag: "stat: cannot stat '/etc/at.deny': No such file or directory"
+          set: true                        
       remediation: |
             Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
             
