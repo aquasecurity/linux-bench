@@ -24,7 +24,7 @@ linux-bench will determine the test set to run on the host machine based on the 
 ## Installation
 ### Installing from sources
 
-Intall [Go](https://golang.org/doc/install), then
+Install [Go](https://golang.org/doc/install), then
 clone this repository and run as follows (assuming your [$GOPATH is set](https://github.com/golang/go/wiki/GOPATH)):
 
 ```shell
