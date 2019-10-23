@@ -1,8 +1,6 @@
 ---
 language: go
 
-sudo: required
-
 notifications:
   email: false
 
