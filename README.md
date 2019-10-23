@@ -5,27 +5,30 @@
 [cov-img]: https://codecov.io/github/aquasecurity/linux-bench/branch/master/graph/badge.svg
 [cov]: https://codecov.io/github/aquasecurity/linux-bench
 
-Linux-bench is a Go application that checks whether The linux operating system is configured securely by running the checks documented in the CIS Distribution Independent Linux Benchmark.
+Linux-bench is a Go application that checks whether the Linux operating system is configured securely by running the checks documented in the CIS Distribution Independent Linux Benchmark.
 
-Tests are configured with YAML files, making this tool easy to update as test specifications evolve. 
-
+Tests are configured with YAML files, making this tool easy to update as test specifications evolve.
 
 ## CIS Linux Benchmark support
 
 linux-bench currently supports tests for benchmark version 1.1.0 only.
 
 linux-bench will determine the test set to run on the host machine based on the following:
+
 ##### Operating system platform - ubuntu/debian/rhel/coreos
+
 ##### Boot loader - grub/grub2
+
 ##### System logging tool - rsyslog/syslog-ng
+
 ##### Lsm - selinux/apparmor
 
-
 ## Installation
+
 ### Installing from sources
 
-Intall [Go](https://golang.org/doc/install), then
-clone this repository and run as follows (assuming your [$GOPATH is set](https://github.com/golang/go/wiki/GOPATH)):
+Install [Go](https://golang.org/doc/install), then
+clone this repository and run as follows (assuming your [\$GOPATH is set](https://github.com/golang/go/wiki/GOPATH)):
 
 ```shell
 go get github.com/aquasecurity/linux-bench
@@ -43,9 +46,11 @@ go build -o linux-bench .
 ```
 
 # Tests
+
 Tests are specified in definition files `cfg/<version>/definitions.yaml.`
 
 Where `<version>` is the version of linux cis for which the test applies.
 
 # Contributing
-We welcome PRs and issue reports. 
+
+We welcome PRs and issue reports.
