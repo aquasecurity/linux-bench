@@ -1,0 +1,20 @@
+env:
+  - GO111MODULE=on
+builds:
+  - main: main.go
+    binary: linux-bench
+    goos:
+      - linux
+    goarch:
+      - amd64
+# Archive customization
+archive:
+  format: tar.gz
+nfpm:
+  vendor: Aqua Security
+  description: "The Linux Bench for Security is a Go application that checks whether Linux host is deployed according to security best practices"
+  license: Apache-2.0
+  homepage: https://github.com/aquasecurity/linux-bench
+  formats:
+    - deb
+    - rpm
