@@ -5995,7 +5995,7 @@ groups:
             
       scored: true                  
             
-    - id: 4.1.9.a
+    - id: 4.1.9.c
       description: "Ensure session initiation information is collected"
       audit: "grep logins /etc/audit/audit.rules"   
       tests:
@@ -6013,7 +6013,7 @@ groups:
             
       scored: true                  
             
-    - id: 4.1.9.b
+    - id: 4.1.9.d
       description: "Ensure session initiation information is collected"
       audit: "auditctl -l | grep logins"   
       tests:
