@@ -7163,7 +7163,10 @@ groups:
             Run the following commands to set permissions on all existing log files: 
             find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +    
       scored: true
-    - id: 4.3
+- id: 4.3
+  description: "Ensure logrotate is configured"
+  checks:
+    - id: 4.3.1
       description: "Ensure logrotate is configured"
       audit: "cat /etc/logrotate.conf; cat /etc/logrotate.d/* ;"
       type: manual
@@ -8303,7 +8306,9 @@ groups:
       remediation: |
         Remove entries for any consoles that are not in a physically secure location.
       scored: true
-
+- id: 5.6
+  description: "Ensure access to the su command is restricted"
+  checks:
     - id: 5.6.a
       description: "Ensure access to the su command is restricted"
       audit: "grep pam_wheel.so /etc/pam.d/su"
