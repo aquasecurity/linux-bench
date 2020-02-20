@@ -8307,7 +8307,7 @@ groups:
         Remove entries for any consoles that are not in a physically secure location.
       scored: true
 - id: 5.6
-  description: description: "Ensure access to the su command is restricted"
+  description: "Ensure access to the su command is restricted"
   checks:
     - id: 5.6.a
       description: "Ensure access to the su command is restricted"
