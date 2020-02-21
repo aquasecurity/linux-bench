@@ -1940,33 +1940,36 @@ groups:
 
 - id: 1.8
   description: "Ensure updates, patches, and additional security software are installed"
-  sub_checks:
-  - check:
-      audit: "yum check-update"
-      type: manual
-      constraints:
-        platform:
-        - rhel7
-      remediation: |
-        Use your package manager to update all packages on the system according to site policy.
-  - check:
-      audit: "apt-get -s upgrade"
-      type: manual
-      constraints:
-        platform:
-        - ubuntu16
-        - ubuntu18
-      remediation: |
-        Use your package manager to update all packages on the system according to site policy.
-  - check:
-      audit: "zypper list-updates"
-      type: manual
-      constraints:
-        platform:
-        - opensuse
-      remediation: |
-        Use your package manager to update all packages on the system according to site policy.
-  scored: false
+  checks:
+    - id: 1.8.1
+      description: "Periodically patches are released for included software either due to security flaws or to include additional functionality"
+      sub_checks:
+      - check:
+          audit: "yum check-update"
+          type: manual
+          constraints:
+            platform:
+            - rhel7
+          remediation: |
+            Use your package manager to update all packages on the system according to site policy.
+      - check:
+          audit: "apt-get -s upgrade"
+          type: manual
+          constraints:
+            platform:
+            - ubuntu16
+            - ubuntu18
+          remediation: |
+            Use your package manager to update all packages on the system according to site policy.
+      - check:
+          audit: "zypper list-updates"
+          type: manual
+          constraints:
+            platform:
+            - opensuse
+          remediation: |
+            Use your package manager to update all packages on the system according to site policy.
+      scored: false
 
 - id: 2
   description: "Services"
