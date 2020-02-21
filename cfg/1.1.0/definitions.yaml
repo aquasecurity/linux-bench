@@ -1573,112 +1573,114 @@ groups:
             
                 Any unconfined processes may need to have a profile created or activated for them and then be restarted.
       scored: true
-      
 - id: 1.6.3
   description: "Ensure SELinux or AppArmor are installed"
-  sub_checks:
-  - check:
-      audit: "rpm -q libselinux"
-      constraints:
-        platform:
-        - rhel7
-        lsm:
-        - selinux
-      tests:
-        test_items:
-        - flag: "is not installed"
-          set: false
-      remediation: |
-        Install SELinux or apparmor using the appropriate package manager or manual installation:
-        # yum install libselinux
-        # apt-get install libselinux1
-        # zypper install libselinux
-        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-  - check:
-      audit: "rpm -q apparmor"
-      constraints:
-        platform:
-        - rhel7
-        lsm:
-        - apparmor
-      tests:
-        test_items:
-        - flag: "is not installed"
-          set: false
-      remediation: |
-        Install SELinux or apparmor using the appropriate package manager or manual installation:
-        # yum install libselinux
-        # apt-get install libselinux1
-        # zypper install libselinux
-        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-  - check:
-      audit: "dpkg -s libselinux1"
-      constraints:
-        platform:
-        - ubuntu16
-        lsm:
-        - selinux
-      tests:
-        test_items:
-        - flag: "is not installed"
-          set: false
-      remediation: |
-        Install SELinux or apparmor using the appropriate package manager or manual installation:
-        # yum install libselinux
-        # apt-get install libselinux1
-        # zypper install libselinux
-        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-  - check:
-      audit: "dpkg -s apparmor"
-      constraints:
-        platform:
-        - ubuntu16
-        lsm:
-        - apparmor
-      tests:
-        test_items:
-        - flag: "install ok installed"
-          set: true
-      remediation: |
-        Install SELinux or apparmor using the appropriate package manager or manual installation:
-        # yum install libselinux
-        # apt-get install libselinux1
-        # zypper install libselinux
-        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-  - check:
-      audit: "apt-cache show libselinux1"
-      constraints:
-        platform:
-        - ubuntu18
-        lsm:
-        - selinux
-      tests:
-        test_items:
-        - flag: "Installed-Size:"
-          set: true
-      remediation: |
-        Install SELinux or apparmor using the appropriate package manager or manual installation:
-        # yum install libselinux
-        # apt-get install libselinux1
-        # zypper install libselinux
-        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-  - check:
-      audit: "apt-cache show apparmor"
-      constraints:
-        platform:
-        - ubuntu18
-        lsm:
-        - apparmor
-      tests:
-        test_items:
-        - flag: "Installed-Size:"
-          set: true
-      remediation: |
-        Install SELinux or apparmor using the appropriate package manager or manual installation:
-        # yum install libselinux
-        # apt-get install libselinux1
-        # zypper install libselinux
-        The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+  checks:
+    - id: 1.6.3.1
+      description: "Ensure SELinux or AppArmor are installed"
+      sub_checks:
+      - check:
+          audit: "rpm -q libselinux"
+          constraints:
+            platform:
+            - rhel7
+            lsm:
+            - selinux
+          tests:
+            test_items:
+            - flag: "is not installed"
+              set: false
+          remediation: |
+            Install SELinux or apparmor using the appropriate package manager or manual installation:
+            # yum install libselinux
+            # apt-get install libselinux1
+            # zypper install libselinux
+            The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+      - check:
+          audit: "rpm -q apparmor"
+          constraints:
+            platform:
+            - rhel7
+            lsm:
+            - apparmor
+          tests:
+            test_items:
+            - flag: "is not installed"
+              set: false
+          remediation: |
+            Install SELinux or apparmor using the appropriate package manager or manual installation:
+            # yum install libselinux
+            # apt-get install libselinux1
+            # zypper install libselinux
+            The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+      - check:
+          audit: "dpkg -s libselinux1"
+          constraints:
+            platform:
+            - ubuntu16
+            lsm:
+            - selinux
+          tests:
+            test_items:
+            - flag: "is not installed"
+              set: false
+          remediation: |
+            Install SELinux or apparmor using the appropriate package manager or manual installation:
+            # yum install libselinux
+            # apt-get install libselinux1
+            # zypper install libselinux
+            The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+      - check:
+          audit: "dpkg -s apparmor"
+          constraints:
+            platform:
+            - ubuntu16
+            lsm:
+            - apparmor
+          tests:
+            test_items:
+            - flag: "install ok installed"
+              set: true
+          remediation: |
+            Install SELinux or apparmor using the appropriate package manager or manual installation:
+            # yum install libselinux
+            # apt-get install libselinux1
+            # zypper install libselinux
+            The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+      - check:
+          audit: "apt-cache show libselinux1"
+          constraints:
+            platform:
+            - ubuntu18
+            lsm:
+            - selinux
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
+              set: true
+          remediation: |
+            Install SELinux or apparmor using the appropriate package manager or manual installation:
+            # yum install libselinux
+            # apt-get install libselinux1
+            # zypper install libselinux
+            The previous commands install SELinux, use the appropriate package if AppArmor is desired.
+      - check:
+          audit: "apt-cache show apparmor"
+          constraints:
+            platform:
+            - ubuntu18
+            lsm:
+            - apparmor
+          tests:
+            test_items:
+            - flag: "Installed-Size:"
+              set: true
+          remediation: |
+            Install SELinux or apparmor using the appropriate package manager or manual installation:
+            # yum install libselinux
+            # apt-get install libselinux1
+            # zypper install libselinux
+            The previous commands install SELinux, use the appropriate package if AppArmor is desired.
 
   scored: false
 - id: 1.7
@@ -8011,46 +8013,48 @@ groups:
       remediation: |
         Remove entries for any consoles that are not in a physically secure location.
       scored: true
-
-- id: 5.6.a
+- id: 5.6
   description: "Ensure access to the su command is restricted"
-  audit: "grep pam_wheel.so /etc/pam.d/su"
-  tests:
-    test_items:
-    - flag: "auth"
-      compare:
-      op: eq
-      value: "sufficient      pam_wheel.so trust use_uid"
-      set: true
-  remediation: |
-    Add the following line to the `/etc/pam.d/su` file:
+  checks:
+    - id: 5.6.a
+      description: "Ensure access to the su command is restricted"
+      audit: "grep pam_wheel.so /etc/pam.d/su"
+      tests:
+        test_items:
+        - flag: "auth"
+          compare:
+          op: eq
+          value: "sufficient      pam_wheel.so trust use_uid"
+          set: true
+      remediation: |
+        Add the following line to the `/etc/pam.d/su` file:
 
-    auth required pam_wheel.so use_uid
+        auth required pam_wheel.so use_uid
 
-    Create a comma separated list of users in the wheel statement in the `/etc/group` file:
+        Create a comma separated list of users in the wheel statement in the `/etc/group` file:
 
-    wheel:x:10:root,
+        wheel:x:10:root,
 
-  scored: true
+      scored: true
 
-- id: 5.6.b
-  description: "Ensure access to the su command is restricted"
-  audit: "grep wheel /etc/group"
-  type: manual
-  tests:
-    test_items:
-    - flag: "wheel:x:10:root,<user list>"
-      set: true
-  remediation: |
-    Add the following line to the `/etc/pam.d/su` file:
+    - id: 5.6.b
+      description: "Ensure access to the su command is restricted"
+      audit: "grep wheel /etc/group"
+      type: manual
+      tests:
+        test_items:
+        - flag: "wheel:x:10:root,<user list>"
+          set: true
+      remediation: |
+        Add the following line to the `/etc/pam.d/su` file:
 
-    auth required pam_wheel.so use_uid
+        auth required pam_wheel.so use_uid
 
-    Create a comma separated list of users in the wheel statement in the `/etc/group` file:
+        Create a comma separated list of users in the wheel statement in the `/etc/group` file:
 
-    wheel:x:10:root,
+        wheel:x:10:root,
 
-  scored: true
+      scored: true
 
 - id: 6
   description: "System Maintenance"
