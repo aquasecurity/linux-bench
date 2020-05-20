@@ -19,7 +19,7 @@ func app(cmd *cobra.Command, args []string) {
 	if linuxCisVersion != "" {
 		version = linuxCisVersion
 	} else {
-		version = "1.1.0"
+		version = "2.0.0"
 	}
 
 	path, err := getDefinitionFilePath(version)
