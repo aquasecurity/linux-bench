@@ -306,8 +306,11 @@ groups:
       audit: "mount | grep -E '\\s/tmp\\s'"   
       tests:
         test_items:
-        - flag: "tmpfs on /tmp type tmpfs"
-          set: true                        
+        - flag: ""
+          compare:
+            op: eq          
+            value: ""
+          set: false                        
       remediation: |
             Configure /etc/fstab as appropriate.
             example: 
