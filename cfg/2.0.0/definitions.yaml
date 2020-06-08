@@ -7033,13 +7033,16 @@ groups:
       description: "Ensure rsyslog default file permissions configured"
       sub_checks:
       - check:
-          audit: "grep ^\\$FileCreateMode /etc/rsyslog.conf /etc/rsyslog.d/*.conf"   
+          audit: "grep ^\\$FileCreateMode /etc/rsyslog.conf /etc/rsyslog.d/*.conf -h | tr \"$\" \" \" "   
           constraints:          
             syslog:
             - rsyslog
           tests:
             test_items:
-            - flag: "\\$FileCreateMode 0640"
+            - flag: "FileCreateMode"
+              compare:
+                op: bitmask
+                value: "0640"
               set: true                        
           remediation: |
                 Edit the `/etc/rsyslog.conf` and `/etc/rsyslog.d/*.conf` files and set `$FileCreateMode` to `0640` or more restrictive:
@@ -8402,13 +8405,21 @@ groups:
             
     - id: 6.1.3
       description: "Ensure permissions on /etc/shadow are configured"
-      audit: "stat -c %a/Uid:%U/%uGid:%G/%g /etc/shadow"   
+      audit: "stat -c \"Uid:%U/%u Gid:%G permissions=%a\" /etc/shadow"   
       tests:
-        bin_op: or
+        bin_op: and
         test_items:
-        - flag: "640/Uid:root/0Gid:root/0"
+        - flag: "Uid:root/0"
           set: true                        
-        - flag: "640/Uid:root/0Gid:shadow"
+        - flag: "Gid"
+          compare:
+            op: regex
+            value: 'shadow|root'
+          set: true  
+        - flag: "permissions"
+          compare:
+            op: bitmask
+            value: "640"
           set: true
       remediation: |
             Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/shadow` :
@@ -8422,10 +8433,10 @@ groups:
             
     - id: 6.1.4
       description: "Ensure permissions on /etc/group are configured"
-      audit: "stat -c %a/Uid:%U/%uGid:%G/%g /etc/group"   
+      audit: "stat -c \"Uid:%U/%u Gid:%G/%g permissions=%a\" /etc/group"   
       tests:
         test_items:
-        - flag: "644/Uid:root/0Gid:root/0"
+        - flag: "Uid:root/0 Gid:root/0 permissions=644"
           set: true                        
       remediation: |
             Run the following command to set permissions on `/etc/group` :
@@ -8438,14 +8449,22 @@ groups:
             
     - id: 6.1.5
       description: "Ensure permissions on /etc/gshadow are configured"
-      audit: "stat -c %a/Uid:%U/%uGid:%G/%g /etc/gshadow"   
+      audit: "stat -c \"Uid:%U/%u Gid:%G permissions=%a\" /etc/gshadow"   
       tests:
-        bin_op: or
+        bin_op: and
         test_items:
-        - flag: "640/Uid:root/0Gid:root/0"
+        - flag: "Uid:root/0"
           set: true                        
-        - flag: "640/Uid:root/0Gid:shadow"
-          set: true
+        - flag: "Gid"
+          compare:
+            op: regex
+            value: 'shadow|root'
+          set: true  
+        - flag: "permissions"
+          compare:
+            op: bitmask
+            value: "640"
+          set: true  
       remediation: |
             Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/gshadow` :
             
@@ -8457,11 +8476,17 @@ groups:
             
     - id: 6.1.6
       description: "Ensure permissions on /etc/passwd- are configured"
-      audit: "stat -c %a/Uid:%U/%uGid:%G/%g /etc/passwd-"   
+      audit: "stat -c \"Uid:%U/%u Gid:%G/%g permissions=%a\" /etc/passwd-"   
       tests:
+        bin_op: and
         test_items:
-        - flag: "600/Uid:root/0Gid:root/0"
-          set: true                        
+        - flag: "Uid:root/0 Gid:root/0"
+          set: true
+        - flag: "permissions"
+          compare:
+            op: bitmask
+            value: "600"
+          set: true                    
       remediation: |
             Run the following command to set permissions on `/etc/passwd-` :
             
@@ -8473,14 +8498,22 @@ groups:
             
     - id: 6.1.7
       description: "Ensure permissions on /etc/shadow- are configured"
-      audit: "stat -c %a/Uid:%U/%uGid:%G/%g /etc/shadow-"   
+      audit: "stat -c \"Uid:%U/%u Gid:%G permissions=%a\" /etc/shadow-"   
       tests:
-        bin_op: or
+        bin_op: and
         test_items:
-        - flag: "640/Uid:root/0Gid:root/0"
+        - flag: "Uid:root/0"
           set: true                        
-        - flag: "640/Uid:root/0Gid:shadow"
-          set: true
+        - flag: "Gid"
+          compare:
+            op: regex
+            value: 'shadow|root'
+          set: true  
+        - flag: "permissions"
+          compare:
+            op: bitmask
+            value: "640"
+          set: true 
       remediation: |
             Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/shadow-` :
             
@@ -8493,11 +8526,17 @@ groups:
             
     - id: 6.1.8
       description: "Ensure permissions on /etc/group- are configured"
-      audit: "stat -c %a/Uid:%U/%uGid:%G/%g /etc/group-"   
+      audit: "stat -c \"Uid:%U/%u Gid:%G/%g permissions=%a\" /etc/group-"   
       tests:
+        bin_op: and
         test_items:
-        - flag: "644/Uid:root/0Gid:root/0"
-          set: true                        
+        - flag: "Uid:root/0 Gid:root/0"
+          set: true
+        - flag: "permissions"
+          compare:
+            op: bitmask
+            value: "644"
+          set: true
       remediation: |
             Run the following command to set permissions on `/etc/group-` :
             
@@ -8509,14 +8548,22 @@ groups:
             
     - id: 6.1.9
       description: "Ensure permissions on /etc/gshadow- are configured"
-      audit: "stat -c %a/Uid:%U/%uGid:%G/%g /etc/gshadow-"   
+      audit: "stat -c \"Uid:%U/%u Gid:%G permissions=%a\" /etc/gshadow-"   
       tests:
-        bin_op: or
+        bin_op: and
         test_items:
-        - flag: "640/Uid:root/0Gid:root/0"
+        - flag: "Uid:root/0"
           set: true                        
-        - flag: "640/Uid:root/0Gid:shadow"
-          set: true
+        - flag: "Gid"
+          compare:
+            op: regex
+            value: 'shadow|root'
+          set: true  
+        - flag: "permissions"
+          compare:
+            op: bitmask
+            value: "640"
+          set: true 
       remediation: |
             Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/gshadow-` :
             
