@@ -399,7 +399,7 @@ groups:
             
     - id: 1.1.5
       description: "Ensure noexec option set on /tmp partition"
-      audit: "mount | grep /tmp"   
+      audit: "mount | grep -E '\\s/tmp\\s' | grep -v noexec"   
       tests:
         test_items:
         - flag: ""
