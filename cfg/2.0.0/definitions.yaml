@@ -2792,7 +2792,7 @@ groups:
                 
                 zypper remove xorg-x11*
       - check:
-          audit: "apt-cache show xserver-xorg*"
+          audit: "apt-cache show xserver-xorg* | grep Package"
           constraints:          
             platform:
             - ubuntu18
