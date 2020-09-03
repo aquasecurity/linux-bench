@@ -2792,13 +2792,20 @@ groups:
                 
                 zypper remove xorg-x11*
       - check:
-          audit: "apt-cache show xserver-xorg* | grep Package"
+          audit: "apt-cache policy xserver-xorg* | grep Installed -B1"
+          use_multiple_values: true
           constraints:          
             platform:
             - ubuntu18
-          tests:          
+          tests:
+            bin_op: or
             test_items:
-            - flag: "Installed-Size:"
+            - flag: "Installed"
+              compare:
+                op: eq
+                value: "(none)"    
+              set: true   
+            - flag: "Installed"  
               set: false                                 
           remediation: |
                 Remove the X Windows System packages using the appropriate package manager or manual installation:
