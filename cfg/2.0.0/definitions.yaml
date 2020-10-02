@@ -348,7 +348,7 @@ groups:
       scored: true
     - id: 1.1.3
       description: "Ensure nodev option set on /tmp partition"
-      audit: "mount | grep -E '\\s/tmp\\s' | grep -v nodev"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/tmp\\s' | grep -v nodev"
       tests:
         test_items:
         - flag: ""
@@ -372,7 +372,7 @@ groups:
             
     - id: 1.1.4
       description: "Ensure nosuid option set on /tmp partition"
-      audit: "mount | grep -E '\\s/tmp\\s' | grep -v nosuid"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/tmp\\s' | grep -v nosuid"
       tests:
         test_items:
         - flag: ""
@@ -396,7 +396,7 @@ groups:
             
     - id: 1.1.5
       description: "Ensure noexec option set on /tmp partition"
-      audit: "mount | grep /tmp"   
+      audit: "nsenter -m -t 1 mount | grep /tmp"
       tests:
         test_items:
         - flag: ""
@@ -436,7 +436,7 @@ groups:
       scored: true
     - id: 1.1.8
       description: "Ensure nodev option set on /var/tmp partition"
-      audit: "mount | grep -E '\\s/var/tmp\\s' | grep -v nodev"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/var/tmp\\s' | grep -v nodev"
       tests:
         test_items:
         - flag: ""
@@ -455,7 +455,7 @@ groups:
             
     - id: 1.1.9
       description: "Ensure nosuid option set on /var/tmp partition"
-      audit: "mount | grep -E '\\s/var/tmp\\s' | grep -v nosuid"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/var/tmp\\s' | grep -v nosuid"
       tests:
         test_items:
         - flag: ""
@@ -472,7 +472,7 @@ groups:
       scored: true
     - id: 1.1.10
       description: "Ensure noexec option set on /var/tmp partition"
-      audit: "mount | grep -E '\\s/var/tmp\\s' | grep -v noexec"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/var/tmp\\s' | grep -v noexec"
       tests:
         test_items:
         - flag: ""
@@ -521,7 +521,7 @@ groups:
       scored: true
     - id: 1.1.14
       description: "Ensure nodev option set on /home partition"
-      audit: "mount | grep -E '\\s/home\\s' | grep -v nodev"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/home\\s' | grep -v nodev"
       tests:
         test_items:
         - flag: ""
@@ -539,7 +539,7 @@ groups:
       
     - id: 1.1.15
       description: "Ensure nodev option set on /dev/shm partition"
-      audit: "mount | grep -E '\\s/dev/shm\\s' | grep -v nodev"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/dev/shm\\s' | grep -v nodev"
       tests:
         test_items:
         - flag: ""
@@ -559,7 +559,7 @@ groups:
             
     - id: 1.1.16
       description: "Ensure nosuid option set on /dev/shm partition"
-      audit: "mount | grep -E '\\s/dev/shm\\s' | grep -v nosuid"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/dev/shm\\s' | grep -v nosuid"
       tests:
         test_items:
         - flag: ""
@@ -578,7 +578,7 @@ groups:
 
     - id: 1.1.17
       description: "Ensure noexec option set on /dev/shm partition"
-      audit: "mount | grep -E '\\s/dev/shm\\s' | grep -v noexec"   
+      audit: "nsenter -m -t 1 mount | grep -E '\\s/dev/shm\\s' | grep -v noexec"
       tests:
         test_items:
         - flag: ""
