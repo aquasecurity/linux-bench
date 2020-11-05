@@ -132,7 +132,7 @@ func getConstraints() (constraints []string, err error) {
 		fmt.Sprintf("syslog=%s", syslog),
 		fmt.Sprintf("lsm=%s", lsm),
 	)
-	
+
 	glog.V(1).Info(fmt.Sprintf("The constraints are:, %s", constraints))
 	return constraints, nil
 }
