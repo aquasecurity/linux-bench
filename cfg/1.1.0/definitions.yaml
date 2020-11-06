@@ -8419,7 +8419,7 @@ groups:
             
     - id: 6.2.6
       description: "Ensure root PATH Integrity"
-      audit: "./6.2.6.sh"
+      audit: "./cfg/1.1.0/6.2.6.sh"
       tests:
         test_items:
         - flag: ""
@@ -8434,7 +8434,7 @@ groups:
       
     - id: 6.2.7
       description: "Ensure all users' home directories exist"
-      audit: "./6.2.7.sh"      
+      audit: "./cfg/1.1.0/6.2.7.sh"
       tests:
         test_items:
         - flag: ""
@@ -8448,7 +8448,7 @@ groups:
             
     - id: 6.2.8
       description: "Ensure users' home directories permissions are 750 or more restrictive"
-      audit: "./6.2.8.sh"
+      audit: "./cfg/1.1.0/6.2.8.sh"
       tests:
         test_items:
         - flag: ""
@@ -8462,7 +8462,7 @@ groups:
             
     - id: 6.2.9
       description: "Ensure users own their home directories"
-      audit: "./6.2.9.sh"
+      audit: "./cfg/1.1.0/6.2.9.sh"
       tests:
         test_items:
         - flag: ""
@@ -8477,7 +8477,7 @@ groups:
             
     - id: 6.2.10
       description: "Ensure users' dot files are not group or world writable"
-      audit: "./6.2.10.sh"
+      audit: "./cfg/1.1.0/6.2.10.sh"
       tests:
         test_items:
         - flag: ""
@@ -8491,7 +8491,7 @@ groups:
       
     - id: 6.2.11
       description: "Ensure no users have .forward files"
-      audit: "./6.2.11.sh"
+      audit: "./cfg/1.1.0/6.2.11.sh"
       tests:
         test_items:
         - flag: ""
@@ -8506,7 +8506,7 @@ groups:
             
     - id: 6.2.12
       description: "Ensure no users have .netrc files"
-      audit: "./6.2.12.sh"
+      audit: "./cfg/1.1.0/6.2.12.sh"
       tests:
         test_items:
         - flag: ""
@@ -8520,7 +8520,7 @@ groups:
             
     - id: 6.2.13
       description: "Ensure users' .netrc Files are not group or world accessible"
-      audit: "./6.2.13.sh"        
+      audit: "./cfg/1.1.0/6.2.13.sh"
       tests:
         test_items:
         - flag: ""
@@ -8534,7 +8534,7 @@ groups:
                                                                                                                     
     - id: 6.2.14
       description: "Ensure no users have .rhosts files"
-      audit: "./6.2.14.sh"
+      audit: "./cfg/1.1.0/6.2.14.sh"
       tests:
         test_items:
         - flag: ""
@@ -8548,7 +8548,7 @@ groups:
         
     - id: 6.2.15
       description: "Ensure all groups in /etc/passwd exist in /etc/group"
-      audit: "./6.2.15.sh"
+      audit: "./cfg/1.1.0/6.2.15.sh"
       tests:
         test_items:
         - flag: ""
@@ -8562,7 +8562,7 @@ groups:
            
     - id: 6.2.16
       description: "Ensure no duplicate UIDs exist"      
-      audit: "./6.2.16.sh"
+      audit: "./cfg/1.1.0/6.2.16.sh"
       tests:
         test_items:
         - flag: ""
@@ -8576,7 +8576,7 @@ groups:
             
     - id: 6.2.17
       description: "Ensure no duplicate GIDs exist"      
-      audit: "./6.2.17.sh"
+      audit: "./cfg/1.1.0/6.2.17.sh"
       tests:
         test_items:
         - flag: ""
@@ -8590,7 +8590,7 @@ groups:
             
     - id: 6.2.18
       description: "Ensure no duplicate user names exist"      
-      audit: "./6.2.18.sh"
+      audit: "./cfg/1.1.0/6.2.18.sh"
       tests:
         test_items:
         - flag: ""
@@ -8605,7 +8605,7 @@ groups:
             
     - id: 6.2.19
       description: "Ensure no duplicate group names exist"      
-      audit: "./6.2.19.sh"
+      audit: "./cfg/1.1.0/6.2.19.sh"
       tests:
         test_items:
         - flag: ""
