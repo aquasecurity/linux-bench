@@ -52,7 +52,7 @@ func GetBootLoader() (boot string, err error) {
 }
 
 func GetSystemLogManager() (syslog string, err error) {
-	out, err := exec.Command("bash", "-c", "sudo lsof | grep /var/log/syslog | cut -f1 -d' '").Output()
+	out, err := exec.Command("bash", "-c", "sudo lsof +D /var/log | grep /var/log/syslog | cut -f1 -d' '").Output()
 	if err != nil {
 		out, err := exec.Command("bash", "-c", "service rsyslog status").Output()
 		if err != nil {
