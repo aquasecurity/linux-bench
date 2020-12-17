@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/aquasecurity/linux-bench.svg?branch=main)](https://travis-ci.org/aquasecurity/linux-bench)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub Release][release-img]][release]
+[![License][license-img]][license]
 [![Coverage Status][cov-img]][cov]
+[![GitHub Build Actions][build-action-img]][actions]
+[![GitHub Release Actions][release-action-img]][actions]
 
-[cov-img]: https://codecov.io/github/aquasecurity/linux-bench/branch/main/graph/badge.svg
-[cov]: https://codecov.io/github/aquasecurity/linux-bench
 
 Linux-bench is a Go application that checks whether the Linux operating system is configured securely by running the checks documented in the CIS Distribution Independent Linux Benchmark.
 
@@ -51,3 +51,11 @@ Where `<version>` is the version of linux cis for which the test applies.
 # Contributing
 
 We welcome PRs and issue reports.
+
+[actions]: https://github.com/aquasecurity/linux-bench/actions
+[build-action-img]: https://github.com/aquasecurity/linux-bench/workflows/build/badge.svg
+[cov-img]: https://codecov.io/github/aquasecurity/linux-bench/branch/main/graph/badge.svg
+[cov]: https://codecov.io/github/aquasecurity/linux-bench
+[license-img]: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+[license]: https://opensource.org/licenses/Apache-2.0
+[release-action-img]: https://github.com/aquasecurity/linux-bench/workflows/release/badge.svg
