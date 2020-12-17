@@ -58,4 +58,6 @@ We welcome PRs and issue reports.
 [cov]: https://codecov.io/github/aquasecurity/linux-bench
 [license-img]: https://img.shields.io/badge/License-Apache%202.0-blue.svg
 [license]: https://opensource.org/licenses/Apache-2.0
+[release-img]: https://img.shields.io/github/release/aquasecurity/linux-bench.svg
+[release]: https://github.com/aquasecurity/linux-bench/releases
 [release-action-img]: https://github.com/aquasecurity/linux-bench/workflows/release/badge.svg
