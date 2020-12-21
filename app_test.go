@@ -8,7 +8,6 @@ import (
 var (
 	cfgdir = "./cfg"
 	ver    = "1.1.0"
-	path   string
 )
 
 // Tests all standard linux-bench defintion files
@@ -31,20 +30,12 @@ func TestGetDefinitionFilePath(t *testing.T) {
 	}
 }
 
-func TestGetControls(t *testing.T) {
-	var err error
-	path, err = getDefinitionFilePath(ver)
-	if err != nil {
-		t.Errorf("unexpected error: %s\n", err)
-	}
-
-	_, err = getControls(path, nil)
-	if err != nil {
-		t.Errorf("unexpected error: %s\n", err)
-	}
-}
-
 func TestRunControls(t *testing.T) {
+	path, err := getDefinitionFilePath(ver)
+	if err != nil {
+		t.Errorf("unexpected error: %s\n", err)
+	}
+
 	control, err := getControls(path, nil)
 	if err != nil {
 		t.Errorf("unexpected error: %s\n", err)
