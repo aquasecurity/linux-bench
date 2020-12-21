@@ -1,6 +1,8 @@
+---
 env:
   - GO111MODULE=on
   - LINUXBENCH_CFG=/etc/linux-bench/cfg
+
 builds:
   - main: .
     binary: linux-bench
