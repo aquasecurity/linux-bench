@@ -25,7 +25,7 @@ jobs:
         with:
           config_data: |
             extends: relaxed
-              rules:
+            rules:
             #   new-line-at-end-of-file:
             #     level: warning
               trailing-spaces:
