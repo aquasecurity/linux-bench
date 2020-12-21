@@ -32,4 +32,3 @@ jobs:
                 level: warning
               line-length:
                 level: warning
-                  
