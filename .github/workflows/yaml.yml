@@ -29,6 +29,6 @@ jobs:
             #   new-line-at-end-of-file:
             #     level: warning
               trailing-spaces:
-                level: disable
+                level: warning
               line-length:
-                level: disable
+                level: warning
