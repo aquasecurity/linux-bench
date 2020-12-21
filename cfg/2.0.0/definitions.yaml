@@ -1479,7 +1479,6 @@ groups:
                 op: eq
                 value: "0"
               set: false            
-            test_items:
             - flag: "enforcing"
               compare:
                 op: eq
@@ -2456,7 +2455,7 @@ groups:
         test_items:
         - flag: "restrict -4 default kod nomodify notrap nopeer noquery"
           set: true
-          flag: "restrict -6 default kod nomodify notrap nopeer noquery"
+        - flag: "restrict -6 default kod nomodify notrap nopeer noquery"
           set: true
       remediation: |
             Add or edit restrict lines in `/etc/ntp.conf` to match the following:
@@ -6729,15 +6728,14 @@ groups:
         - flag: "-w /etc/sudoers -p wa -k scope"
           set: true
         - flag: "-w /etc/sudoers.d/ -p wa -k scope"
-          set: true                       
+          set: true
       remediation: |
             Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules 
             Example: vi /etc/audit/rules.d/audit.rules 
             and add the following lines:
             -w /etc/sudoers -p wa -k scope
             -w /etc/sudoers.d/ -p wa -k scope
-            
-      scored: true                  
+      scored: true
             
     - id: 4.1.16.b
       description: "Ensure changes to system administration scope (sudoers) is collected"
@@ -6748,23 +6746,15 @@ groups:
         - flag: "-w /etc/sudoers -p wa -k scope"
           set: true
         - flag: "-w /etc/sudoers.d -p wa -k scope"
-          set: true                       
+          set: true
       remediation: |
             Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules 
             Example: vi /etc/audit/rules.d/audit.rules 
             and add the following lines:
             -w /etc/sudoers -p wa -k scope
-            -w /etc/sudoers.d/ -p wa -k scope
-            
-      scored: true                     
-      remediation: |
-            Add the following line to the `/etc/audit/rules.d/*.rules` file:
-            
-            -w /etc/sudoers -p wa -k scope
-            -w /etc/sudoers.d/ -p wa -k scope
-            
-      scored: true                  
-            
+            -w /etc/sudoers.d/ -p wa -k scope            
+      scored: true
+
     - id: 4.1.17.a
       description: "Ensure system administrator actions (sudolog) are collected"
       audit: "grep actions /etc/audit/rules.d/*.rules"   
@@ -6774,14 +6764,13 @@ groups:
           compare:
             op: eq
             value: "-w /var/log/sudo.log -p wa -k actions"
-          set: true                        
+          set: true
       remediation: |
             Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules 
             Example: vi /etc/audit/rules.d/audit.rules 
             and add the following lines:
-            -w /var/log/sudo.log -p wa -k actions
-            
-      scored: true                  
+            -w /var/log/sudo.log -p wa -k actions           
+      scored: true
             
     - id: 4.1.17.b
       description: "Ensure system administrator actions (sudolog) are collected"
@@ -6789,14 +6778,13 @@ groups:
       tests:
         test_items:
         - flag: "-w /var/log/sudo.log -p wa -k actions"
-          set: true                      
+          set: true
       remediation: |
             Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules 
             Example: vi /etc/audit/rules.d/audit.rules 
             and add the following lines:
             -w /var/log/sudo.log -p wa -k actions
-            
-      scored: true                  
+      scored: true
             
     - id: 4.1.18.a
       description: "Ensure kernel module loading and unloading is collected"
@@ -6811,7 +6799,7 @@ groups:
         - flag: "-w /sbin/modprobe -p x -k modules"
           set: true
         - flag: "-a always,exit -F arch=b64 -S init_module -S delete_module -k modules"
-          set: true                        
+          set: true
       remediation: |
             For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules 
             Example: vi /etc/audit/rules.d/audit.rules 
@@ -6820,8 +6808,7 @@ groups:
             -w /sbin/rmmod -p x -k modules
             -w /sbin/modprobe -p x -k modules
             -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
-            
-      scored: true                  
+      scored: true
 
     - id: 4.1.18.b
       description: "Ensure kernel module loading and unloading is collected"
@@ -6836,7 +6823,7 @@ groups:
         - flag: "-w /sbin/modprobe -p x -k modules"
           set: true
         - flag: "-a always,exit -F arch=b64 -S init_module,delete_module -F key=modules"
-          set: true                        
+          set: true
       remediation: |
             For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules 
             Example: vi /etc/audit/rules.d/audit.rules 
@@ -6845,10 +6832,8 @@ groups:
             -w /sbin/rmmod -p x -k modules
             -w /sbin/modprobe -p x -k modules
             -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
-            
       scored: true
-
-      scored: true              
+              
     - id: 4.1.19
       description: "Ensure the audit configuration is immutable"
       audit: "grep ^\\s*[^#] /etc/audit/rules.d/*.rules | tail -1"   
