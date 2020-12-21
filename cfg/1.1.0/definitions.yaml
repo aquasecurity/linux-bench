@@ -1229,7 +1229,6 @@ groups:
           test_items:
           - flag: "selinux=0"
             set: false            
-          test_items:
           - flag: "enforcing=0"
             set: false                                  
         remediation: |
@@ -1254,7 +1253,6 @@ groups:
           test_items:
           - flag: "selinux=0"
             set: false            
-          test_items:
           - flag: "enforcing=0"
             set: false                                  
         remediation: |
@@ -3553,7 +3551,7 @@ groups:
         test_items:
         - flag: "restrict -4 default kod nomodify notrap nopeer noquery"
           set: true
-          flag: "restrict -6 default kod nomodify notrap nopeer noquery"
+        - flag: "restrict -6 default kod nomodify notrap nopeer noquery"
           set: true
       remediation: |
             Add or edit restrict lines in `/etc/ntp.conf` to match the following:
@@ -6257,16 +6255,8 @@ groups:
             Add the following line to the `/etc/audit/audit.rules` file:
             
             -w /etc/sudoers -p wa -k scope
-            -w /etc/sudoers.d/ -p wa -k scope
-            
+            -w /etc/sudoers.d/ -p wa -k scope            
       scored: true                     
-      remediation: |
-            Add the following line to the `/etc/audit/audit.rules` file:
-            
-            -w /etc/sudoers -p wa -k scope
-            -w /etc/sudoers.d/ -p wa -k scope
-            
-      scored: true                  
             
     - id: 4.1.16.a
       description: "Ensure system administrator actions (sudolog) are collected"
@@ -6344,10 +6334,8 @@ groups:
             -w /sbin/rmmod -p x -k modules
             -w /sbin/modprobe -p x -k modules
             -a always,exit -F arch=b64 -S init_module -S delete_module -k modules
-            
       scored: true
-
-      scored: true              
+      
     - id: 4.1.18
       description: "Ensure the audit configuration is immutable"
       audit: "grep ^\\s*[^#] /etc/audit/audit.rules | tail -1"   
@@ -7606,7 +7594,7 @@ groups:
           test_items:
           - flag: "PASS_MAX_DAYS"
             set: true
-            flag: "90"
+          - flag: "90"
             set: true
         remediation: |
           Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
@@ -7665,7 +7653,7 @@ groups:
           test_items:
           - flag: "PASS_MIN_DAYS"
             set: true
-            flag: "7"
+          - flag: "7"
             set: true
         remediation: |
           Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
@@ -7724,7 +7712,7 @@ groups:
           test_items:
           - flag: "PASS_WARN_AGE"
             set: true
-            flag: "7"
+          - flag: "7"
             set: true
         remediation: |
           Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
@@ -7854,10 +7842,10 @@ groups:
           test_items:
           - flag: "Last Change : <date>"
             set: true
-        type: manual
         remediation: |
           Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.
         scored: true
+
     - id: 5.4.2
       description: "Ensure system accounts are non-login"
       audit: "egrep -v \"^\\+\" /etc/passwd | awk -F: '($1!=\"root\" && $1!=\"sync\" && $1!=\"shutdown\" && $1!=\"halt\" && $3<500 && $7!=\"/sbin/nologin\" && $7!=\"/bin/false\") {print}'"   
