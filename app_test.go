@@ -5,14 +5,9 @@ import (
 	"testing"
 )
 
-var (
-	cfgdir = "./cfg"
-	ver    = "1.1.0"
-)
-
 // Tests all standard linux-bench defintion files
 func TestGetDefinitionFilePath(t *testing.T) {
-	d, err := os.Open(cfgdir)
+	d, err := os.Open("./cfg")
 	if err != nil {
 		t.Errorf("unexpected error: %s\n", err)
 	}
@@ -23,6 +18,7 @@ func TestGetDefinitionFilePath(t *testing.T) {
 	}
 
 	for _, ver := range vers {
+		t.Logf("%v", ver)
 		_, err := getDefinitionFilePath(ver)
 		if err != nil {
 			t.Errorf("unexpected error: %s\n", err)
@@ -31,7 +27,8 @@ func TestGetDefinitionFilePath(t *testing.T) {
 }
 
 func TestRunControls(t *testing.T) {
-	path, err := getDefinitionFilePath(ver)
+	cfgDir = "./hack"
+	path, err := getDefinitionFilePath("test-definitions")
 	if err != nil {
 		t.Errorf("unexpected error: %s\n", err)
 	}
