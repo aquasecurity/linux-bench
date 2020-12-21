@@ -22,3 +22,14 @@ jobs:
 
       - name: YAML Lint
         uses: ibiqlik/action-yamllint@v3.0.0
+        with:
+          config_data: |
+            extends: default
+            rules:
+              new-line-at-end-of-file:
+                level: warning
+              trailing-spaces:
+                level: warning
+              line-length:
+                level: warning
+                  
