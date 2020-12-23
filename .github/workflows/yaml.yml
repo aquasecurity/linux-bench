@@ -1,0 +1,34 @@
+name: YAML Linting
+
+on:
+  push:
+    paths-ignore:
+      - "*.md"
+      - "LICENSE"
+      - "NOTICE"
+  pull_request:
+    paths-ignore:
+      - "*.md"
+      - "LICENSE"
+      - "NOTICE"
+  workflow_dispatch:
+
+jobs:
+  YAML-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: YAML Lint
+        uses: ibiqlik/action-yamllint@v3.0.0
+        with:
+          config_data: |
+            extends: relaxed
+            rules:
+            #   new-line-at-end-of-file:
+            #     level: warning
+              trailing-spaces: disable
+              line-length: disable
+              new-lines:
+                level: warning
