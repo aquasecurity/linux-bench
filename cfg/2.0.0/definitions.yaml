@@ -17,7 +17,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/cramfs.conf
@@ -35,7 +34,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/cramfs.conf
@@ -50,7 +48,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/freevxfs.conf
@@ -68,7 +65,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/freevxfs.conf
@@ -83,7 +79,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/jffs2.conf
@@ -101,7 +96,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/jffs2.conf
@@ -116,7 +110,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/hfs.conf
@@ -134,7 +127,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/hfs.conf
@@ -149,7 +141,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/hfsplus.conf
@@ -167,7 +158,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/hfsplus.conf
@@ -187,7 +177,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install /bin/true"
-                    set: true
               remediation: |
                 Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
                 Example: vim /etc/modprobe.d/squashfs.conf
@@ -207,7 +196,6 @@ groups:
               tests:
                 test_items:
                   - flag: ""
-                    set: true
               remediation: |
                 Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
                 Example: vim /etc/modprobe.d/squashfs.conf
@@ -222,7 +210,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/udf.conf
@@ -239,7 +226,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/udf.conf
@@ -274,7 +260,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install /bin/true"
-                    set: true
               remediation: |
                 Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
                 Example: vim /etc/modprobe.d/vfat.conf
@@ -293,7 +278,6 @@ groups:
               tests:
                 test_items:
                   - flag: ""
-                    set: true
               remediation: |
                 Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
                 Example: vim /etc/modprobe.d/vfat.conf
@@ -358,7 +342,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/fstab file and add nodev to the fourth field (mounting options) for the /tmp partition.
           See the fstab(5) manual page for more information.
@@ -381,7 +364,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/fstab file and add nosuid to the fourth field (mounting options) for the /tmp
           partition. See the fstab(5) manual page for more information.
@@ -404,7 +386,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the `/etc/fstab` file and add `noexec` to the fourth field (mounting options) for the `/tmp` partition. See the `fstab(5)` manual page for more information.
                       Run the following command to remount `/tmp` :
@@ -419,7 +400,6 @@ groups:
         tests:
           test_items:
             - flag: "/dev/xvdg1 on /var type ext4 (rw,relatime,data=ordered)"
-              set: true
         remediation: |
           For new installations, during installation create a custom partition setup and specify a separate partition for `/var` .
           For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
@@ -430,7 +410,6 @@ groups:
         tests:
           test_items:
             - flag: " on /var/tmp type ext4 (rw,nosuid,nodev,noexec,relatime)"
-              set: true
         remediation: |
           For new installations, during installation create a custom partition setup and specify a separate partition for `/var/tmp` .
           For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
@@ -444,7 +423,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/fstab file and add nodev to the fourth field (mounting options) for the
           /var/tmp partition. See the fstab(5) manual page for more information.
@@ -462,7 +440,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/fstab file and add nosuid to the fourth field (mounting options) for the
           /var/tmp partition. See the fstab(5) manual page for more information.
@@ -479,7 +456,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/fstab file and add noexec to the fourth field (mounting options) for the
           /var/tmp partition. See the fstab(5) manual page for more information.
@@ -492,7 +468,6 @@ groups:
         tests:
           test_items:
             - flag: "/dev/xvdh1 on /var/log type ext4 (rw,relatime,data=ordered)"
-              set: true
         remediation: |
           For new installations, during installation create a custom partition setup and specify a separate partition for `/var/log` .
           For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
@@ -503,7 +478,6 @@ groups:
         tests:
           test_items:
             - flag: "/dev/xvdi1 on /var/log/audit type ext4 (rw,relatime,data=ordered)"
-              set: true
         remediation: |
           For new installations, during installation create a custom partition setup and specify a separate partition for `/var/log/audit` .
           For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
@@ -514,7 +488,6 @@ groups:
         tests:
           test_items:
             - flag: "/dev/xvdf1 on /home type ext4 (rw,nodev,relatime,data=ordered)"
-              set: true
         remediation: |
           For new installations, during installation create a custom partition setup and specify a separate partition for `/home` .
           For systems that were previously installed, create a new partition and configure `/etc/fstab` as appropriate.
@@ -528,7 +501,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the `/etc/fstab` file and add `nodev` to the fourth field (mounting options) for the `/home`
           partition. See the `fstab(5)` manual page for more information.
@@ -546,7 +518,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the `/etc/fstab` file and add `nodev` to the fourth field (mounting options) for the `/dev/shm` partition.
           See the `fstab(5)` manual page for more information.
@@ -565,7 +536,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the `/etc/fstab` file and add `nosuid` to the fourth field (mounting options) for the `/dev/shm` partition.
           See the `fstab(5)` manual page for more information.
@@ -584,7 +554,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the `/etc/fstab` file and add `noexec` to the fourth field (mounting options) for the `/dev/shm` partition.
           See the `fstab(5)` manual page for more information.
@@ -627,7 +596,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Run the following command to set the sticky bit on all world writable directories:
           # df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null | xargs -I '{}' chmod a+t '{}'
@@ -645,7 +613,6 @@ groups:
               tests:
                 test_items:
                   - flag: "autofs 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `autofs` :
 
@@ -666,7 +633,6 @@ groups:
               tests:
                 test_items:
                   - flag: "disabled"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `autofs` :
 
@@ -688,7 +654,6 @@ groups:
                     compare:
                       op: eq
                       value: ""
-                    set: true
               remediation: |
                 Run one of the following commands to disable `autofs` :
 
@@ -706,7 +671,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/usb-storage.conf
@@ -724,7 +688,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
           Example: vim /etc/modprobe.d/usb-storage.conf
@@ -832,7 +795,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 Install AIDE using the appropriate package manager or manual installation:
 
@@ -856,7 +818,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 Install AIDE using the appropriate package manager or manual installation:
 
@@ -876,14 +837,22 @@ groups:
       - id: 1.3.2.a
         description: "Ensure filesystem integrity is regularly checked"
         audit: "crontab -u root -l | grep aide"
-        type: manual
+        tests:
+          test_items:
+            - flag: "aide --check"
         remediation: |
-          Run the following command:
-
+          Run the following commands: 
+          # cp ./config/aidecheck.service /etc/systemd/system/aidecheck.service 
+          # cp ./config/aidecheck.timer /etc/systemd/system/aidecheck.timer 
+          # chmod 0644 /etc/systemd/system/aidecheck.* 
+          
+          # systemctl reenable aidecheck.timer 
+          # systemctl restart aidecheck.timer 
+          # systemctl daemon-reload
+          
+          or Run the following command:
           # crontab -u root -e
-
           Add the following line to the crontab:
-
           0 5 * * * /usr/sbin/aide --check
 
         scored: true
@@ -891,16 +860,23 @@ groups:
       - id: 1.3.2.b
         description: "Ensure filesystem integrity is regularly checked"
         audit: "grep -r aide /etc/cron.* /etc/crontab"
-        type: manual
+        tests:
+          test_items:
+            - flag: "aide --check"
         remediation: |
-          Run the following command:
-
+          Run the following commands: 
+          # cp ./config/aidecheck.service /etc/systemd/system/aidecheck.service 
+          # cp ./config/aidecheck.timer /etc/systemd/system/aidecheck.timer 
+          # chmod 0644 /etc/systemd/system/aidecheck.* 
+          
+          # systemctl reenable aidecheck.timer 
+          # systemctl restart aidecheck.timer 
+          # systemctl daemon-reload
+          
+          or Run the following command:
           # crontab -u root -e
-
           Add the following line to the crontab:
-
           0 5 * * * /usr/sbin/aide --check
-
         scored: true
 
   - id: 1.4
@@ -917,7 +893,6 @@ groups:
               tests:
                 test_items:
                   - flag: "400/Uid:root/0Gid:root/0"
-                    set: true
               remediation: |
                 Run the following commands to set permissions on your grub configuration:
 
@@ -931,7 +906,6 @@ groups:
               tests:
                 test_items:
                   - flag: "400/Uid:root/0Gid:root/0"
-                    set: true
               remediation: |
                 Run the following commands to set permissions on your grub configuration:
 
@@ -944,14 +918,12 @@ groups:
         sub_checks:
           - check:
               audit: "grep \"^\\s*password\" /boot/grub/menu.lst"
-              type: manual
               constraints:
                 boot:
                   - grub
               tests:
                 test_items:
                   - flag: "password --md5 "
-                    set: true
               remediation: |
                 For grub based systems create an encrypted password with grub-md5-crypt:
                 # grub-crypt
@@ -981,14 +953,12 @@ groups:
                 # update-grub
           - check:
               audit: "grep \"^\\s*GRUB2_PASSWORD\" /boot/grub2/user.cfg"
-              type: manual
               constraints:
                 boot:
                   - grub2
               tests:
                 test_items:
-                  - flag: "password --md5 "
-                    set: true
+                  - flag: "GRUB2_PASSWORD"
               remediation: |
                 For grub based systems create an encrypted password with grub-md5-crypt:
                 # grub-crypt
@@ -1019,7 +989,13 @@ groups:
         scored: true
       - id: 1.4.3
         description: "Ensure authentication required for single user mode"
-        type: manual
+        audit: 'grep ^root:[*\!]: /etc/shadow'
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
         remediation: |
           Consult your documentation and configure single user mode to require a password for login as appropriate.
         scored: true
@@ -1037,7 +1013,6 @@ groups:
               tests:
                 test_items:
                   - flag: 'PROMPT_FOR_CONFIRM="no"'
-                    set: true
               remediation: |
                 If interactive boot is available disable it.
           - check:
@@ -1053,7 +1028,6 @@ groups:
                     compare:
                       op: eq
                       value: "no"
-                    set: true
               remediation: |
                 If interactive boot is available disable it.
         scored: false
@@ -1068,9 +1042,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "hard"
-              set: true
             - flag: "core"
-              set: true
         remediation: |
           Add the following line to `/etc/security/limits.conf` or a `/etc/security/limits.d/*` file:
 
@@ -1101,7 +1073,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Add the following line to `/etc/security/limits.conf` or a `/etc/security/limits.d/*` file:
 
@@ -1131,7 +1102,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Add the following line to `/etc/security/limits.conf` or a `/etc/security/limits.d/*` file:
 
@@ -1158,9 +1128,7 @@ groups:
           bin_op: or
           test_items:
             - flag: "enabled"
-              set: true
             - flag: "disabled"
-              set: true
         remediation: |
           Add the following line to `/etc/security/limits.conf` or a `/etc/security/limits.d/*` file:
 
@@ -1189,7 +1157,6 @@ groups:
               compare:
                 op: has
                 value: "kernel: NX (Execute Disable) protection: active"
-              set: true
         remediation: |
           On 32 bit systems install a kernel with PAE support, no installation is required on 64 bit systems:
                       If necessary configure your bootloader to load the new kernel and reboot the system.
@@ -1205,7 +1172,6 @@ groups:
               compare:
                 op: eq
                 value: "2"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -1226,7 +1192,6 @@ groups:
               compare:
                 op: eq
                 value: "2"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -1249,7 +1214,6 @@ groups:
               tests:
                 test_items:
                   - flag: "package prelink is not installed"
-                    set: true
               remediation: |
                 Run the following command to restore binaries to normal:
 
@@ -1381,7 +1345,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 Install SELinux or apparmor using the appropriate package manager or manual installation:
                 # yum install libselinux
@@ -1398,7 +1361,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 Install SELinux or apparmor using the appropriate package manager or manual installation:
                 # yum install libselinux
@@ -1415,7 +1377,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 Install SELinux or apparmor using the appropriate package manager or manual installation:
                 # yum install libselinux
@@ -1503,7 +1464,6 @@ groups:
               tests:
                 test_items:
                   - flag: "SELINUX=enforcing"
-                    set: true
               remediation: |
                 Edit the /etc/selinux/config file to set the SELINUX parameter:
                 SELINUX=enforcing
@@ -1523,17 +1483,14 @@ groups:
                     compare:
                       op: has
                       value: "enabled"
-                    set: true
                   - flag: "Current mode:"
                     compare:
                       op: has
                       value: "enforcing"
-                    set: true
                   - flag: "Mode from config file:"
                     compare:
                       op: has
                       value: "enforcing"
-                    set: true
               remediation: |
                 Edit the /etc/selinux/config file to set the SELINUX parameter:
                 SELINUX=enforcing
@@ -1549,7 +1506,6 @@ groups:
               tests:
                 test_items:
                   - flag: "SELINUXTYPE=targeted"
-                    set: true
               remediation: |
                 Edit the `/etc/selinux/config` file to set the SELINUXTYPE parameter:
 
@@ -1570,12 +1526,10 @@ groups:
                     compare:
                       op: has
                       value: "targeted"
-                    set: true
                   - flag: "Policy from config file:"
                     compare:
                       op: has
                       value: "mils"
-                    set: true
               remediation: |
                 Edit the `/etc/selinux/config` file to set the SELINUXTYPE parameter:
 
@@ -1595,7 +1549,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Uninstall s `etroubleshoot` using the appropriate package manager or manual installation:
 
@@ -1616,7 +1569,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Uninstall s `etroubleshoot` using the appropriate package manager or manual installation:
 
@@ -1660,7 +1612,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Uninstall `mcstrans` using the appropriate package manager or manual installation:
 
@@ -1719,7 +1670,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Investigate any unconfined daemons found during the audit action. They may need to have an existing security context assigned to them or a policy built for them.
         scored: true
@@ -1819,7 +1769,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/motd file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , or \v.
         scored: true
@@ -1840,7 +1789,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/issue file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , or \v :
           # echo "Authorized uses only. All activity may be monitored and reported." > /etc/issue
@@ -1855,7 +1803,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/issue.net file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , or \v :
           # echo "Authorized uses only. All activity may be monitored and reported." > /etc/issue.net
@@ -1870,7 +1817,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit the /etc/issue.net file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , or \v :
           # echo "Authorized uses only. All activity may be monitored and reported." > /etc/issue.net
@@ -1881,7 +1827,6 @@ groups:
         tests:
           test_items:
             - flag: "644/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set permissions on `/etc/motd` :
           # chown root:root /etc/motd
@@ -1894,7 +1839,6 @@ groups:
         tests:
           test_items:
             - flag: "644/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set permissions on /etc/issue :
           # chown root:root /etc/issue
@@ -1907,7 +1851,6 @@ groups:
         tests:
           test_items:
             - flag: "644/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set permissions on /etc/issue.net :
           # chown root:root /etc/issue.net
@@ -1920,11 +1863,8 @@ groups:
           bin_op: and
           test_items:
             - flag: "[org/gnome/login-screen]"
-              set: true
             - flag: "banner-message-enable=true"
-              set: true
             - flag: "banner-message-text"
-              set: true
         remediation: |
           Edit or create the file /etc/gdm3/greeter.dconf-defaults and add the following:
           [org/gnome/login-screen]
@@ -1976,7 +1916,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `chargen` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `chargen` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -1991,7 +1930,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `chargen` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `chargen` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2006,7 +1944,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `daytime` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `daytime` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2021,7 +1958,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `daytime` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `daytime` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2036,7 +1972,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `discard` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `discard` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2051,7 +1986,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `discard` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `discard` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2066,7 +2000,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `echo` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `echo` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2081,7 +2014,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `echo` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `echo` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2096,7 +2028,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `time` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `time` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2111,7 +2042,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `time` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `time` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2126,7 +2056,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `shell` , `login` , or `exec` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `rsh` , `rlogin` , and `rexec` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2141,7 +2070,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `shell` , `login` , or `exec` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `rsh` , `rlogin` , and `rexec` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2156,7 +2084,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `talk` or `ntalk` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `talk` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2171,7 +2098,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `talk` or `ntalk` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `talk` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2186,7 +2112,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `telnet` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `telnet` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2201,7 +2126,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `telnet` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `telnet` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2216,7 +2140,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Comment out or remove any lines starting with `tftp` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `tftp` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2231,7 +2154,6 @@ groups:
               compare:
                 op: eq
                 value: "yes"
-              set: true
         remediation: |
           Comment out or remove any lines starting with `tftp` from `/etc/inetd.conf` and `/etc/inetd.d/*` .
                       Set `disable = yes` on all `tftp` services in `/etc/xinetd.conf` and `/etc/xinetd.d/*` .
@@ -2248,7 +2170,6 @@ groups:
               tests:
                 test_items:
                   - flag: "xinetd 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `xinetd` :
 
@@ -2339,7 +2260,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
 
@@ -2359,7 +2279,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
 
@@ -2405,7 +2324,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
 
@@ -2425,7 +2343,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
 
@@ -2446,9 +2363,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "restrict -4 default kod nomodify notrap nopeer noquery"
-              set: true
             - flag: "restrict -6 default kod nomodify notrap nopeer noquery"
-              set: true
         remediation: |
           Add or edit restrict lines in `/etc/ntp.conf` to match the following:
 
@@ -2481,7 +2396,6 @@ groups:
         tests:
           test_items:
             - flag: "server <remote-server>"
-              set: true
         remediation: |
           Add or edit restrict lines in `/etc/ntp.conf` to match the following:
 
@@ -2518,7 +2432,6 @@ groups:
               tests:
                 test_items:
                   - flag: 'OPTIONS="-u ntp:ntp"'
-                    set: true
               remediation: |
                 Add or edit restrict lines in `/etc/ntp.conf` to match the following:
 
@@ -2550,7 +2463,6 @@ groups:
               tests:
                 test_items:
                   - flag: 'OPTIONS="-u ntp:ntp"'
-                    set: true
               remediation: |
                 Add or edit restrict lines in `/etc/ntp.conf` to match the following:
 
@@ -2586,7 +2498,6 @@ groups:
               tests:
                 test_items:
                   - flag: 'NTPD_OPTIONS="-u ntp:ntp"'
-                    set: true
               remediation: |
                 Add or edit restrict lines in `/etc/ntp.conf` to match the following:
 
@@ -2618,7 +2529,6 @@ groups:
               tests:
                 test_items:
                   - flag: 'NTPD_OPTIONS="-u ntp:ntp"'
-                    set: true
               remediation: |
                 Add or edit restrict lines in `/etc/ntp.conf` to match the following:
 
@@ -2652,7 +2562,6 @@ groups:
               compare:
                 op: eq
                 value: "ntp"
-              set: true
         remediation: |
           Add or edit restrict lines in `/etc/ntp.conf` to match the following:
 
@@ -2685,7 +2594,6 @@ groups:
         tests:
           test_items:
             - flag: "server <remote-server>"
-              set: true
         remediation: |
           Add or edit server or pool lines to `/etc/chrony.conf` as appropriate:
 
@@ -2711,7 +2619,6 @@ groups:
         tests:
           test_items:
             - flag: "enabled"
-              set: true
         remediation: |
           Run the following command to enable systemd-timesyncd
           systemctl enable systemd-timesyncd.service
@@ -2751,7 +2658,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Remove the X Windows System packages using the appropriate package manager or manual installation:
 
@@ -2794,7 +2700,6 @@ groups:
                     compare:
                       op: eq
                       value: "(none)"
-                    set: true
                   - flag: "Installed"
                     set: false
               remediation: |
@@ -2819,7 +2724,6 @@ groups:
               tests:
                 test_items:
                   - flag: "avahi-daemon 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `avahi-daemon` :
 
@@ -2883,7 +2787,6 @@ groups:
               tests:
                 test_items:
                   - flag: "cups 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `cups` :
 
@@ -2947,7 +2850,6 @@ groups:
               tests:
                 test_items:
                   - flag: "dhcpd 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `dhcpd` :
 
@@ -3011,7 +2913,6 @@ groups:
               tests:
                 test_items:
                   - flag: "slapd 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `slapd` :
 
@@ -3076,7 +2977,6 @@ groups:
               tests:
                 test_items:
                   - flag: "nfs 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `nfs` :
 
@@ -3141,7 +3041,6 @@ groups:
               tests:
                 test_items:
                   - flag: "rpcbind 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `rpcbind` :
 
@@ -3206,7 +3105,6 @@ groups:
               tests:
                 test_items:
                   - flag: "named 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `named` :
 
@@ -3270,7 +3168,6 @@ groups:
               tests:
                 test_items:
                   - flag: "vsftpd 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `vsftpd` :
 
@@ -3334,7 +3231,6 @@ groups:
               tests:
                 test_items:
                   - flag: "httpd 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `httpd` :
 
@@ -3398,7 +3294,6 @@ groups:
               tests:
                 test_items:
                   - flag: "dovecot 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `dovecot` :
 
@@ -3462,7 +3357,6 @@ groups:
               tests:
                 test_items:
                   - flag: "smb 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `smb` :
 
@@ -3526,7 +3420,6 @@ groups:
               tests:
                 test_items:
                   - flag: "squid 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `squid` :
 
@@ -3590,7 +3483,6 @@ groups:
               tests:
                 test_items:
                   - flag: "snmpd 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `snmpd` :
 
@@ -3653,7 +3545,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit `/etc/postfix/main.cf` and add the following line to the RECEIVING MAIL section. If the line already exists, change it to look like the line below:
 
@@ -3677,7 +3568,6 @@ groups:
               tests:
                 test_items:
                   - flag: "rsyncd 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `rsyncd` :
 
@@ -3741,7 +3631,6 @@ groups:
               tests:
                 test_items:
                   - flag: "ypserv 0:off 1:off 2:off 3:off 4:off 5:off 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to disable `ypserv` :
 
@@ -3810,7 +3699,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Uninstall `ypbind` using the appropriate package manager or manual installation:
 
@@ -3840,7 +3728,6 @@ groups:
 
 
                  zypper remove ypbind
-              set: true
           - check:
               audit: "apt-cache show ypbind"
               constraints:
@@ -3860,7 +3747,6 @@ groups:
 
 
                  zypper remove ypbind
-              set: true
         scored: true
       - id: 2.3.2
         description: "Ensure rsh client is not installed"
@@ -3874,7 +3760,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Uninstall `rsh` using the appropriate package manager or manual installation:
 
@@ -3904,7 +3789,6 @@ groups:
 
 
                  zypper remove rsh
-              set: true
           - check:
               audit: "apt-cache show rsh-client rsh-redone-client"
               constraints:
@@ -3924,7 +3808,6 @@ groups:
 
 
                  zypper remove rsh
-              set: true
         scored: true
       - id: 2.3.3
         description: "Ensure talk client is not installed"
@@ -3938,7 +3821,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Uninstall `talk` using the appropriate package manager or manual installation:
 
@@ -4000,7 +3882,6 @@ groups:
               tests:
                 test_items:
                   - flag: "package telnet is not installed"
-                    set: true
               remediation: |
                 Uninstall `telnet` using the appropriate package manager or manual installation:
 
@@ -4061,7 +3942,6 @@ groups:
               tests:
                 test_items:
                   - flag: "is not installed"
-                    set: true
               remediation: |
                 Uninstall `openldap-clients` using the appropriate package manager or manual installation:
 
@@ -4125,7 +4005,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4150,7 +4029,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4174,7 +4052,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4198,7 +4075,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4222,7 +4098,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4246,7 +4121,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4270,7 +4144,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4294,7 +4167,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4321,7 +4193,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4350,7 +4221,6 @@ groups:
               compare:
                 op: eq
                 value: 0
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4379,7 +4249,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4408,7 +4277,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4437,7 +4305,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4466,7 +4333,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4495,7 +4361,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4524,7 +4389,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4553,7 +4417,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4582,7 +4445,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4611,7 +4473,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4640,7 +4501,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4669,7 +4529,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4698,7 +4557,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4727,7 +4585,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4756,7 +4613,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4785,7 +4641,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4809,7 +4664,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4833,7 +4687,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4857,7 +4710,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4881,7 +4733,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4905,7 +4756,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4929,7 +4779,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4953,7 +4802,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4977,7 +4825,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -4999,7 +4846,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5021,7 +4867,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5043,7 +4888,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5065,7 +4909,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5089,7 +4932,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5113,7 +4955,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5137,7 +4978,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5161,7 +5001,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5183,7 +5022,6 @@ groups:
               compare:
                 op: eq
                 value: "1"
-              set: true
         remediation: |
           Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5205,7 +5043,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5229,7 +5066,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5253,7 +5089,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5277,7 +5112,6 @@ groups:
               compare:
                 op: eq
                 value: "0"
-              set: true
         remediation: |
           Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
 
@@ -5325,7 +5159,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 Install TCP Wrappers using the appropriate package manager or manual installation:
 
@@ -5344,7 +5177,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 Install TCP Wrappers using the appropriate package manager or manual installation:
 
@@ -5366,7 +5198,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Run the following command to create `/etc/hosts.allow` :
 
@@ -5381,7 +5212,6 @@ groups:
         tests:
           test_items:
             - flag: "ALL: ALL"
-              set: true
         remediation: |
           Run the following command to create `/etc/hosts.deny` :
 
@@ -5395,7 +5225,6 @@ groups:
         tests:
           test_items:
             - flag: "644/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set permissions on `/etc/hosts.allow` :
 
@@ -5410,7 +5239,6 @@ groups:
         tests:
           test_items:
             - flag: "644/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set permissions on `/etc/hosts.deny` :
 
@@ -5428,7 +5256,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5445,7 +5272,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5460,7 +5286,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5477,7 +5302,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5494,7 +5318,6 @@ groups:
               compare:
                 op: eq
                 value: "install /bin/true"
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5511,7 +5334,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5525,7 +5347,6 @@ groups:
         tests:
           test_items:
             - flag: "install /bin/true"
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5542,7 +5363,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
 
@@ -5562,11 +5382,8 @@ groups:
           bin_op: and
           test_items:
             - flag: "Chain INPUT (policy DROP)"
-              set: true
             - flag: "Chain FORWARD (policy DROP)"
-              set: true
             - flag: "Chain OUTPUT (policy DROP)"
-              set: true
         remediation: |
           Run the following commands to implement a default DROP policy:
 
@@ -5586,7 +5403,6 @@ groups:
                 pkts bytes target prot opt in out source destination
                 0 0 ACCEPT all -- lo * 0.0.0.0/0 0.0.0.0/0
                 0 0 DROP all -- * * 127.0.0.0/8 0.0.0.0/0
-              set: true
         remediation: |
           Run the following commands to implement the loopback rules:
 
@@ -5606,7 +5422,6 @@ groups:
                 Chain OUTPUT (policy DROP 0 packets, 0 bytes)
                 pkts bytes target prot opt in out source destination
                 0 0 ACCEPT all -- * lo 0.0.0.0/0 0.0.0.0/0
-              set: true
         remediation: |
           Run the following commands to implement the loopback rules:
 
@@ -5664,11 +5479,8 @@ groups:
           bin_op: and
           test_items:
             - flag: "Chain INPUT (policy DROP)"
-              set: true
             - flag: "Chain FORWARD (policy DROP)"
-              set: true
             - flag: "Chain OUTPUT (policy DROP)"
-              set: true
         remediation: |
           Run the following commands to implement a default DROP policy:
 
@@ -5688,7 +5500,6 @@ groups:
                 pkts bytes target prot opt in out source destination
                 0 0 ACCEPT all -- lo * 0.0.0.0/0 0.0.0.0/0
                 0 0 DROP all -- * * 127.0.0.0/8 0.0.0.0/0
-              set: true
         remediation: |
           Run the following commands to implement the loopback rules:
 
@@ -5708,7 +5519,6 @@ groups:
                 Chain OUTPUT (policy DROP 0 packets, 0 bytes)
                 pkts bytes target prot opt in out source destination
                 0 0 ACCEPT all -- * lo 0.0.0.0/0 0.0.0.0/0
-              set: true
         remediation: |
           Run the following commands to implement the loopback rules:
 
@@ -5742,7 +5552,6 @@ groups:
                 Active Internet connections (only servers)
                 Proto Recv-Q Send-Q Local Address Foreign Address State
                 tcp 0 0 0.0.0.0:22 0.0.0.0:* LISTEN
-              set: true
         remediation: |
           For each port identified in the audit which does not have a firewall rule establish a proper rule for accepting inbound connections:
 
@@ -5763,7 +5572,6 @@ groups:
                 0 0 DROP all -- * * 127.0.0.0/8 0.0.0.0/0
                 0 0 ACCEPT tcp -- * * 0.0.0.0/0 0.0.0.0/0 tcp dpt:22 state NEW
 
-              set: true
         remediation: |
           For each port identified in the audit which does not have a firewall rule establish a proper rule for accepting inbound connections:
 
@@ -5802,7 +5610,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 Install `iptables` using the appropriate package manager or manual installation:
 
@@ -5822,7 +5629,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 Install `iptables` using the appropriate package manager or manual installation:
 
@@ -5879,7 +5685,6 @@ groups:
                     compare:
                       op: eq
                       value: ""
-                    set: true
               remediation: |
                 Edit /etc/default/grub and add ipv6.disable=1 to the GRUB_CMDLINE_LINUX parameters:
                 GRUB_CMDLINE_LINUX="ipv6.disable=1"
@@ -5899,7 +5704,6 @@ groups:
                     compare:
                       op: eq
                       value: ""
-                    set: true
               remediation: |
                 Edit /etc/default/grub and add ipv6.disable=1 to the GRUB_CMDLINE_LINUX parameters:
                 GRUB_CMDLINE_LINUX="ipv6.disable=1"
@@ -5927,7 +5731,6 @@ groups:
               compare:
                 op: has
                 value: "<MB>"
-              set: true
         remediation: |
           Set the following parameter in `/etc/audit/auditd.conf` in accordance with site policy:
 
@@ -5941,7 +5744,6 @@ groups:
         tests:
           test_items:
             - flag: "space_left_action = email"
-              set: true
         remediation: |
           Set the following parameters in `/etc/audit/auditd.conf:`
 
@@ -5957,7 +5759,6 @@ groups:
         tests:
           test_items:
             - flag: "action_mail_acct = root"
-              set: true
         remediation: |
           Set the following parameters in `/etc/audit/auditd.conf:`
 
@@ -5973,7 +5774,6 @@ groups:
         tests:
           test_items:
             - flag: "admin_space_left_action = halt"
-              set: true
         remediation: |
           Set the following parameters in `/etc/audit/auditd.conf:`
 
@@ -5989,7 +5789,6 @@ groups:
         tests:
           test_items:
             - flag: "max_log_file_action = keep_logs"
-              set: true
         remediation: |
           Set the following parameter in `/etc/audit/auditd.conf:`
 
@@ -6021,7 +5820,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 Run the following command to Install auditd
                 # yum install audit audit-libs
@@ -6035,7 +5833,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 Run the following command to Install auditd
                 # yum install audit audit-libs
@@ -6053,7 +5850,6 @@ groups:
               tests:
                 test_items:
                   - flag: "auditd 0:off 1:off 2:on 3:on 4:on 5:on 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to enable `auditd` :
 
@@ -6074,7 +5870,6 @@ groups:
               tests:
                 test_items:
                   - flag: "enabled"
-                    set: true
               remediation: |
                 Run one of the following commands to enable `auditd` :
 
@@ -6097,7 +5892,6 @@ groups:
                     compare:
                       op: eq
                       value: ""
-                    set: true
               remediation: |
                 Run one of the following commands to enable `auditd` :
 
@@ -6120,7 +5914,6 @@ groups:
               tests:
                 test_items:
                   - flag: "audit=1"
-                    set: true
                 remediation: |
                   For `grub` based systems edit `/boot/grub/menu.lst` to include `audit=1` on all `kernel` lines.
                   For `grub2` based systems edit /etc/default/grub and add audit=1 to GRUB\_CMDLINE\_LINUX:
@@ -6139,9 +5932,7 @@ groups:
               tests:
                 test_items:
                   - flag: "GRUB_CMDLINE_LINUX="
-                    set: true
                   - flag: "audit=1"
-                    set: true
               remediation: |
                 For `grub` based systems edit `/boot/grub/menu.lst` to include `audit=1` on all `kernel` lines.
                 For `grub2` based systems edit /etc/default/grub and add audit=1 to GRUB\_CMDLINE\_LINUX:
@@ -6159,15 +5950,10 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S clock_settime -k time-change"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S clock_settime -k time-change"
-              set: true
             - flag: "-w /etc/localtime -p wa -k time-change"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6187,15 +5973,10 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S adjtimex,settimeofday -F key=time-change"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S stime,settimeofday,adjtimex -F key=time-change"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S clock_settime -F key=time-change"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S clock_settime -F key=time-change"
-              set: true
             - flag: "-w /etc/localtime -p wa -k time-change"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6214,15 +5995,10 @@ groups:
           bin_op: and
           test_items:
             - flag: "-w /etc/group -p wa -k identity"
-              set: true
             - flag: "-w /etc/passwd -p wa -k identity"
-              set: true
             - flag: "-w /etc/gshadow -p wa -k identity"
-              set: true
             - flag: "-w /etc/shadow -p wa -k identity"
-              set: true
             - flag: "-w /etc/security/opasswd -p wa -k identity"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6242,15 +6018,10 @@ groups:
           bin_op: and
           test_items:
             - flag: "-w /etc/group -p wa -k identity"
-              set: true
             - flag: "-w /etc/passwd -p wa -k identity"
-              set: true
             - flag: "-w /etc/gshadow -p wa -k identity"
-              set: true
             - flag: "-w /etc/shadow -p wa -k identity"
-              set: true
             - flag: "-w /etc/security/opasswd -p wa -k identity"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6270,17 +6041,11 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
-              set: true
             - flag: "-w /etc/issue -p wa -k system-locale"
-              set: true
             - flag: "-w /etc/issue.net -p wa -k system-locale"
-              set: true
             - flag: "-w /etc/hosts -p wa -k system-locale"
-              set: true
             - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6299,17 +6064,11 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale"
-              set: true
             - flag: "-w /etc/issue -p wa -k system-locale"
-              set: true
             - flag: "-w /etc/issue.net -p wa -k system-locale"
-              set: true
             - flag: "-w /etc/hosts -p wa -k system-locale"
-              set: true
             - flag: "-w /etc/sysconfig/network -p wa -k system-locale"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6333,9 +6092,7 @@ groups:
                 bin_op: and
                 test_items:
                   - flag: "-w /etc/selinux/ -p wa -k MAC-policy"
-                    set: true
                   - flag: "-w /usr/share/selinux/ -p wa -k MAC-policy"
-                    set: true
               remediation: |
                 On systems using SELinux Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
                 Example: vi /etc/audit/rules.d/audit.rules
@@ -6351,9 +6108,7 @@ groups:
                 bin_op: and
                 test_items:
                   - flag: "-w /etc/apparmor/ -p wa -k MAC-policy"
-                    set: true
                   - flag: "-w /etc/apparmor.d/ -p wa -k MAC-policy"
-                    set: true
               remediation: |
                 On systems using AppArmor Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
                 Example: vi /etc/audit/rules.d/audit.rules
@@ -6374,9 +6129,7 @@ groups:
                 bin_op: and
                 test_items:
                   - flag: "-w /etc/selinux -p wa -k MAC-policy"
-                    set: true
                   - flag: "-w /usr/share/selinux -p wa -k MAC-policy"
-                    set: true
               remediation: |
                 On systems using SELinux Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
                 Example: vi /etc/audit/rules.d/audit.rules
@@ -6392,9 +6145,7 @@ groups:
                 bin_op: and
                 test_items:
                   - flag: "-w /etc/apparmor -p wa -k MAC-policy"
-                    set: true
                   - flag: "-w /etc/apparmor.d -p wa -k MAC-policy"
-                    set: true
               remediation: |
                 On systems using AppArmor Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
                 Example: vi /etc/audit/rules.d/audit.rules
@@ -6410,11 +6161,8 @@ groups:
           bin_op: and
           test_items:
             - flag: "-w /var/log/faillog -p wa -k logins"
-              set: true
             - flag: "-w /var/log/lastlog -p wa -k logins"
-              set: true
             - flag: "-w /var/log/tallylog -p wa -k logins"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6431,11 +6179,8 @@ groups:
         tests:
           test_items:
             - flag: "-w /var/log/faillog -p wa -k logins"
-              set: true
             - flag: "-w /var/log/lastlog -p wa -k logins"
-              set: true
             - flag: "-w /var/log/tallylog -p wa -k logins"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6452,11 +6197,8 @@ groups:
         tests:
           test_items:
             - flag: "-w /var/run/utmp -p wa -k session"
-              set: true
             - flag: "-w /var/log/wtmp -p wa -k logins"
-              set: true
             - flag: "-w /var/log/btmp -p wa -k logins"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6473,11 +6215,8 @@ groups:
         tests:
           test_items:
             - flag: "-w /var/run/utmp -p wa -k session"
-              set: true
             - flag: "-w /var/log/wtmp -p wa -k logins"
-              set: true
             - flag: "-w /var/log/btmp -p wa -k logins"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6495,17 +6234,11 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6525,17 +6258,11 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=500 -F auid!=-1 -F key=perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=500 -F auid!=-1 -F key=perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S chown,fchown,lchown,fchownat -F auid>=500 -F auid!=-1 -F key=perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S lchown,fchown,chown,fchownat -F auid>=500 -F auid!=-1 -F key=perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=500 -F auid!=-1 -F key=perm_mod"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=500 -F auid!=-1 -F key=perm_mod"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6555,13 +6282,9 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6579,13 +6302,9 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat -F exit=-EACCES -F auid>=500 -F auid!=-1 -F key=access"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat -F exit=-EACCES -F auid>=500 -F auid!=-1 -F key=access"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat -F exit=-EPERM -F auid>=500 -F auid!=-1 -F key=access"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat -F exit=-EPERM -F auid>=500 -F auid!=-1 -F key=access"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6627,9 +6346,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k mounts"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=4294967295 -k mounts"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6646,9 +6363,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=-1 -F key=mounts"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=-1 -F key=mounts"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6665,9 +6380,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6684,9 +6397,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "-a always,exit -F arch=b64 -S rename,unlink,unlinkat,renameat -F auid>=500 -F auid!=-1 -F key=delete"
-              set: true
             - flag: "-a always,exit -F arch=b32 -S unlink,rename,unlinkat,renameat -F auid>=500 -F auid!=-1 -F key=delete"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6703,9 +6414,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "-w /etc/sudoers -p wa -k scope"
-              set: true
             - flag: "-w /etc/sudoers.d/ -p wa -k scope"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6722,9 +6431,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "-w /etc/sudoers -p wa -k scope"
-              set: true
             - flag: "-w /etc/sudoers.d -p wa -k scope"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6743,7 +6450,6 @@ groups:
               compare:
                 op: eq
                 value: "-w /var/log/sudo.log -p wa -k actions"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6758,7 +6464,6 @@ groups:
         tests:
           test_items:
             - flag: "-w /var/log/sudo.log -p wa -k actions"
-              set: true
         remediation: |
           Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6774,13 +6479,9 @@ groups:
           bin_op: and
           test_items:
             - flag: "-w /sbin/insmod -p x -k modules"
-              set: true
             - flag: "-w /sbin/rmmod -p x -k modules"
-              set: true
             - flag: "-w /sbin/modprobe -p x -k modules"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S init_module -S delete_module -k modules"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6799,13 +6500,9 @@ groups:
           bin_op: and
           test_items:
             - flag: "-w /sbin/insmod -p x -k modules"
-              set: true
             - flag: "-w /sbin/rmmod -p x -k modules"
-              set: true
             - flag: "-w /sbin/modprobe -p x -k modules"
-              set: true
             - flag: "-a always,exit -F arch=b64 -S init_module,delete_module -F key=modules"
-              set: true
         remediation: |
           For 64 bit systems Edit or create a file in the /etc/audit/rules.d/ directory ending in .rules
           Example: vi /etc/audit/rules.d/audit.rules
@@ -6822,7 +6519,6 @@ groups:
         tests:
           test_items:
             - flag: "-e 2"
-              set: true
         remediation: |
           Edit or create the file /etc/audit/rules.d/99-finalize.rules and add the line
           -e 2
@@ -6870,7 +6566,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
               remediation: |
                 Install rsyslog or `syslog-ng` using the appropriate package manager or manual installation:
 
@@ -6893,7 +6588,6 @@ groups:
               tests:
                 test_items:
                   - flag: "Installed-Size:"
-                    set: true
               remediation: |
                 Install rsyslog or `syslog-ng` using the appropriate package manager or manual installation:
 
@@ -6918,7 +6612,6 @@ groups:
               tests:
                 test_items:
                   - flag: "rsyslog 0:off 1:off 2:on 3:on 4:on 5:on 6:off"
-                    set: true
               remediation: |
                 Run one of the following commands to enable `rsyslog` :
 
@@ -6939,7 +6632,6 @@ groups:
               tests:
                 test_items:
                   - flag: "enabled"
-                    set: true
               remediation: |
                 Run one of the following commands to enable `rsyslog` :
 
@@ -6959,7 +6651,6 @@ groups:
               tests:
                 test_items:
                   - flag: ""
-                    set: true
               remediation: |
                 Run one of the following commands to enable `rsyslog` :
 
@@ -7017,7 +6708,6 @@ groups:
                     compare:
                       op: bitmask
                       value: "0640"
-                    set: true
               remediation: |
                 Edit the `/etc/rsyslog.conf` and `/etc/rsyslog.d/*.conf` files and set `$FileCreateMode` to `0640` or more restrictive:
 
@@ -7052,7 +6742,6 @@ groups:
               tests:
                 test_items:
                   - flag: "\\$ModLoad imtcp"
-                    set: true
               remediation: |
                 For hosts that are designated as log hosts, edit the `/etc/rsyslog.conf` file and un-comment or add the following lines:
 
@@ -7080,7 +6769,6 @@ groups:
               tests:
                 test_items:
                   - flag: "\\$InputTCPServerRun 514"
-                    set: true
               remediation: |
                 For hosts that are designated as log hosts, edit the `/etc/rsyslog.conf` file and un-comment or add the following lines:
 
@@ -7105,7 +6793,6 @@ groups:
         tests:
           test_items:
             - flag: "ForwardToSyslog=yes"
-              set: true
         remediation: |
           Edit the /etc/systemd/journald.conf file and add the following line:
           ForwardToSyslog=yes
@@ -7117,7 +6804,6 @@ groups:
         tests:
           test_items:
             - flag: "Compress=yes"
-              set: true
         remediation: |
           Edit the /etc/systemd/journald.conf file and add the following line:
           Compress=yes
@@ -7129,7 +6815,6 @@ groups:
         tests:
           test_items:
             - flag: "Storage=persistent"
-              set: true
         remediation: |
           Edit the /etc/systemd/journald.conf file and add the following line:
           Storage=persistent
@@ -7166,7 +6851,6 @@ groups:
               tests:
                 test_items:
                   - flag: "2:on 3:on 4:on 5:on"
-                    set: true
               remediation: |
                 Based on your system configuration, run the appropriate one of the following commands to enable `cron` :
 
@@ -7185,7 +6869,6 @@ groups:
               tests:
                 test_items:
                   - flag: "enabled"
-                    set: true
               remediation: |
                 Based on your system configuration, run the appropriate one of the following commands to enable `cron` :
 
@@ -7205,7 +6888,6 @@ groups:
               tests:
                 test_items:
                   - flag: "enabled"
-                    set: true
               remediation: |
                 Based on your system configuration, run the appropriate one of the following commands to enable `cron` :
 
@@ -7223,7 +6905,6 @@ groups:
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set ownership and permissions on `/etc/crontab` :
 
@@ -7238,7 +6919,6 @@ groups:
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set ownership and permissions on `/etc/cron.hourly` :
 
@@ -7253,7 +6933,6 @@ groups:
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set ownership and permissions on `/etc/cron.daily` :
 
@@ -7268,7 +6947,6 @@ groups:
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set ownership and permissions on `/etc/cron.weekly` :
 
@@ -7283,7 +6961,6 @@ groups:
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set ownership and permissions on `/etc/cron.monthly` :
 
@@ -7298,7 +6975,6 @@ groups:
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set ownership and permissions on `/etc/cron.d` :
 
@@ -7313,7 +6989,6 @@ groups:
         tests:
           test_items:
             - flag: "stat: cannot stat '/etc/cron.deny': No such file or directory"
-              set: true
         remediation: |
           Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
 
@@ -7334,7 +7009,6 @@ groups:
         tests:
           test_items:
             - flag: "stat: cannot stat '/etc/at.deny': No such file or directory"
-              set: true
         remediation: |
           Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
 
@@ -7355,7 +7029,6 @@ groups:
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
 
@@ -7376,7 +7049,6 @@ groups:
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to remove `/etc/cron.deny` and `/etc/at.deny` and create and set permissions and ownership for `/etc/cron.allow` and `/etc/at.allow` :
 
@@ -7400,7 +7072,6 @@ groups:
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following commands to set ownership and permissions on `/etc/ssh/sshd_config`:
 
@@ -7411,8 +7082,16 @@ groups:
 
       - id: 5.2.2
         description: "Ensure permissions on SSH private host key files are configured"
-        audit: "find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec stat {} \\;"
-        type: manual
+        audit: "find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec stat -c \"%N permissions=%a Uid:%U/%u Gid:%G/%g\" {} \\;"
+        use_multiple_values: true
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "Uid:root/0 Gid:root/0"
+            - flag: "permissions"
+              compare:
+                op: bitmask
+                value: "600" 
         remediation: |
           Run the following commands to set ownership and permissions on the private SSH host key files
           # find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
@@ -7421,8 +7100,16 @@ groups:
         scored: true
       - id: 5.2.3
         description: "Ensure permissions on SSH public host key files are configured"
-        audit: "find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec stat {} \\;"
-        type: manual
+        audit: "find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec stat -c \"%N permissions=%a Uid:%U/%u Gid:%G/%g\" {} \\;"
+        use_multiple_values: true
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "Uid:root/0 Gid:root/0"
+            - flag: "permissions"
+              compare:
+                op: bitmask
+                value: "600" 
         remediation: |
           Run the following commands to set permissions and ownership on the SSH host public key files
           # find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \;
@@ -7435,7 +7122,6 @@ groups:
         tests:
           test_items:
             - flag: "Protocol 2"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7449,9 +7135,7 @@ groups:
           bin_op: or
           test_items:
             - flag: "LogLevel VERBOSE"
-              set: true
             - flag: "LogLevel INFO"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
           LogLevel VERBOSE
@@ -7465,7 +7149,6 @@ groups:
         tests:
           test_items:
             - flag: "X11Forwarding no"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7482,7 +7165,6 @@ groups:
               compare:
                 op: lte
                 value: "4"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7496,7 +7178,6 @@ groups:
         tests:
           test_items:
             - flag: "ignorerhosts yes"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7510,7 +7191,6 @@ groups:
         tests:
           test_items:
             - flag: "hostbasedauthentication no"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7524,7 +7204,6 @@ groups:
         tests:
           test_items:
             - flag: "permitrootlogin no"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7538,7 +7217,6 @@ groups:
         tests:
           test_items:
             - flag: "permitemptypasswords no"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7552,7 +7230,6 @@ groups:
         tests:
           test_items:
             - flag: "permituserenvironment no"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7666,12 +7343,10 @@ groups:
               compare:
                 op: lte
                 value: "300"
-              set: true
             - flag: "clientaliveinterval"
               compare:
                 op: gte
                 value: "1"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameters according to site policy:
 
@@ -7689,7 +7364,6 @@ groups:
               compare:
                 op: lte
                 value: "3"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameters according to site policy:
 
@@ -7707,7 +7381,6 @@ groups:
               compare:
                 op: lte
                 value: "60"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7715,76 +7388,34 @@ groups:
 
         scored: true
 
-      - id: 5.2.18.a
+      - id: 5.2.18
         description: "Ensure SSH access is limited"
-        audit: "sshd -T | grep allowusers"
-        type: manual
+        audit: "sshd -T | grep -e allowusers -e allowgroups -e denyusers -e denygroups"
         tests:
+          bin_op: and 
           test_items:
-            - flag: "AllowUsers <userlist>"
-              set: true
+            - flag: ""
+              compare:
+                op: regex
+                value: "[aA]llow[uU]sers"
+            - flag: ""
+              compare:
+                op: regex
+                value: "[aA]llow[gG]roups"
+            - flag: ""
+              compare:
+                op: regex
+                value: "[dD]eny[uU]sers"
+            - flag: ""
+              compare:
+                op: regex
+                value: "[dD]eny[gG]roups"
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set one or more of the parameter as follows:
-
           AllowUsers
           AllowGroups
           DenyUsers
           DenyGroups
-
-        scored: true
-
-      - id: 5.2.18.b
-        description: "Ensure SSH access is limited"
-        audit: "sshd -T | grep allowgroups"
-        type: manual
-        tests:
-          test_items:
-            - flag: "AllowGroups <grouplist>"
-              set: true
-        remediation: |
-          Edit the `/etc/ssh/sshd_config` file to set one or more of the parameter as follows:
-
-          AllowUsers
-          AllowGroups
-          DenyUsers
-          DenyGroups
-
-        scored: true
-
-      - id: 5.2.18.c
-        description: "Ensure SSH access is limited"
-        audit: "sshd -T | grep denyusers"
-        type: manual
-        tests:
-          test_items:
-            - flag: "DenyUsers <userlist>"
-              set: true
-        remediation: |
-          Edit the `/etc/ssh/sshd_config` file to set one or more of the parameter as follows:
-
-          AllowUsers
-          AllowGroups
-          DenyUsers
-          DenyGroups
-
-        scored: true
-
-      - id: 5.2.18.d
-        description: "Ensure SSH access is limited"
-        audit: "sshd -T | grep denygroups"
-        type: manual
-        tests:
-          test_items:
-            - flag: "DenyGroups <grouplist>"
-              set: true
-        remediation: |
-          Edit the `/etc/ssh/sshd_config` file to set one or more of the parameter as follows:
-
-          AllowUsers
-          AllowGroups
-          DenyUsers
-          DenyGroups
-
         scored: true
 
       - id: 5.2.19
@@ -7793,7 +7424,6 @@ groups:
         tests:
           test_items:
             - flag: "banner /etc/issue.net"
-              set: true
         remediation: |
           Edit the `/etc/ssh/sshd_config` file to set the parameter as follows:
 
@@ -7806,7 +7436,6 @@ groups:
         tests:
           test_items:
             - flag: "usepam yes"
-              set: true
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
           UsePAM yes
@@ -7817,7 +7446,6 @@ groups:
         tests:
           test_items:
             - flag: "allowtcpforwarding no"
-              set: true
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
           allowtcpforwarding no
@@ -7825,7 +7453,9 @@ groups:
       - id: 5.2.22
         description: "Ensure SSH MaxStartups is configured"
         audit: "sshd -T | grep -i maxstartups"
-        type: manual
+        tests:
+          test_items:
+            - flag: "maxstartups 10:30:60"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
           maxstartups 10:30:60
@@ -7839,7 +7469,6 @@ groups:
               compare:
                 op: lte
                 value: "4"
-              set: true
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
           MaxSessions 4
@@ -7850,16 +7479,40 @@ groups:
     checks:
       - id: 5.3.1
         description: "Ensure password creation requirements are configured"
-        audit: "cat /etc/pam.d/common-password; cat /etc/pam.d/system-auth"
-        type: manual
+        audit: "cat /etc/pam.d/common-password; cat /etc/pam.d/system-auth; cat /etc/security/pwquality.conf"
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "minlen"
+              compare:
+                op: gte
+                value: "14"
+            - flag: "retry"
+              compare:
+                op: lte
+                value: "3"
+            - flag: "dcredit"
+              compare:
+                op: eq
+                value: "-1"
+            - flag: "ucredit"
+              compare:
+                op: eq
+                value: "-1"
+            - flag: "ocredit"
+              compare:
+                op: eq
+                value: "-1"
+            - flag: "lcredit"
+              compare:
+                op: eq
+                value: "-1"
         remediation: |
           Set password creation requirements to conform to site policy. Many distributions provide tools for updating PAM configuration, consult your documentation for details. If no tooling is provided edit the appropriate `/etc/pam.d/` configuration file and add or modify the `pam_cracklib.so` or `pam_pwquality.so` lines to include the required options:
-
+          
           password required pam_cracklib.so try_first_pass retry=3 minlen=14 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1
           password requisite pam_pwquality.so try_first_pass retry=3
-
           If `pam_pwquality.so` is in use also configure settings in `/etc/security/pwquality.conf` :
-
           minlen = 14
           dcredit = -1
           ucredit = -1
@@ -7893,9 +7546,7 @@ groups:
           bin_op: and
           test_items:
             - flag: "password required pam_pwhistory.so remember=5"
-              set: true
             - flag: "password sufficient pam_unix.so remember=5"
-              set: true
         remediation: |
           Set remembered password history to conform to site policy. Many distributions provide tools for updating PAM configuration, consult your documentation for details. If no tooling is provided edit the appropriate `/etc/pam.d/` configuration file and add or modify the `pam_pwhistory.so` or `pam_unix.so` lines to include the `remember` option:
 
@@ -7910,7 +7561,6 @@ groups:
         tests:
           test_items:
             - flag: "sha512"
-              set: true
         remediation: |
           Set password hashing algorithm to sha512. Many distributions provide tools for updating PAM configuration, consult your documentation for details. If no tooling is provided edit the appropriate `/etc/pam.d/` configuration file and add or modify the `pam_unix.so` lines to include the sha512 option:
 
@@ -7932,7 +7582,6 @@ groups:
               compare:
                 op: lte
                 value: "365"
-              set: true
         remediation: |
           Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
 
@@ -7951,7 +7600,6 @@ groups:
         tests:
           test_items:
             - flag: "<list of users>"
-              set: true
         remediation: |
           Set the `PASS_MAX_DAYS` parameter to conform to site policy in `/etc/login.defs` :
 
@@ -7972,7 +7620,6 @@ groups:
               compare:
                 op: gte
                 value: "7"
-              set: true
 
         remediation: |
           Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
@@ -7992,7 +7639,6 @@ groups:
         tests:
           test_items:
             - flag: "<list of users>"
-              set: true
         remediation: |
           Set the `PASS_MIN_DAYS` parameter to 7 in `/etc/login.defs` :
 
@@ -8013,7 +7659,6 @@ groups:
               compare:
                 op: gte
                 value: "7"
-              set: true
         remediation: |
           Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
 
@@ -8032,7 +7677,6 @@ groups:
         tests:
           test_items:
             - flag: "<list of users>"
-              set: true
         remediation: |
           Set the `PASS_WARN_AGE` parameter to 7 in `/etc/login.defs` :
 
@@ -8053,7 +7697,6 @@ groups:
               compare:
                 op: lte
                 value: 30
-              set: true
         remediation: |
           Run the following command to set the default password inactivity period to 30 days:
 
@@ -8072,7 +7715,6 @@ groups:
         tests:
           test_items:
             - flag: "<list of users>"
-              set: true
         remediation: |
           Run the following command to set the default password inactivity period to 30 days:
 
@@ -8100,7 +7742,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.
         scored: true
@@ -8114,7 +7755,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Run the commands appropriate for your distribution:
           Set the shell for any accounts returned by the audit to nologin:
@@ -8136,7 +7776,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Run the commands appropriate for your distribution:
           Set the shell for any accounts returned by the audit to nologin:
@@ -8155,7 +7794,6 @@ groups:
         tests:
           test_items:
             - flag: "0"
-              set: true
         remediation: |
           Run the following command to set the `root` user default group to GID `0` :
 
@@ -8174,7 +7812,6 @@ groups:
               tests:
                 test_items:
                   - flag: "umask 027"
-                    set: true
               remediation: |
                 Edit the `/etc/bashrc`, `/etc/profile` and `/etc/profile.d/*.sh` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
 
@@ -8188,7 +7825,6 @@ groups:
               tests:
                 test_items:
                   - flag: "umask 027"
-                    set: true
               remediation: |
                 Edit the `/etc/bashrc`, `/etc/profile` and `/etc/profile.d/*.sh` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
 
@@ -8201,7 +7837,6 @@ groups:
         tests:
           test_items:
             - flag: "umask 027"
-              set: true
         remediation: |
           Edit the `/etc/bashrc`, `/etc/profile` and `/etc/profile.d/*.sh` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
 
@@ -8222,7 +7857,6 @@ groups:
                     compare:
                       op: lte
                       value: "900"
-                    set: true
             remediation: |
               Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
 
@@ -8239,7 +7873,6 @@ groups:
                     compare:
                       op: lte
                       value: "900"
-                    set: true
             remediation: |
               Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
 
@@ -8255,7 +7888,6 @@ groups:
               compare:
                 op: lte
                 value: "900"
-              set: true
         remediation: |
           Edit the `/etc/bashrc` and `/etc/profile` files (and the appropriate files for any other shell supported on your system) and add or edit any umask parameters as follows:
 
@@ -8280,13 +7912,9 @@ groups:
           bin_op: and
           test_items:
             - flag: "auth"
-              set: true
             - flag: "required"
-              set: true
             - flag: "pam_wheel.so"
-              set: true
             - flag: "use_uid"
-              set: true
         remediation: |
           Add the following line to the `/etc/pam.d/su` file:
 
@@ -8305,7 +7933,6 @@ groups:
         tests:
           test_items:
             - flag: "wheel:x:10:root,<user list>"
-              set: true
         remediation: |
           Add the following line to the `/etc/pam.d/su` file:
 
@@ -8356,7 +7983,6 @@ groups:
         tests:
           test_items:
             - flag: "644/Uid:root/0Gid:root/0"
-              set: true
         remediation: |
           Run the following command to set permissions on `/etc/passwd` :
 
@@ -8372,17 +7998,14 @@ groups:
           bin_op: and
           test_items:
             - flag: "Uid:root/0"
-              set: true
             - flag: "Gid"
               compare:
                 op: regex
                 value: "shadow|root"
-              set: true
             - flag: "permissions"
               compare:
                 op: bitmask
                 value: "640"
-              set: true
         remediation: |
           Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/shadow` :
 
@@ -8398,7 +8021,6 @@ groups:
         tests:
           test_items:
             - flag: "Uid:root/0 Gid:root/0 permissions=644"
-              set: true
         remediation: |
           Run the following command to set permissions on `/etc/group` :
 
@@ -8414,17 +8036,14 @@ groups:
           bin_op: and
           test_items:
             - flag: "Uid:root/0"
-              set: true
             - flag: "Gid"
               compare:
                 op: regex
                 value: "shadow|root"
-              set: true
             - flag: "permissions"
               compare:
                 op: bitmask
                 value: "640"
-              set: true
         remediation: |
           Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/gshadow` :
 
@@ -8441,12 +8060,10 @@ groups:
           bin_op: and
           test_items:
             - flag: "Uid:root/0 Gid:root/0"
-              set: true
             - flag: "permissions"
               compare:
                 op: bitmask
                 value: "600"
-              set: true
         remediation: |
           Run the following command to set permissions on `/etc/passwd-` :
 
@@ -8462,17 +8079,14 @@ groups:
           bin_op: and
           test_items:
             - flag: "Uid:root/0"
-              set: true
             - flag: "Gid"
               compare:
                 op: regex
                 value: "shadow|root"
-              set: true
             - flag: "permissions"
               compare:
                 op: bitmask
                 value: "640"
-              set: true
         remediation: |
           Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/shadow-` :
 
@@ -8489,12 +8103,10 @@ groups:
           bin_op: and
           test_items:
             - flag: "Uid:root/0 Gid:root/0"
-              set: true
             - flag: "permissions"
               compare:
                 op: bitmask
                 value: "644"
-              set: true
         remediation: |
           Run the following command to set permissions on `/etc/group-` :
 
@@ -8510,17 +8122,14 @@ groups:
           bin_op: and
           test_items:
             - flag: "Uid:root/0"
-              set: true
             - flag: "Gid"
               compare:
                 op: regex
                 value: "shadow|root"
-              set: true
             - flag: "permissions"
               compare:
                 op: bitmask
                 value: "640"
-              set: true
         remediation: |
           Run the one of the following chown commands as appropriate and the chmod to set permissions on `/etc/gshadow-` :
 
@@ -8539,7 +8148,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Removing write access for the "other" category ( `chmod o-w ` ) is advisable, but always consult relevant vendor documentation to avoid breaking any application dependencies on a given file.
         scored: true
@@ -8561,7 +8169,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Locate files that are owned by users or groups not listed in the system configuration files, and reset the ownership of these files to some active user on the system as appropriate.
         scored: true
@@ -8583,7 +8190,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Locate files that are owned by users or groups not listed in the system configuration files, and reset the ownership of these files to some active user on the system as appropriate.
         scored: true
@@ -8606,7 +8212,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Ensure that no rogue SUID programs have been introduced into the system. Review the files returned by the action in the Audit section and confirm the integrity of these binaries.
         scored: false
@@ -8629,7 +8234,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Ensure that no rogue SGID programs have been introduced into the system. Review the files returned by the action in the Audit section and confirm the integrity of these binaries.
         scored: false
@@ -8654,7 +8258,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           If any accounts in the /etc/shadow file do not have a password, run the following command
           to lock the account until it can be determined why it does not have a password:
@@ -8672,7 +8275,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Remove any legacy '+' entries from `/etc/passwd` if they exist.
         scored: true
@@ -8686,7 +8288,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Remove any legacy '+' entries from `/etc/shadow` if they exist.
         scored: true
@@ -8700,7 +8301,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Remove any legacy '+' entries from `/etc/group` if they exist.
         scored: true
@@ -8711,7 +8311,6 @@ groups:
         tests:
           test_items:
             - flag: "root"
-              set: true
         remediation: |
           Remove any users other than `root` with UID `0` or assign them a new UID if appropriate.
         scored: true
@@ -8758,7 +8357,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Correct or justify any items discovered in the Audit step.
         scored: true
@@ -8779,7 +8377,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           If any users' home directories do not exist, create them and make sure the respective user owns the directory. Users without an assigned home directory should be removed or assigned a home directory as appropriate.
         scored: true
@@ -8814,7 +8411,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Making global modifications to user home directories without alerting the user community can result in unexpected outages and unhappy users. Therefore, it is recommended that a monitoring policy be established to report user file permissions and determine the action to be taken in accordance with site policy.
         scored: true
@@ -8839,7 +8435,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Change the ownership of any home directories that are not owned by the defined user to the correct user.
         scored: true
@@ -8871,7 +8466,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Making global modifications to users' files without alerting the user community can result in unexpected outages and unhappy users. Therefore, it is recommended that a monitoring policy be established to report user dot file permissions and determine the action to be taken in accordance with site policy.
         scored: true
@@ -8895,7 +8489,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Making global modifications to users' files without alerting the user community can result in unexpected outages and unhappy users. Therefore, it is recommended that a monitoring policy be established to report user `.forward` files and determine the action to be taken in accordance with site policy.
         scored: true
@@ -8919,7 +8512,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Making global modifications to users' files without alerting the user community can result in unexpected outages and unhappy users. Therefore, it is recommended that a monitoring policy be established to report user `.netrc` files and determine the action to be taken in accordance with site policy.
         scored: true
@@ -8963,7 +8555,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Making global modifications to users' files without alerting the user community can result in unexpected outages and unhappy users. Therefore, it is recommended that a monitoring policy be established to report user `.netrc` file permissions and determine the action to be taken in accordance with site policy.
         scored: true
@@ -8990,7 +8581,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Making global modifications to users' files without alerting the user community can result in unexpected outages and unhappy users. Therefore, it is recommended that a monitoring policy be established to report user `.rhosts` files and determine the action to be taken in accordance with site policy.
         scored: true
@@ -9012,7 +8602,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Analyze the output of the Audit step above and perform the appropriate action to correct any discrepancies found.
         scored: true
@@ -9035,7 +8624,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Based on the results of the audit script, establish unique UIDs and review all files owned by the shared UIDs to determine which UID they are supposed to belong to.
         scored: true
@@ -9059,7 +8647,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Based on the results of the audit script, establish unique GIDs and review all files owned by the shared GID to determine which group they are supposed to belong to.
         scored: true
@@ -9082,7 +8669,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Based on the results of the audit script, establish unique user names for the users. File ownerships will automatically reflect the change as long as the users have unique UIDs.
         scored: true
@@ -9105,7 +8691,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Based on the results of the audit script, establish unique names for the user groups. File group ownerships will automatically reflect the change as long as the groups have unique GIDs.
         scored: true
@@ -9119,7 +8704,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Remove all users from the shadow group, and change the primary group of any users with shadow as their primary group.
         scored: true
@@ -9133,7 +8717,6 @@ groups:
               compare:
                 op: eq
                 value: ""
-              set: true
         remediation: |
           Remove all users from the shadow group, and change the primary group of any users with shadow as their primary group.
         scored: true
