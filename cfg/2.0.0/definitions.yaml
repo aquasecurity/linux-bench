@@ -2706,7 +2706,7 @@ groups:
           Configure `chrony` to run as the `chrony` user by configuring the appropriate startup script for your distribution. Startup scripts are typically stored in `/etc/init.d` or `/etc/systemd`.
         scored: true
       - id: 2.2.1.4.a
-        description: "Ensure ntp is configured"
+        description: "Ensure systemd-timesyncd is configured"
         audit: "systemctl is-enabled systemd-timesyncd.service"
         tests:
           test_items:
@@ -2725,7 +2725,7 @@ groups:
         scored: true
 
       - id: 2.2.1.4.b
-        description: "Ensure ntp is configured"
+        description: "Ensure systemd-timesyncd is configured"
         audit: "timedatectl status"
         type: manual
         remediation: |
