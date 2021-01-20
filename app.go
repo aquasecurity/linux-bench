@@ -19,7 +19,7 @@ func app(cmd *cobra.Command, args []string) {
 	if linuxCisVersion != "" {
 		version = linuxCisVersion
 	} else {
-		version = "1.1.0"
+		version = "2.0.0"
 	}
 
 	path, err := getDefinitionFilePath(version)
@@ -132,7 +132,7 @@ func getConstraints() (constraints []string, err error) {
 		fmt.Sprintf("syslog=%s", syslog),
 		fmt.Sprintf("lsm=%s", lsm),
 	)
-	
+
 	glog.V(1).Info(fmt.Sprintf("The constraints are:, %s", constraints))
 	return constraints, nil
 }
