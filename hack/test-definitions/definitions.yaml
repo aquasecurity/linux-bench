@@ -1,0 +1,35 @@
+---
+controls:
+version: 0.1
+id: 1
+description: "Test YAMl file"
+type: "hack"
+groups:
+  - id: 1.1
+    description: "Filesystem Configuration"
+    checks:
+      - id: 1.1.1
+        description: "Disable unused filesystems"
+        checks:
+      - id: 1.1.1.1.a
+        description: "Ensure mounting of cramfs filesystems is disabled"
+        audit: "echo hello"
+        tests:
+          test_items:
+            - flag: "hello"
+              set: true
+        remediation: |
+          Correct something about this test
+        scored: true
+      - id: 1.1.1.1.b
+        description: "Ensure mounting of cramfs filesystems is disabled"
+        audit: "echo hello=false"
+        tests:
+          test_items:
+            - flag: "hello"
+              compare:
+                op: eq
+                value: "false"
+              set: true
+        remediation: |
+          Put your remediation here
