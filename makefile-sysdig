@@ -7,7 +7,7 @@ IMAGE_TAG?= dev
 DEPENDENCY_IMAGE_NAME := $(ARTIFACTORY)/$(IMAGE_REPO):$(IMAGE_TAG)
 
 build-dependency-image:
-	$(DOCKER) build -t $(DEPENDENCY_IMAGE_NAME) -f Dependency-Dockerfile .
+	$(DOCKER) build -t $(DEPENDENCY_IMAGE_NAME) .
 
 push-dependency-image:
 	$(DOCKER) push $(DEPENDENCY_IMAGE_NAME)
