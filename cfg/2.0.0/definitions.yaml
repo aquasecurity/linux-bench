@@ -1909,7 +1909,7 @@ groups:
     checks:
       - id: 2.1.1.a
         description: "Ensure chargen services are not enabled"
-        audit: 'grep -R "^chargen" /etc/inetd.*'
+        audit: 'grep -Rs "^chargen" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -1923,7 +1923,7 @@ groups:
 
       - id: 2.1.1.b
         description: "Ensure chargen services are not enabled"
-        audit: 'grep -R "^chargen" /etc/xinetd.conf /etc/xinetd.* '
+        audit: 'grep -Rs "^chargen" /etc/xinetd.conf /etc/xinetd.* '
         tests:
           test_items:
             - flag: "disable"
@@ -1937,7 +1937,7 @@ groups:
 
       - id: 2.1.2.a
         description: "Ensure daytime services are not enabled"
-        audit: 'grep -R "^daytime" /etc/inetd.*'
+        audit: 'grep -Rs "^daytime" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -1951,7 +1951,7 @@ groups:
 
       - id: 2.1.2.b
         description: "Ensure daytime services are not enabled"
-        audit: 'grep -R "^daytime" /etc/xinetd.conf /etc/xinetd.*'
+        audit: 'grep -Rs "^daytime" /etc/xinetd.conf /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
@@ -1965,7 +1965,7 @@ groups:
 
       - id: 2.1.3.a
         description: "Ensure discard services are not enabled"
-        audit: 'grep -R "^discard" /etc/inetd.*'
+        audit: 'grep -Rs "^discard" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -1979,7 +1979,7 @@ groups:
 
       - id: 2.1.3.b
         description: "Ensure discard services are not enabled"
-        audit: 'grep -R "^discard" /etc/xinetd.conf /etc/xinetd.*'
+        audit: 'grep -Rs "^discard" /etc/xinetd.conf /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
@@ -1993,7 +1993,7 @@ groups:
 
       - id: 2.1.4.a
         description: "Ensure echo services are not enabled"
-        audit: 'grep -R "^echo" /etc/inetd.*'
+        audit: 'grep -Rs "^echo" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -2007,7 +2007,7 @@ groups:
 
       - id: 2.1.4.b
         description: "Ensure echo services are not enabled"
-        audit: 'grep -R "^echo" /etc/xinetd.conf /etc/xinetd.*'
+        audit: 'grep -Rs "^echo" /etc/xinetd.conf /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
@@ -2021,7 +2021,7 @@ groups:
 
       - id: 2.1.5.a
         description: "Ensure time services are not enabled"
-        audit: 'grep -R "^time" /etc/inetd.*'
+        audit: 'grep -Rs "^time" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -2035,7 +2035,7 @@ groups:
 
       - id: 2.1.5.b
         description: "Ensure time services are not enabled"
-        audit: 'grep -R "^time" /etc/xinetd.conf /etc/xinetd.*'
+        audit: 'grep -Rs "^time" /etc/xinetd.conf /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
@@ -2049,7 +2049,7 @@ groups:
 
       - id: 2.1.6.a
         description: "Ensure rsh server is not enabled"
-        audit: 'grep -R "^shell" /etc/inetd.*; grep -R "^login" /etc/inetd.*; grep -R "^exec" /etc/inetd.*'
+        audit: 'grep -Rs "^shell" /etc/inetd.*; grep -R "^login" /etc/inetd.*; grep -R "^exec" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -2063,7 +2063,7 @@ groups:
 
       - id: 2.1.6.b
         description: "Ensure rsh server is not enabled"
-        audit: 'grep -R "^shell" /etc/xinetd.*; grep -R "^login" /etc/xinetd.*; grep -R "^exec" /etc/xinetd.*'
+        audit: 'grep -Rs "^shell" /etc/xinetd.*; grep -R "^login" /etc/xinetd.*; grep -R "^exec" /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
@@ -2077,7 +2077,7 @@ groups:
 
       - id: 2.1.7.a
         description: "Ensure talk server is not enabled"
-        audit: 'grep -R "^talk" /etc/inetd.*; grep -R "^ntalk" /etc/inetd.*'
+        audit: 'grep -Rs "^talk" /etc/inetd.*; grep -R "^ntalk" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -2091,7 +2091,7 @@ groups:
 
       - id: 2.1.7.b
         description: "Ensure talk server is not enabled"
-        audit: 'grep -R "^talk" /etc/xinetd.*; grep -R "^ntalk" /etc/xinetd.*'
+        audit: 'grep -Rs "^talk" /etc/xinetd.*; grep -R "^ntalk" /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
@@ -2105,7 +2105,7 @@ groups:
 
       - id: 2.1.8.a
         description: "Ensure telnet server is not enabled"
-        audit: 'grep -R "^telnet" /etc/inetd.*'
+        audit: 'grep -Rs "^telnet" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -2119,7 +2119,7 @@ groups:
 
       - id: 2.1.8.b
         description: "Ensure telnet server is not enabled"
-        audit: 'grep -R "^telnet" /etc/xinetd.*'
+        audit: 'grep -Rs "^telnet" /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
@@ -2133,7 +2133,7 @@ groups:
 
       - id: 2.1.9.a
         description: "Ensure tftp server is not enabled"
-        audit: 'grep -R "^tftp" /etc/inetd.*'
+        audit: 'grep -Rs "^tftp" /etc/inetd.*'
         tests:
           test_items:
             - flag: ""
@@ -2147,7 +2147,7 @@ groups:
 
       - id: 2.1.9.b
         description: "Ensure tftp server is not enabled"
-        audit: 'grep -R "^tftp" /etc/xinetd.*'
+        audit: 'grep -Rs "^tftp" /etc/xinetd.*'
         tests:
           test_items:
             - flag: "disable"
