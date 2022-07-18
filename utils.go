@@ -79,12 +79,11 @@ func GetSystemLogManager() (syslog string, err error) {
 }
 
 func GetLSM() (lsm string, err error) {
+	lsm = "none"
 	out, err := exec.Command("bash", "-c", "sudo apparmor_status").Output()
 	if err != nil {
 		out, err = exec.Command("bash", "-c", "sestatus").Output()
-		if err != nil {
-			return "", err
-		} else {
+		if err == nil {
 			output := strings.ToLower(string(out))
 			space := regexp.MustCompile(`\s+`)
 			output = space.ReplaceAllString(output, " ")
@@ -105,14 +104,7 @@ func getPlatformVersion(output, platform string) string {
 	flagRe := regexp.MustCompile(`version[_id]*=([^ \n]*)`)
 	vals := flagRe.FindStringSubmatch(output)
 	if len(vals) > 1 {
-		switch platform {
-		case "rhel":
-			return vals[1][:1] // Get the major version only, examaple: 7.6 will return 7
-		case "ubuntu":
-			return vals[1][:2] // Get the major version only, examaple: 18.04 will return 18
-		default:
-			return ""
-		}
+		return strings.Split(vals[1], ".")[0]
 	}
 
 	return ""
