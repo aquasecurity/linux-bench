@@ -1287,29 +1287,6 @@ groups:
 
 
                 zypper remove prelink
-          - check:
-              audit: "apt-cache show prelink"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: false
-              remediation: |
-                Run the following command to restore binaries to normal:
-
-                # prelink -ua
-
-                Uninstall `prelink` using the appropriate package manager or manual installation:
-
-                yum remove prelink
-
-
-                apt-get remove prelink
-
-
-                zypper remove prelink
         scored: true
   - id: 1.6
     description: "Mandatory Access Control"
