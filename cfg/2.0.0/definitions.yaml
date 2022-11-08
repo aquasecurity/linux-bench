@@ -848,30 +848,6 @@ groups:
                             Initialize AIDE:
 
                 # aide --init
-          - check:
-              audit: "apt-cache show aide"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: true
-              remediation: |
-                Install AIDE using the appropriate package manager or manual installation:
-
-                # yum install aide
-
-
-                # apt-get install aide
-
-
-                # zypper install aide
-
-                Configure AIDE as appropriate for your environment. Consult the AIDE documentation for options.
-                            Initialize AIDE:
-
-                # aide --init
         scored: true
       - id: 1.3.2.a
         description: "Ensure filesystem integrity is regularly checked"
@@ -1365,40 +1341,6 @@ groups:
                 # apt-get install libselinux1
                 # zypper install libselinux
                 The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-          - check:
-              audit: "apt-cache show libselinux1"
-              constraints:
-                platform:
-                  - ubuntu18
-                lsm:
-                  - selinux
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: true
-              remediation: |
-                Install SELinux or apparmor using the appropriate package manager or manual installation:
-                # yum install libselinux
-                # apt-get install libselinux1
-                # zypper install libselinux
-                The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-          - check:
-              audit: "apt-cache show apparmor"
-              constraints:
-                platform:
-                  - ubuntu18
-                lsm:
-                  - apparmor
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: true
-              remediation: |
-                Install SELinux or apparmor using the appropriate package manager or manual installation:
-                # yum install libselinux
-                # apt-get install libselinux1
-                # zypper install libselinux
-                The previous commands install SELinux, use the appropriate package if AppArmor is desired.
 
   - id: 1.6.2
     description: "Configure SELinux"
@@ -1604,27 +1546,6 @@ groups:
 
 
                   # zypper remove setroubleshoot
-          - check:
-              audit: "apt-cache show setroubleshoot"
-              constraints:
-                platform:
-                  - ubuntu18
-                lsm:
-                  - selinux
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: false
-              remediation: |
-                Uninstall s `etroubleshoot` using the appropriate package manager or manual installation:
-
-                  # yum remove setroubleshoot
-
-
-                  # apt-get remove setroubleshoot
-
-
-                  # zypper remove setroubleshoot
         scored: true
       - id: 1.6.2.5
         description: "Ensure the MCS Translation Service (mcstrans) is not installed"
@@ -1656,25 +1577,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: false
-              remediation: |
-                Uninstall `mcstrans` using the appropriate package manager or manual installation:
-
-                  yum remove mcstrans
-
-
-                  apt-get remove mcstrans
-
-
-                  zypper remove mcstrans
-          - check:
-              audit: "apt-cache show mcstrans"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
                     set: false
               remediation: |
                 Uninstall `mcstrans` using the appropriate package manager or manual installation:
@@ -2328,26 +2230,6 @@ groups:
 
                 The previous commands install NTP, use the appropriate package if chrony is desired.
                             On virtual systems where host based time synchronization is available consult your virtualization software documentation and setup host based synchronization.
-          - check:
-              audit: "apt-cache show ntp"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: true
-              remediation: |
-                On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
-
-                # yum install ntp
-                # dnf install ntp
-                # apt-get install ntp
-                # zypper install ntp
-                # emerge ntp
-
-                The previous commands install NTP, use the appropriate package if chrony is desired.
-                            On virtual systems where host based time synchronization is available consult your virtualization software documentation and setup host based synchronization.
 
         scored: false
 
@@ -2382,26 +2264,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
-              remediation: |
-                On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
-
-                # yum install ntp
-                # dnf install ntp
-                # apt-get install ntp
-                # zypper install ntp
-                # emerge ntp
-
-                The previous commands install NTP, use the appropriate package if chrony is desired.
-                            On virtual systems where host based time synchronization is available consult your virtualization software documentation and setup host based synchronization.
-          - check:
-              audit: "apt-cache show chrony"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
                     set: true
               remediation: |
                 On physical systems or virtual systems where host based time synchronization is not available install NTP or chrony using the appropriate package manager or manual installation:
@@ -3818,26 +3680,6 @@ groups:
 
                  zypper remove ypbind
               set: true
-          - check:
-              audit: "apt-cache show ypbind"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: false
-              remediation: |
-                Uninstall `ypbind` using the appropriate package manager or manual installation:
-
-                 yum remove ypbind
-
-
-                 apt-get remove ypbind
-
-
-                 zypper remove ypbind
-              set: true
         scored: true
       - id: 2.3.2
         description: "Ensure rsh client is not installed"
@@ -3870,26 +3712,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: false
-              remediation: |
-                Uninstall `rsh` using the appropriate package manager or manual installation:
-
-                 yum remove rsh
-
-
-                 apt-get remove rsh
-
-
-                 zypper remove rsh
-              set: true
-          - check:
-              audit: "apt-cache show rsh-client rsh-redone-client"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
                     set: false
               remediation: |
                 Uninstall `rsh` using the appropriate package manager or manual installation:
@@ -3945,25 +3767,6 @@ groups:
 
 
                 zypper remove talk
-          - check:
-              audit: "apt-cache show talk"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: false
-              remediation: |
-                Uninstall `talk` using the appropriate package manager or manual installation:
-
-                yum remove talk
-
-
-                apt-get remove talk
-
-
-                zypper remove talk
         scored: true
       - id: 2.3.4
         description: "Ensure telnet client is not installed"
@@ -4007,25 +3810,6 @@ groups:
 
 
                 # zypper remove telnet
-          - check:
-              audit: "apt-cache show telnet"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: false
-              remediation: |
-                Uninstall `telnet` using the appropriate package manager or manual installation:
-
-                # yum remove telnet
-
-
-                # apt-get remove telnet
-
-
-                # zypper remove telnet
         scored: true
       - id: 2.3.5
         description: "Ensure LDAP client is not installed"
@@ -4057,25 +3841,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: false
-              remediation: |
-                Uninstall `openldap-clients` using the appropriate package manager or manual installation:
-
-                # yum remove openldap-clients
-
-
-                # apt-get remove openldap-clients
-
-
-                # zypper remove openldap-clients
-          - check:
-              audit: "apt-cache show openldap-clients"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
                     set: false
               remediation: |
                 Uninstall `openldap-clients` using the appropriate package manager or manual installation:
@@ -5313,25 +5078,6 @@ groups:
 
 
                 zypper install tcpd
-          - check:
-              audit: "apt-cache show tcpd"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: true
-              remediation: |
-                Install TCP Wrappers using the appropriate package manager or manual installation:
-
-                yum install tcp_wrappers
-
-
-                apt-get install tcpd
-
-
-                zypper install tcpd
         scored: false
       - id: 3.3.2
         description: "Ensure /etc/hosts.allow is configured"
@@ -5790,26 +5536,6 @@ groups:
 
 
                 # zypper install iptables
-          - check:
-              audit: "apt-cache show iptables"
-              constraints:
-                platform:
-                  - ubuntu18
-
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-                    set: true
-              remediation: |
-                Install `iptables` using the appropriate package manager or manual installation:
-
-                # yum install iptables
-
-
-                # apt-get install iptables
-
-
-                # zypper install iptables
         scored: true
 
   - id: 3.6
@@ -5998,20 +5724,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
-              remediation: |
-                Run the following command to Install auditd
-                # yum install audit audit-libs
-                # apt-get install auditd audispd-plugins
-                # zipper install audit audit-libs
-          - check:
-              audit: "apt-cache show auditd"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
                     set: true
               remediation: |
                 Run the following command to Install auditd
@@ -6847,29 +6559,6 @@ groups:
               tests:
                 test_items:
                   - flag: "install ok installed"
-                    set: true
-              remediation: |
-                Install rsyslog or `syslog-ng` using the appropriate package manager or manual installation:
-
-                # yum install rsyslog
-
-
-                # apt-get install rsyslog
-
-
-                # zypper install rsyslog
-
-                The previous commands install `rsyslog` , use the appropriate package if `syslog-ng` is desired.
-          - check:
-              audit: "apt-cache show rsyslog"
-              constraints:
-                platform:
-                  - ubuntu18
-                syslog:
-                  - rsyslog
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
                     set: true
               remediation: |
                 Install rsyslog or `syslog-ng` using the appropriate package manager or manual installation:
