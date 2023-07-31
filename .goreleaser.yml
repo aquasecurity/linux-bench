@@ -8,6 +8,7 @@ builds:
     binary: linux-bench
     goos:
       - linux
+      - windows
     goarch:
       - amd64
       - arm
@@ -29,8 +30,9 @@ nfpms:
     description: "Linux-bench checks whether a Linux server according to security best practices as defined in the CIS Distribution-Independent Linux Benchmark"
     license: Apache-2.0
     homepage: https://github.com/aquasecurity/linux-bench
-    files:
-      "cfg/**/*": "/etc/linux-bench/cfg"
+    contents:
+      - src: "cfg/**/*"
+        dst: "/etc/linux-bench/cfg"
     formats:
       - deb
       - rpm
