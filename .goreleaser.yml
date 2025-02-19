@@ -1,4 +1,6 @@
 ---
+version: 2
+
 env:
   - GO111MODULE=on
   - LINUXBENCH_CFG=/etc/linux-bench/cfg
@@ -20,7 +22,7 @@ builds:
 # Archive customization
 archives:
   - id: compress
-    format: tar.gz
+    formats: [tar.gz]
     name_template: "{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}"
     files:
       - "cfg/**/*"
@@ -29,8 +31,12 @@ nfpms:
     description: "Linux-bench checks whether a Linux server according to security best practices as defined in the CIS Distribution-Independent Linux Benchmark"
     license: Apache-2.0
     homepage: https://github.com/aquasecurity/linux-bench
-    files:
-      "cfg/**/*": "/etc/linux-bench/cfg"
+    contents:
+      - src: "cfg/**/*"
+        dst: "/etc/linux-bench/cfg"
+        file_info:
+          mode: 0644
+          mtime: "{{ .CommitDate }}"
     formats:
       - deb
       - rpm
