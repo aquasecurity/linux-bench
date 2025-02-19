@@ -28,6 +28,7 @@ archives:
       - "cfg/**/*"
 nfpms:
   - vendor: Aqua Security
+    maintainer: Yoav Rotem <yoav.rotem@aquasec.com>
     description: "Linux-bench checks whether a Linux server according to security best practices as defined in the CIS Distribution-Independent Linux Benchmark"
     license: Apache-2.0
     homepage: https://github.com/aquasecurity/linux-bench
