@@ -88,6 +88,12 @@ func getControls(path string, constraints []string) (*check.Controls, error) {
 func getDefinitionFilePath(version string) (string, error) {
 	filename := "definitions.yaml"
 
+	// if os is bottlerocket use the bottlerocket definitions
+	if isBottlerocket() {
+		// cfgDir = fmt.Sprintf("%s/bottlerocket", cfgDir)
+		version = "bottlerocket"
+	}
+
 	glog.V(2).Info(fmt.Sprintf("Looking for config for version %s", version))
 
 	path := filepath.Join(cfgDir, version)

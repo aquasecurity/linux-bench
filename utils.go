@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -116,4 +117,19 @@ func getPlatformVersion(output, platform string) string {
 	}
 
 	return ""
+}
+
+// IsBottlerocket checks if the OS is Bottlerocket
+func isBottlerocket() bool {
+	_, err := os.Stat("/etc/os-release")
+	if err != nil {
+		return false
+	}
+
+	data, err := os.ReadFile("/etc/os-release")
+	if err != nil {
+		return false
+	}
+
+	return string(data) == "Bottlerocket"
 }
