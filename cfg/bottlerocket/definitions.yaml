@@ -10,7 +10,7 @@ groups:
     checks:
       - id: 1.1.1.1a
         description: "Ensure mounting of udf filesystems is disabled (Automated)"
-        audit: "sudo nsenter -t1 -a -- modprobe -n -v cramfs"
+        audit: "sheltie modprobe -n -v cramfs"
         tests:
           test_items:
             - flag: "install /bin/true"
@@ -23,7 +23,7 @@ groups:
         scored: true
       - id: 1.1.1.1b
         description: "Ensure mounting of udf filesystems is disabled (Automated)"
-        audit: "sudo nsenter -t1 -a -- grep -Fw udf /proc/modules"
+        audit: "sheltie grep -Fw udf /proc/modules"
         tests:
           test_items:
             - flag: ""
@@ -59,7 +59,7 @@ groups:
     checks:
       - id: 1.3.1
         description: "Ensure dm-verity is configured (Automated)"
-        audit: 'sudo nsenter -t1 -a -- grep -Fw "dm-mod.create=root,,,ro,0" /proc/cmdline && grep -Fw "root=/dev/dm-0" /proc/cmdline && grep -Fw "restart_on_corruption" /proc/cmdline'
+        audit: 'sheltie grep -Fw "dm-mod.create=root,,,ro,0" /proc/cmdline && grep -Fw "root=/dev/dm-0" /proc/cmdline && grep -Fw "restart_on_corruption" /proc/cmdline'
         tests:
           test_items:
             - flag: ""
@@ -84,7 +84,7 @@ groups:
     checks:
       - id: 1.4.1
         description: "Additional Process Hardening"
-        audit: "sudo nsenter -t1 -a -- sysctl fs.suid_dumpable"
+        audit: "sheltie sysctl fs.suid_dumpable"
         tests:
           test_items:
             - flag: ""
@@ -102,7 +102,7 @@ groups:
 
       - id: 1.4.2
         description: "Ensure address space layout randomization (ASLR) is enabled (Automated)"
-        audit: "sudo nsenter -t1 -a -- sysctl kernel.randomize_va_space"
+        audit: "sheltie sysctl kernel.randomize_va_space"
         tests:
           test_items:
             - flag: ""
@@ -120,7 +120,7 @@ groups:
 
       - id: 1.4.3
         description: "Ensure unprivileged eBPF is disabled (Automated)"
-        audit: "sudo nsenter -t1 -a -- sysctl kernel.unprivileged_bpf_disabled"
+        audit: "sheltie sysctl kernel.unprivileged_bpf_disabled"
         tests:
           test_items:
             - flag: ""
@@ -138,7 +138,7 @@ groups:
 
       - id: 1.4.4
         description: "Ensure user namespaces are disabled (Automated)"
-        audit: "sudo nsenter -t1 -a -- sysctl user.max_user_namespaces"
+        audit: "sheltie sysctl user.max_user_namespaces"
         tests:
           test_items:
             - flag: ""
@@ -160,7 +160,7 @@ groups:
     checks:
       - id: 1.5.1
         description: "Ensure SELinux is configured (Automated)"
-        audit: "sudo nsenter -t1 -a -- sestatus"
+        audit: "sheltie sestatus"
         tests:
           test_items:
             - flag: ""
@@ -185,7 +185,7 @@ groups:
 
       - id: 1.5.2
         description: "Ensure Lockdown is configured (Automated)"
-        audit: "sudo nsenter -t1 -a -- grep -Fw '[integrity]' /sys/kernel/security/lockdown"
+        audit: "sheltie grep -Fw '[integrity]' /sys/kernel/security/lockdown"
         tests:
           test_items:
             - flag: ""
@@ -198,7 +198,7 @@ groups:
 
       - id: 1.6
         description: "Ensure updates, patches, and additional security software are installed (Manual)"
-        audit: "sudo nsenter -t1 -a -- apiclient update check"
+        audit: "sheltie apiclient update check"
         tests:
           test_items:
             - compare:
@@ -241,7 +241,7 @@ groups:
 
       - id: 2.1.1.1b
         description: "Ensure chrony is configured (Automated)"
-        audit: 'sudo nsenter -t1 -a -- systemctl is-active chronyd'
+        audit: 'sheltie systemctl is-active chronyd'
         tests:
           test_items:
             - flag: ""
@@ -267,7 +267,7 @@ groups:
     checks:
       - id: 3.1.1
         description: "Ensure packet redirect sending is disabled (Automated)"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.all.send_redirects && sudo nsenter -t1 -a -- sysctl net.ipv4.conf.default.send_redirects"
+        audit: "sheltie sysctl net.ipv4.conf.all.send_redirects && sheltie sysctl net.ipv4.conf.default.send_redirects"
         tests:
           test_items:
             - flag: ""
@@ -293,7 +293,7 @@ groups:
     checks:
       - id: 3.2.1
         description: "Ensure source routed packets are not accepted (Automated)"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.all.accept_source_route && sudo nsenter -t1 -a -- sysctl net.ipv4.conf.default.accept_source_route && sudo nsenter -t1 -a -- sysctl net.ipv6.conf.all.accept_source_route && sudo nsenter -t1 -a -- sysctl net.ipv6.conf.default.accept_source_route"
+        audit: "sheltie sysctl net.ipv4.conf.all.accept_source_route && sheltie sysctl net.ipv4.conf.default.accept_source_route && sheltie sysctl net.ipv6.conf.all.accept_source_route && sheltie sysctl net.ipv6.conf.default.accept_source_route"
         tests:
           test_items:
             - flag: ""
@@ -320,7 +320,7 @@ groups:
 
       - id: 3.2.2
         description: "Ensure ICMP redirects are not accepted (Automated)"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.all.accept_redirects && sudo nsenter -t1 -a -- sysctl net.ipv4.conf.default.accept_redirects && sudo nsenter -t1 -a -- sysctl net.ipv6.conf.all.accept_redirects && sudo nsenter -t1 -a -- sysctl net.ipv6.conf.default.accept_redirects"
+        audit: "sheltie sysctl net.ipv4.conf.all.accept_redirects && sheltie sysctl net.ipv4.conf.default.accept_redirects && sheltie sysctl net.ipv6.conf.all.accept_redirects && sheltie sysctl net.ipv6.conf.default.accept_redirects"
         tests:
           test_items:
             - flag: ""
@@ -346,13 +346,13 @@ groups:
 
       - id: 3.2.3
         description: "Ensure secure ICMP redirects are not accepted (Automated)"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.all.secure_redirects && sudo nsenter -t1 -a -- sysctl net.ipv4.conf.default.secure_redirects"
+        audit: "sheltie sysctl net.ipv4.conf.all.secure_redirects && sheltie sysctl net.ipv4.conf.default.secure_redirects"
         tests:
           test_items:
             - flag: ""
               compare:
                 op: eq
-                value: "net.ipv4.conf.all.secure_redirects = 0\net.ipv4.conf.default.secure_redirects = 0"
+                value: "net.ipv4.conf.all.secure_redirects = 0\nnet.ipv4.conf.default.secure_redirects = 0"
         remediation: |
           Run the following command to set the active kernel parameters and persist the settings:
 
@@ -367,101 +367,32 @@ groups:
             # sysctl -w net.ipv4.route.flush=1
         scored: true
 
-      - id: 3.2.4.a
-        description: "Ensure suspicious packets are logged"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.all.log_martians"
+      - id: 3.2.4
+        description: "Ensure suspicious packets are logged (Automated)"
+        audit: "sheltie sysctl net.ipv4.conf.all.log_martians && sheltie sysctl net.ipv4.conf.default.log_martians"
         tests:
           test_items:
-            - flag: "net.ipv4.conf.all.log_martians"
+            - flag: ""
               compare:
                 op: eq
-                value: "1"
+                value: "net.ipv4.conf.all.log_martians = 1\nnet.ipv4.conf.default.log_martians = 1"
         remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
+          Run the following command to set the active kernel parameters and persist the settings:
 
-          net.ipv4.conf.all.log_martians = 1
-          net.ipv4.conf.default.log_martians = 1
+            # apiclient apply <<EOF
+            [settings.kernel.sysctl]
+            "net.ipv4.conf.all.log_martians" = "1"
+            "net.ipv4.conf.default.log_martians" = "1"
+            EOF
 
-          Run the following commands to set the active kernel parameters:
+          Run the following command to flush the routing cache:
 
-          # sysctl -w net.ipv4.conf.all.log_martians=1
-          # sysctl -w net.ipv4.conf.default.log_martians=1
-          # sysctl -w net.ipv4.route.flush=1
-
+            # sysctl -w net.ipv4.route.flush=1
         scored: true
 
-      - id: 3.2.4.b
-        description: "Ensure suspicious packets are logged"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.default.log_martians"
-        tests:
-          test_items:
-            - flag: "net.ipv4.conf.default.log_martians"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.conf.all.log_martians = 1
-          net.ipv4.conf.default.log_martians = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.conf.all.log_martians=1
-          # sysctl -w net.ipv4.conf.default.log_martians=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.4.c
-        description: "Ensure suspicious packets are logged"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv4.conf.all.log_martians"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.conf.all.log_martians = 1
-          net.ipv4.conf.default.log_martians = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.conf.all.log_martians=1
-          # sysctl -w net.ipv4.conf.default.log_martians=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.4.d
-        description: "Ensure suspicious packets are logged"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.log_martians\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv4.conf.default.log_martians"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.conf.all.log_martians = 1
-          net.ipv4.conf.default.log_martians = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.conf.all.log_martians=1
-          # sysctl -w net.ipv4.conf.default.log_martians=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.5.a
-        description: "Ensure broadcast ICMP requests are ignored"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.icmp_echo_ignore_broadcasts"
+      - id: 3.2.5
+        description: "Ensure broadcast ICMP requests are ignored (Automated)"
+        audit: "sheltie sysctl net.ipv4.icmp_echo_ignore_broadcasts"
         tests:
           test_items:
             - flag: "net.ipv4.icmp_echo_ignore_broadcasts"
@@ -469,41 +400,20 @@ groups:
                 op: eq
                 value: "1"
         remediation: |
-          Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
+          Run the following command to set the active kernel parameter and persist the setting:
 
-          net.ipv4.icmp_echo_ignore_broadcasts = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1
-          # sysctl -w net.ipv4.route.flush=1
-
+            # apiclient apply <<EOF
+            [settings.kernel.sysctl]
+            "net.ipv4.icmp_echo_ignore_broadcasts" = "1"
+            EOF
+          
+          Run the following command to flush the routing cache:
+            # sysctl -w net.ipv4.route.flush=1
         scored: true
 
-      - id: 3.2.5.b
-        description: "Ensure broadcast ICMP requests are ignored"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv4\\.icmp_echo_ignore_broadcasts\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv4.icmp_echo_ignore_broadcasts"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.icmp_echo_ignore_broadcasts = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.6.a
-        description: "Ensure bogus ICMP responses are ignored"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.icmp_ignore_bogus_error_responses"
+      - id: 3.2.6
+        description: "Ensure bogus ICMP responses are ignored (Automated)"
+        audit: "sheltie sysctl net.ipv4.icmp_ignore_bogus_error_responses"
         tests:
           test_items:
             - flag: "net.ipv4.icmp_ignore_bogus_error_responses"
@@ -511,133 +421,21 @@ groups:
                 op: eq
                 value: "1"
         remediation: |
-          Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
+          Run the following command to set the active kernel parameter and persist the setting:
 
-          net.ipv4.icmp_ignore_bogus_error_responses = 1
+            # apiclient apply <<EOF
+            [settings.kernel.sysctl]
+            "net.ipv4.icmp_ignore_bogus_error_responses" = "1"
+            EOF
+          
+          Run the following command to flush the routing cache:
 
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.icmp_ignore_bogus_error_responses=1
-          # sysctl -w net.ipv4.route.flush=1
-
+            # sysctl -w net.ipv4.route.flush=1
         scored: true
 
-      - id: 3.2.6.b
-        description: "Ensure bogus ICMP responses are ignored"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv4\\.icmp_ignore_bogus_error_responses\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv4.icmp_ignore_bogus_error_responses"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.icmp_ignore_bogus_error_responses = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.icmp_ignore_bogus_error_responses=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.7.a
-        description: "Ensure Reverse Path Filtering is enabled"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.all.rp_filter"
-        tests:
-          test_items:
-            - flag: "net.ipv4.conf.all.rp_filter"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.conf.all.rp_filter = 1
-          net.ipv4.conf.default.rp_filter = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.conf.all.rp_filter=1
-          # sysctl -w net.ipv4.conf.default.rp_filter=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.7.b
-        description: "Ensure Reverse Path Filtering is enabled"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.conf.default.rp_filter"
-        tests:
-          test_items:
-            - flag: "net.ipv4.conf.default.rp_filter"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.conf.all.rp_filter = 1
-          net.ipv4.conf.default.rp_filter = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.conf.all.rp_filter=1
-          # sysctl -w net.ipv4.conf.default.rp_filter=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.7.c
-        description: "Ensure Reverse Path Filtering is enabled"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv4\\.conf\\.all\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv4.conf.all.rp_filter"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.conf.all.rp_filter = 1
-          net.ipv4.conf.default.rp_filter = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.conf.all.rp_filter=1
-          # sysctl -w net.ipv4.conf.default.rp_filter=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.7.d
-        description: "Ensure Reverse Path Filtering is enabled"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv4\\.conf\\.default\\.rp_filter\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv4.conf.default.rp_filter"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.conf.all.rp_filter = 1
-          net.ipv4.conf.default.rp_filter = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.conf.all.rp_filter=1
-          # sysctl -w net.ipv4.conf.default.rp_filter=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.8.a
-        description: "Ensure TCP SYN Cookies is enabled"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv4.tcp_syncookies"
+      - id: 3.2.7
+        description: "Ensure TCP SYN Cookies is enabled (Automated)"
+        audit: "sheltie sysctl net.ipv4.tcp_syncookies"
         tests:
           test_items:
             - flag: "net.ipv4.tcp_syncookies"
@@ -645,196 +443,23 @@ groups:
                 op: eq
                 value: "1"
         remediation: |
-          Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
+          Run the following command to set the active kernel parameter and persist the setting:
 
-          net.ipv4.tcp_syncookies = 1
+            # apiclient apply <<EOF
+            [settings.kernel.sysctl]
+            "net.ipv4.tcp_syncookies" = "1"
+            EOF
 
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.tcp_syncookies=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.8.b
-        description: "Ensure TCP SYN Cookies is enabled"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv4\\.tcp_syncookies\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv4.tcp_syncookies"
-              compare:
-                op: eq
-                value: "1"
-        remediation: |
-          Set the following parameter in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv4.tcp_syncookies = 1
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv4.tcp_syncookies=1
-          # sysctl -w net.ipv4.route.flush=1
-
-        scored: true
-
-      - id: 3.2.9.a
-        description: "Ensure IPv6 router advertisements are not accepted"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv6.conf.all.accept_ra"
-        tests:
-          test_items:
-            - flag: "net.ipv6.conf.all.accept_ra"
-              compare:
-                op: eq
-                value: "0"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv6.conf.all.accept_ra = 0
-          net.ipv6.conf.default.accept_ra = 0
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv6.conf.all.accept_ra=0
-          # sysctl -w net.ipv6.conf.default.accept_ra=0
-          # sysctl -w net.ipv6.route.flush=1
-
-        scored: true
-
-      - id: 3.2.9.b
-        description: "Ensure IPv6 router advertisements are not accepted"
-        audit: "sudo nsenter -t1 -a -- sysctl net.ipv6.conf.default.accept_ra"
-        tests:
-          test_items:
-            - flag: "net.ipv6.conf.default.accept_ra"
-              compare:
-                op: eq
-                value: "0"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv6.conf.all.accept_ra = 0
-          net.ipv6.conf.default.accept_ra = 0
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv6.conf.all.accept_ra=0
-          # sysctl -w net.ipv6.conf.default.accept_ra=0
-          # sysctl -w net.ipv6.route.flush=1
-
-        scored: true
-
-      - id: 3.2.9.c
-        description: "Ensure IPv6 router advertisements are not accepted"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv6\\.conf\\.all\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv6.conf.all.accept_ra"
-              compare:
-                op: eq
-                value: "0"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv6.conf.all.accept_ra = 0
-          net.ipv6.conf.default.accept_ra = 0
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv6.conf.all.accept_ra=0
-          # sysctl -w net.ipv6.conf.default.accept_ra=0
-          # sysctl -w net.ipv6.route.flush=1
-
-        scored: true
-
-      - id: 3.2.9.d
-        description: "Ensure IPv6 router advertisements are not accepted"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*\"net\\.ipv6\\.conf\\.default\\.accept_ra\" /etc/sysctl.conf /etc/sysctl.d/*"
-        tests:
-          test_items:
-            - flag: "net.ipv6.conf.default.accept_ra"
-              compare:
-                op: eq
-                value: "0"
-        remediation: |
-          Set the following parameters in `/etc/sysctl.conf` or a `/etc/sysctl.d/*` file:
-
-          net.ipv6.conf.all.accept_ra = 0
-          net.ipv6.conf.default.accept_ra = 0
-
-          Run the following commands to set the active kernel parameters:
-
-          # sysctl -w net.ipv6.conf.all.accept_ra=0
-          # sysctl -w net.ipv6.conf.default.accept_ra=0
-          # sysctl -w net.ipv6.route.flush=1
-
+          Run the following command to flush the routing cache:
+            # sysctl -w net.ipv4.route.flush=1
         scored: true
 
   - id: 3.3
-    description: "TCP Wrappers"
+    description: "Uncommon Network Protocols"
     checks:
       - id: 3.3.1
-        description: "Ensure TCP Wrappers is installed"
-        sub_checks:
-          - check:
-              audit: "sudo nsenter -t1 -a -- rpm -q tcp_wrappers"
-              constraints:
-                platform:
-                  - rhel7
-              tests:
-                test_items:
-                  - flag: "is not installed"
-                    set: false
-              remediation: |
-                Install TCP Wrappers using the appropriate package manager or manual installation:
-
-                yum install tcp_wrappers
-
-
-                apt-get install tcpd
-
-
-                zypper install tcpd
-          - check:
-              audit: "sudo nsenter -t1 -a -- dpkg -s tcpd"
-              constraints:
-                platform:
-                  - ubuntu16
-              tests:
-                test_items:
-                  - flag: "install ok installed"
-              remediation: |
-                Install TCP Wrappers using the appropriate package manager or manual installation:
-
-                yum install tcp_wrappers
-
-
-                apt-get install tcpd
-
-
-                zypper install tcpd
-          - check:
-              audit: "sudo nsenter -t1 -a -- apt-cache show tcpd"
-              constraints:
-                platform:
-                  - ubuntu18
-              tests:
-                test_items:
-                  - flag: "Installed-Size:"
-              remediation: |
-                Install TCP Wrappers using the appropriate package manager or manual installation:
-
-                yum install tcp_wrappers
-
-
-                apt-get install tcpd
-
-
-                zypper install tcpd
-        scored: false
-      - id: 3.3.2
-        description: "Ensure /etc/hosts.allow is configured"
-        audit: "sudo nsenter -t1 -a -- cat /etc/hosts.allow"
-        type: manual
+        description: "Ensure SCTP is disabled (Automated)"
+        audit: "sheltie grep -w sctp /proc/modules"
         tests:
           test_items:
             - flag: ""
@@ -842,337 +467,96 @@ groups:
                 op: eq
                 value: ""
         remediation: |
-          Run the following command to create `/etc/hosts.allow` :
+          Run the following command to disable the sctp module:
 
-          # echo "ALL: /, /, ..." >/etc/hosts.allow
-
-          where each `/` combination (for example, "192.168.1.0/255.255.255.0") represents one network block in use by your organization that requires access to this system.
-        scored: false
-
-      - id: 3.3.3
-        description: "Ensure /etc/hosts.deny is configured"
-        audit: "sudo nsenter -t1 -a -- cat /etc/hosts.deny"
-        tests:
-          test_items:
-            - flag: "ALL: ALL"
-        remediation: |
-          Run the following command to create `/etc/hosts.deny` :
-
-          # echo "ALL: ALL" >> /etc/hosts.deny
-
-        scored: false
-
-      - id: 3.3.4
-        description: "Ensure permissions on /etc/hosts.allow are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/hosts.allow"
-        tests:
-          test_items:
-            - flag: "644/Uid:root/0Gid:root/0"
-        remediation: |
-          Run the following commands to set permissions on `/etc/hosts.allow` :
-
-          # chown root:root /etc/hosts.allow
-          # chmod 644 /etc/hosts.allow
-
-        scored: true
-
-      - id: 3.3.5
-        description: "Ensure permissions on /etc/hosts.deny are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/hosts.deny"
-        tests:
-          test_items:
-            - flag: "644/Uid:root/0Gid:root/0"
-        remediation: |
-          Run the following commands to set permissions on `/etc/hosts.deny` :
-
-          # chown root:root /etc/hosts.deny
-          # chmod 644 /etc/hosts.deny
-
+            # apiclient set kernel.modules.sctp.allowed=false
         scored: true
 
   - id: 3.4
-    description: "Uncommon Network Protocols"
-    checks:
-      - id: 3.4.1.a
-        description: "Ensure DCCP is disabled"
-        audit: "sudo nsenter -t1 -a -- modprobe -n -v dccp"
-        tests:
-          test_items:
-            - flag: "install /bin/true"
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install dccp /bin/true
-
-        scored: true
-
-      - id: 3.4.1.b
-        description: "Ensure DCCP is disabled"
-        audit: "sudo nsenter -t1 -a -- lsmod | grep dccp"
-        tests:
-          test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: ""
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install dccp /bin/true
-
-        scored: true
-
-      - id: 3.4.2.a
-        description: "Ensure SCTP is disabled"
-        audit: "sudo nsenter -t1 -a -- modprobe -n -v sctp"
-
-        tests:
-          test_items:
-            - flag: "install /bin/true"
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install sctp /bin/true
-
-        scored: true
-
-      - id: 3.4.2.b
-        description: "Ensure SCTP is disabled"
-        audit: "sudo nsenter -t1 -a -- lsmod | grep sctp"
-        tests:
-          test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: ""
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install sctp /bin/true
-
-        scored: true
-
-      - id: 3.4.3.a
-        description: "Ensure RDS is disabled"
-        audit: "sudo nsenter -t1 -a -- modprobe -n -v rds"
-        tests:
-          test_items:
-            - flag: "install /bin/true"
-              compare:
-                op: eq
-                value: "install /bin/true"
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install rds /bin/true
-
-        scored: true
-
-      - id: 3.4.3.b
-        description: "Ensure RDS is disabled"
-        audit: "sudo nsenter -t1 -a -- lsmod | grep rds"
-        tests:
-          test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: ""
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install rds /bin/true
-
-        scored: true
-
-      - id: 3.4.4.a
-        description: "Ensure TIPC is disabled"
-        audit: "sudo nsenter -t1 -a -- modprobe -n -v tipc"
-        tests:
-          test_items:
-            - flag: "install /bin/true"
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install tipc /bin/true
-
-        scored: true
-
-      - id: 3.4.4.b
-        description: "Ensure TIPC is disabled"
-        audit: "sudo nsenter -t1 -a -- lsmod | grep tipc"
-        tests:
-          test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: ""
-        remediation: |
-          Edit or create the file `/etc/modprobe.d/CIS.conf` and add the following line:
-
-          install tipc /bin/true
-
-        scored: true
-
-  - id: 3.5
     description: "Firewall Configuration"
-  - id: 3.5.1
-    description: "Configure IPv6 ip6tables"
-    checks:
-      - id: 3.5.1.1
-        description: "Ensure IPv6 default deny firewall policy"
-        audit: "sudo nsenter -t1 -a -- ip6tables -L"
-        tests:
-          bin_op: and
-          test_items:
-            - flag: "Chain INPUT (policy DROP)"
-            - flag: "Chain FORWARD (policy DROP)"
-            - flag: "Chain OUTPUT (policy DROP)"
-        remediation: |
-          Run the following commands to implement a default DROP policy:
-
-          # iptables -P INPUT DROP
-          # iptables -P OUTPUT DROP
-          # iptables -P FORWARD DROP
-        scored: true
-
-      - id: 3.5.1.2.a
-        description: "Ensure IPv6 loopback traffic is configured"
-        audit: "sudo nsenter -t1 -a -- ip6tables -L INPUT -v -n"
-        type: manual
-        tests:
-          test_items:
-            - flag: |
-                Chain INPUT (policy DROP 0 packets, 0 bytes)
-                pkts bytes target prot opt in out source destination
-                0 0 ACCEPT all -- lo * 0.0.0.0/0 0.0.0.0/0
-                0 0 DROP all -- * * 127.0.0.0/8 0.0.0.0/0
-        remediation: |
-          Run the following commands to implement the loopback rules:
-
-          # ip6tables -A INPUT -i lo -j ACCEPT
-          # ip6tables -A OUTPUT -o lo -j ACCEPT
-          # ip6tables -A INPUT -s ::1 -j DROP
-
-        scored: true
-
-      - id: 3.5.1.2.b
-        description: "Ensure IPv6 loopback traffic is configured"
-        audit: "sudo nsenter -t1 -a -- ip6tables -L OUTPUT -v -n"
-        type: manual
-        tests:
-          test_items:
-            - flag: |
-                Chain OUTPUT (policy DROP 0 packets, 0 bytes)
-                pkts bytes target prot opt in out source destination
-                0 0 ACCEPT all -- * lo 0.0.0.0/0 0.0.0.0/0
-        remediation: |
-          Run the following commands to implement the loopback rules:
-
-          # ip6tables -A INPUT -i lo -j ACCEPT
-          # ip6tables -A OUTPUT -o lo -j ACCEPT
-          # ip6tables -A INPUT -s ::1 -j DROP
-
-        scored: true
-      - id: 3.5.1.3
-        description: "Ensure IPv6 outbound and established connections are configured"
-        audit: "sudo nsenter -t1 -a -- ip6tables -L -v -n"
-        type: manual
-        remediation: |
-          Configure iptables in accordance with site policy. The following commands will implement a policy to allow all outbound connections and all established connections:
-
-          # ip6tables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
-          # ip6tables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
-          # ip6tables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
-          # ip6tables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT
-          # ip6tables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT
-          # ip6tables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT
-
-        scored: false
-      - id: 3.5.1.4.a
-        description: "Ensure IPv6 firewall rules exist for all open ports"
-        audit: "sudo nsenter -t1 -a -- ss -6tuln"
-        type: manual
-        remediation: |
-          For each port identified in the audit which does not have a firewall rule establish a proper
-          rule for accepting inbound connections:
-
-          # ip6tables -A INPUT -p <protocol> --dport <port> -m state --state NEW -j ACCEPT
-
-        scored: true
-
-      - id: 3.5.1.4.b
-        description: "Ensure IPv6 firewall rules exist for all open ports"
-        audit: "sudo nsenter -t1 -a -- ip6tables -L INPUT -v -n"
-        type: manual
-        remediation: |
-          For each port identified in the audit which does not have a firewall rule establish a proper
-          rule for accepting inbound connections:
-
-          # ip6tables -A INPUT -p <protocol> --dport <port> -m state --state NEW -j ACCEPT
-
-        scored: true
-
-  - id: 3.5.2
+  - id: 3.4.1
     description: "Configure IPv4 iptables"
     checks:
-      - id: 3.5.2.1
-        description: "Ensure default deny firewall policy"
-        audit: "sudo nsenter -t1 -a -- iptables -L"
+      - id: 3.4.1.1
+        description: "Ensure IPv4 default deny firewall policy (Automated)"
+        audit: "sheltie iptables -L | grep -E 'Chain INPUT \(policy DROP\)|Chain FORWARD \(policy DROP\)|Chain OUTPUT \(policy DROP\)'"
         tests:
-          bin_op: and
           test_items:
-            - flag: "Chain INPUT (policy DROP)"
-            - flag: "Chain FORWARD (policy DROP)"
-            - flag: "Chain OUTPUT (policy DROP)"
+            - flags: ""
+              compare:
+                op: eq
+                value: "Chain INPUT (policy DROP)\nChain FORWARD (policy DROP)\nChain OUTPUT (policy DROP)"
         remediation: |
           Run the following commands to implement a default DROP policy:
 
-          # iptables -P INPUT DROP
-          # iptables -P OUTPUT DROP
-          # iptables -P FORWARD DROP
-
+            # iptables -P INPUT DROP
+            # iptables -P OUTPUT DROP
+            # iptables -P FORWARD DROP
         scored: true
-      - id: 3.5.2.2.a
-        description: "Ensure loopback traffic is configured"
-        audit: "sudo nsenter -t1 -a -- iptables -L INPUT -v -n"
+
+      - id: 3.4.1.2
+        description: "Ensure IPv4 loopback traffic is configured (Automated)"
+        audit: "sheltie iptables -L INPUT -v -n"
         type: manual
-        tests:
-          test_items:
-            - flag: |
-                Chain INPUT (policy DROP 0 packets, 0 bytes)
-                pkts bytes target prot opt in out source destination
-                0 0 ACCEPT all -- lo * 0.0.0.0/0 0.0.0.0/0
-                0 0 DROP all -- * * 127.0.0.0/8 0.0.0.0/0
         remediation: |
           Run the following commands to implement the loopback rules:
 
-          # iptables -A INPUT -i lo -j ACCEPT
-          # iptables -A OUTPUT -o lo -j ACCEPT
-          # iptables -A INPUT -s 127.0.0.0/8 -j DROP
-
+            # iptables -A INPUT -i lo -j ACCEPT
+            # iptables -A OUTPUT -o lo -j ACCEPT
+            # iptables -A INPUT -s 127.0.0.0/8 -j DROP
         scored: true
 
-      - id: 3.5.2.2.b
-        description: "Ensure loopback traffic is configured"
-        audit: "sudo nsenter -t1 -a -- iptables -L OUTPUT -v -n"
+      - id: 3.4.1.3
+        description: "Ensure IPv4 outbound and established connections are configured (Manual)"
+        audit: "sheltie iptables -L -v -n"
         type: manual
+        remediation: |
+          Configure iptables in accordance with site policy. The following commands will
+          implement a policy to allow all outbound connections and all established connections:
+
+            # iptables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # iptables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # iptables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # iptables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT
+            # iptables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT
+            # iptables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT
+        scored: false
+
+  - id: 3.4.2
+    description: "Configure IPv6 ip6tables"
+    checks:
+      - id: 3.4.2.1
+        description: "Ensure IPv6 default deny firewall policy (Automated)"
+        audit: "sheltie ip6tables -L | grep -E 'Chain INPUT \(policy DROP\)|Chain FORWARD \(policy DROP\)|Chain OUTPUT \(policy DROP\)'"
         tests:
           test_items:
-            - flag: |
-                Chain OUTPUT (policy DROP 0 packets, 0 bytes)
-                pkts bytes target prot opt in out source destination
-                0 0 ACCEPT all -- * lo 0.0.0.0/0 0.0.0.0/0
+            - flags: ""
+              compare:
+                op: eq
+                value: "Chain INPUT (policy DROP)\nChain FORWARD (policy DROP)\nChain OUTPUT (policy DROP)"
+        remediation: |
+          Run the following commands to implement a default DROP policy:
+
+            # ip6tables -P INPUT DROP
+            # ip6tables -P OUTPUT DROP
+            # ip6tables -P FORWARD DROP
+        scored: true
+
+      - id: 3.4.2.2
+        description: "Ensure IPv6 loopback traffic is configured (Automated)"
+        audit: "sheltie ip6tables -L INPUT -v -n"
+        type: manual
         remediation: |
           Run the following commands to implement the loopback rules:
 
-          # iptables -A INPUT -i lo -j ACCEPT
-          # iptables -A OUTPUT -o lo -j ACCEPT
-          # iptables -A INPUT -s 127.0.0.0/8 -j DROP
-
+            # ip6tables -A INPUT -i lo -j ACCEPT
+            # ip6tables -A OUTPUT -o lo -j ACCEPT
+            # ip6tables -A INPUT -s ::1 -j DROP
         scored: true
+
       - id: 3.5.2.3
         description: "Ensure outbound and established connections are configured"
-        audit: "sudo nsenter -t1 -a -- iptables -L -v -n"
+        audit: "sheltie iptables -L -v -n"
         type: manual
         remediation: |
           Configure iptables in accordance with site policy. The following commands will implement a policy to allow all outbound connections and all established connections:
@@ -1187,7 +571,7 @@ groups:
         scored: false
       - id: 3.5.2.4.a
         description: "Ensure firewall rules exist for all open ports"
-        audit: "sudo nsenter -t1 -a -- netstat -ln"
+        audit: "sheltie netstat -ln"
         type: manual
         tests:
           test_items:
@@ -1204,7 +588,7 @@ groups:
 
       - id: 3.5.2.4.b
         description: "Ensure firewall rules exist for all open ports"
-        audit: "sudo nsenter -t1 -a -- iptables -L INPUT -v -n"
+        audit: "sheltie iptables -L INPUT -v -n"
         type: manual
         tests:
           test_items:
@@ -1225,7 +609,7 @@ groups:
         description: "Ensure iptables is installed"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- rpm -q iptables"
+              audit: "sheltie rpm -q iptables"
               constraints:
                 platform:
                   - rhel7
@@ -1245,7 +629,7 @@ groups:
 
                 # zypper install iptables
           - check:
-              audit: "sudo nsenter -t1 -a -- dpkg -s iptables"
+              audit: "sheltie dpkg -s iptables"
               constraints:
                 platform:
                   - ubuntu16
@@ -1264,7 +648,7 @@ groups:
 
                 # zypper install iptables
           - check:
-              audit: "sudo nsenter -t1 -a -- apt-cache show iptables"
+              audit: "sheltie apt-cache show iptables"
               constraints:
                 platform:
                   - ubuntu18
@@ -1289,7 +673,7 @@ groups:
     checks:
       - id: 3.6.a
         description: "Ensure wireless interfaces are disabled"
-        audit: "sudo nsenter -t1 -a -- iwconfig"
+        audit: "sheltie iwconfig"
         type: manual
         remediation: |
           Run the following command to disable any wireless interfaces:
@@ -1301,7 +685,7 @@ groups:
 
       - id: 3.6.b
         description: "Ensure wireless interfaces are disabled"
-        audit: "sudo nsenter -t1 -a -- ip link show up"
+        audit: "sheltie ip link show up"
         type: manual
         remediation: |
           Run the following command to disable any wireless interfaces:
@@ -1318,7 +702,7 @@ groups:
         description: "Disable IPv6"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep \"^\\s*linux\" /boot/grub/grub.cfg | grep -v ipv6.disabled=1"
+              audit: "sheltie grep \"^\\s*linux\" /boot/grub/grub.cfg | grep -v ipv6.disabled=1"
               constraints:
                 boot:
                   - grub
@@ -1337,7 +721,7 @@ groups:
                 # update-grub
 
           - check:
-              audit: "sudo nsenter -t1 -a -- grep \"^\\s*linux\" /boot/grub2/grub.cfg | grep -v ipv6.disabled=1"
+              audit: "sheltie grep \"^\\s*linux\" /boot/grub2/grub.cfg | grep -v ipv6.disabled=1"
               constraints:
                 boot:
                   - grub2
@@ -1366,7 +750,7 @@ groups:
     checks:
       - id: 4.1.1.1
         description: "Ensure audit log storage size is configured"
-        audit: "sudo nsenter -t1 -a -- grep max_log_file /etc/audit/auditd.conf"
+        audit: "sheltie grep max_log_file /etc/audit/auditd.conf"
         type: "manual"
         tests:
           test_items:
@@ -1383,7 +767,7 @@ groups:
 
       - id: 4.1.1.2.a
         description: "Ensure system is disabled when audit logs are full"
-        audit: "sudo nsenter -t1 -a -- grep ^space_left_action /etc/audit/auditd.conf"
+        audit: "sheltie grep ^space_left_action /etc/audit/auditd.conf"
         tests:
           test_items:
             - flag: "space_left_action = email"
@@ -1398,7 +782,7 @@ groups:
 
       - id: 4.1.1.2.b
         description: "Ensure system is disabled when audit logs are full"
-        audit: "sudo nsenter -t1 -a -- grep action_mail_acct /etc/audit/auditd.conf"
+        audit: "sheltie grep action_mail_acct /etc/audit/auditd.conf"
         tests:
           test_items:
             - flag: "action_mail_acct = root"
@@ -1413,7 +797,7 @@ groups:
 
       - id: 4.1.1.2.c
         description: "Ensure system is disabled when audit logs are full"
-        audit: "sudo nsenter -t1 -a -- grep admin_space_left_action /etc/audit/auditd.conf"
+        audit: "sheltie grep admin_space_left_action /etc/audit/auditd.conf"
         tests:
           test_items:
             - flag: "admin_space_left_action = halt"
@@ -1428,7 +812,7 @@ groups:
 
       - id: 4.1.1.3
         description: "Ensure audit logs are not automatically deleted"
-        audit: "sudo nsenter -t1 -a -- grep max_log_file_action /etc/audit/auditd.conf"
+        audit: "sheltie grep max_log_file_action /etc/audit/auditd.conf"
         tests:
           test_items:
             - flag: "max_log_file_action = keep_logs"
@@ -1442,7 +826,7 @@ groups:
         description: "Ensure auditd service is enabled"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- rpm -q audit audit-libs"
+              audit: "sheltie rpm -q audit audit-libs"
               constraints:
                 platform:
                   - rhel7
@@ -1456,7 +840,7 @@ groups:
                 # apt-get install auditd audispd-plugins
                 # zipper install audit audit-libs
           - check:
-              audit: "sudo nsenter -t1 -a -- dpkg -s auditd audispd-plugins"
+              audit: "sheltie dpkg -s auditd audispd-plugins"
               constraints:
                 platform:
                   - ubuntu16
@@ -1469,7 +853,7 @@ groups:
                 # apt-get install auditd audispd-plugins
                 # zipper install audit audit-libs
           - check:
-              audit: "sudo nsenter -t1 -a -- apt-cache show auditd"
+              audit: "sheltie apt-cache show auditd"
               constraints:
                 platform:
                   - ubuntu18
@@ -1486,7 +870,7 @@ groups:
         description: "Ensure auditd service is enabled"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- chkconfig --list auditd"
+              audit: "sheltie chkconfig --list auditd"
               constraints:
                 platform:
                   - rhel6
@@ -1504,7 +888,7 @@ groups:
 
                 # update-rc.d auditd enable
           - check:
-              audit: "sudo nsenter -t1 -a -- systemctl is-enabled auditd"
+              audit: "sheltie systemctl is-enabled auditd"
               constraints:
                 platform:
                   - rhel7
@@ -1524,7 +908,7 @@ groups:
 
                 # update-rc.d auditd enable
           - check:
-              audit: "sudo nsenter -t1 -a -- ls /etc/rc*.d | grep auditd"
+              audit: "sheltie ls /etc/rc*.d | grep auditd"
               type: manual
               constraints:
                 platform:
@@ -1550,7 +934,7 @@ groups:
         description: "Ensure auditing for processes that start prior to auditd is enabled"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep \"^\\s*kernel\" /boot/grub/menu.lst"
+              audit: "sheltie grep \"^\\s*kernel\" /boot/grub/menu.lst"
               constraints:
                 boot:
                   - grub
@@ -1567,7 +951,7 @@ groups:
 
                   # update-grub
           - check:
-              audit: "sudo nsenter -t1 -a -- grep -i linux /etc/default/grub"
+              audit: "sheltie grep -i linux /etc/default/grub"
               constraints:
                 boot:
                   - grub2
@@ -1588,7 +972,7 @@ groups:
         scored: true
       - id: 4.1.5.a
         description: "Ensure events that modify date and time information are collected"
-        audit: "sudo nsenter -t1 -a -- grep time-change /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep time-change /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -1611,7 +995,7 @@ groups:
 
       - id: 4.1.5.b
         description: "Ensure events that modify date and time information are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep time-change"
+        audit: "sheltie auditctl -l | grep time-change"
         tests:
           bin_op: and
           test_items:
@@ -1633,7 +1017,7 @@ groups:
         scored: true
       - id: 4.1.6.a
         description: "Ensure events that modify user/group information are collected"
-        audit: "sudo nsenter -t1 -a -- grep identity /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep identity /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -1656,7 +1040,7 @@ groups:
 
       - id: 4.1.6.b
         description: "Ensure events that modify user/group information are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep identity"
+        audit: "sheltie auditctl -l | grep identity"
         tests:
           bin_op: and
           test_items:
@@ -1679,7 +1063,7 @@ groups:
 
       - id: 4.1.7.a
         description: "Ensure events that modify the system's network environment are collected"
-        audit: "sudo nsenter -t1 -a -- grep system-locale /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep system-locale /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -1702,7 +1086,7 @@ groups:
         scored: true
       - id: 4.1.7.b
         description: "Ensure events that modify the system's network environment are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep system-locale"
+        audit: "sheltie auditctl -l | grep system-locale"
         tests:
           bin_op: and
           test_items:
@@ -1727,7 +1111,7 @@ groups:
         description: "Ensure events that modify the system's Mandatory Access Controls are collected"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep MAC-policy /etc/audit/rules.d/*.rules"
+              audit: "sheltie grep MAC-policy /etc/audit/rules.d/*.rules"
               constraints:
                 lsm:
                   - selinux
@@ -1743,7 +1127,7 @@ groups:
                 -w /etc/selinux/ -p wa -k MAC-policy
                 -w /usr/share/selinux/ -p wa -k MAC-policy
           - check:
-              audit: "sudo nsenter -t1 -a -- grep MAC-policy /etc/audit/rules.d/*.rules"
+              audit: "sheltie grep MAC-policy /etc/audit/rules.d/*.rules"
               constraints:
                 lsm:
                   - apparmor
@@ -1764,7 +1148,7 @@ groups:
         description: "Ensure events that modify the system's Mandatory Access Controls are collected"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- auditctl -l | grep MAC-policy"
+              audit: "sheltie auditctl -l | grep MAC-policy"
               constraints:
                 lsm:
                   - selinux
@@ -1780,7 +1164,7 @@ groups:
                 -w /etc/selinux/ -p wa -k MAC-policy
                 -w /usr/share/selinux/ -p wa -k MAC-policy
           - check:
-              audit: "sudo nsenter -t1 -a -- auditctl -l | grep MAC-policy"
+              audit: "sheltie auditctl -l | grep MAC-policy"
               constraints:
                 lsm:
                   - apparmor
@@ -1799,7 +1183,7 @@ groups:
         scored: true
       - id: 4.1.9.a
         description: "Ensure login and logout events are collected"
-        audit: "sudo nsenter -t1 -a -- grep logins /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep logins /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -1818,7 +1202,7 @@ groups:
 
       - id: 4.1.9.b
         description: "Ensure login and logout events are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep logins"
+        audit: "sheltie auditctl -l | grep logins"
         tests:
           test_items:
             - flag: "-w /var/log/faillog -p wa -k logins"
@@ -1836,7 +1220,7 @@ groups:
 
       - id: 4.1.10.a
         description: "Ensure session initiation information is collected"
-        audit: "sudo nsenter -t1 -a -- grep -E '(session|logins)' /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep -E '(session|logins)' /etc/audit/rules.d/*.rules"
         tests:
           test_items:
             - flag: "-w /var/run/utmp -p wa -k session"
@@ -1854,7 +1238,7 @@ groups:
 
       - id: 4.1.10.b
         description: "Ensure session initiation information is collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep -E '(session|logins)'"
+        audit: "sheltie auditctl -l | grep -E '(session|logins)'"
         tests:
           test_items:
             - flag: "-w /var/run/utmp -p wa -k session"
@@ -1872,7 +1256,7 @@ groups:
 
       - id: 4.1.11.a
         description: "Ensure discretionary access control permission modification events are collected"
-        audit: "sudo nsenter -t1 -a -- grep perm_mod /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep perm_mod /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -1896,7 +1280,7 @@ groups:
         scored: true
       - id: 4.1.11.b
         description: "Ensure discretionary access control permission modification events are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep perm_mod"
+        audit: "sheltie auditctl -l | grep perm_mod"
         tests:
           bin_op: and
           test_items:
@@ -1920,7 +1304,7 @@ groups:
         scored: true
       - id: 4.1.12.a
         description: "Ensure unsuccessful unauthorized file access attempts are collected"
-        audit: "sudo nsenter -t1 -a -- grep access /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep access /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -1940,7 +1324,7 @@ groups:
         scored: true
       - id: 4.1.12.b
         description: "Ensure unsuccessful unauthorized file access attempts are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep access"
+        audit: "sheltie auditctl -l | grep access"
         tests:
           bin_op: and
           test_items:
@@ -1960,7 +1344,7 @@ groups:
         scored: true
       - id: 4.1.13
         description: "Ensure use of privileged commands is collected"
-        audit: "sudo nsenter -t1 -a -- find <partition> -xdev \\( -perm -4000 -o -perm -2000 \\) -type f | awk '{print \"-a always,exit -F path=\" $1 \" -F perm=x -F auid>=500 -F auid!=4294967295 \ -k privileged\" }' "
+        audit: "sheltie find <partition> -xdev \\( -perm -4000 -o -perm -2000 \\) -type f | awk '{print \"-a always,exit -F path=\" $1 \" -F perm=x -F auid>=500 -F auid!=4294967295 \ -k privileged\" }' "
         type: "manual"
         remediation: |
           To remediate this issue, the system administrator will have to execute a find command to
@@ -1984,7 +1368,7 @@ groups:
 
       - id: 4.1.14.a
         description: "Ensure successful file system mounts are collected"
-        audit: "sudo nsenter -t1 -a -- grep mounts /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep mounts /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -2001,7 +1385,7 @@ groups:
 
       - id: 4.1.14.b
         description: "Ensure successful file system mounts are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep mounts"
+        audit: "sheltie auditctl -l | grep mounts"
         tests:
           bin_op: and
           test_items:
@@ -2018,7 +1402,7 @@ groups:
 
       - id: 4.1.15.a
         description: "Ensure file deletion events by users are collected"
-        audit: "sudo nsenter -t1 -a -- grep delete /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep delete /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -2035,7 +1419,7 @@ groups:
 
       - id: 4.1.15.b
         description: "Ensure file deletion events by users are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep delete"
+        audit: "sheltie auditctl -l | grep delete"
         tests:
           bin_op: and
           test_items:
@@ -2052,7 +1436,7 @@ groups:
 
       - id: 4.1.16.a
         description: "Ensure changes to system administration scope (sudoers) is collected"
-        audit: "sudo nsenter -t1 -a -- grep scope /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep scope /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -2069,7 +1453,7 @@ groups:
 
       - id: 4.1.16.b
         description: "Ensure changes to system administration scope (sudoers) is collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep scope"
+        audit: "sheltie auditctl -l | grep scope"
         tests:
           bin_op: and
           test_items:
@@ -2086,7 +1470,7 @@ groups:
 
       - id: 4.1.17.a
         description: "Ensure system administrator actions (sudolog) are collected"
-        audit: "sudo nsenter -t1 -a -- grep actions /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep actions /etc/audit/rules.d/*.rules"
         tests:
           test_items:
             - flag: "-w /var/log/sudo.log -p wa -k actions"
@@ -2103,7 +1487,7 @@ groups:
 
       - id: 4.1.17.b
         description: "Ensure system administrator actions (sudolog) are collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep actions"
+        audit: "sheltie auditctl -l | grep actions"
         tests:
           test_items:
             - flag: "-w /var/log/sudo.log -p wa -k actions"
@@ -2117,7 +1501,7 @@ groups:
 
       - id: 4.1.18.a
         description: "Ensure kernel module loading and unloading is collected"
-        audit: "sudo nsenter -t1 -a -- grep modules /etc/audit/rules.d/*.rules"
+        audit: "sheltie grep modules /etc/audit/rules.d/*.rules"
         tests:
           bin_op: and
           test_items:
@@ -2138,7 +1522,7 @@ groups:
 
       - id: 4.1.18.b
         description: "Ensure kernel module loading and unloading is collected"
-        audit: "sudo nsenter -t1 -a -- auditctl -l | grep modules"
+        audit: "sheltie auditctl -l | grep modules"
         tests:
           bin_op: and
           test_items:
@@ -2158,7 +1542,7 @@ groups:
 
       - id: 4.1.19
         description: "Ensure the audit configuration is immutable"
-        audit: "sudo nsenter -t1 -a -- grep ^\\s*[^#] /etc/audit/rules.d/*.rules | tail -1"
+        audit: "sheltie grep ^\\s*[^#] /etc/audit/rules.d/*.rules | tail -1"
         tests:
           test_items:
             - flag: "-e 2"
@@ -2177,7 +1561,7 @@ groups:
         description: "Ensure rsyslog is installed"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- rpm -q rsyslog"
+              audit: "sheltie rpm -q rsyslog"
               constraints:
                 platform:
                   - rhel7
@@ -2200,7 +1584,7 @@ groups:
 
                 The previous commands install `rsyslog` , use the appropriate package if `syslog-ng` is desired.
           - check:
-              audit: "sudo nsenter -t1 -a -- dpkg -s rsyslog"
+              audit: "sheltie dpkg -s rsyslog"
               constraints:
                 platform:
                   - ubuntu16
@@ -2222,7 +1606,7 @@ groups:
 
                 The previous commands install `rsyslog` , use the appropriate package if `syslog-ng` is desired.
           - check:
-              audit: "sudo nsenter -t1 -a -- apt-cache show rsyslog"
+              audit: "sheltie apt-cache show rsyslog"
               constraints:
                 platform:
                   - ubuntu18
@@ -2248,7 +1632,7 @@ groups:
         description: "Ensure rsyslog Service is enabled"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- chkconfig --list rsyslog"
+              audit: "sheltie chkconfig --list rsyslog"
               constraints:
                 platform:
                   - rhel6
@@ -2266,7 +1650,7 @@ groups:
 
                 # update-rc.d rsyslog enable
           - check:
-              audit: "sudo nsenter -t1 -a -- systemctl is-enabled rsyslog"
+              audit: "sheltie systemctl is-enabled rsyslog"
               constraints:
                 platform:
                   - rhel7
@@ -2286,7 +1670,7 @@ groups:
 
                 # update-rc.d rsyslog enable
           - check:
-              audit: "sudo nsenter -t1 -a -- ls /etc/rc*.d | grep rsyslog"
+              audit: "sheltie ls /etc/rc*.d | grep rsyslog"
               type: manual
               constraints:
                 platform:
@@ -2309,7 +1693,7 @@ groups:
         description: "Ensure logging is configured"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- ls -l /var/log/"
+              audit: "sheltie ls -l /var/log/"
               constraints:
                 syslog:
                   - rsyslog
@@ -2341,7 +1725,7 @@ groups:
         description: "Ensure rsyslog default file permissions configured"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep ^\\$FileCreateMode /etc/rsyslog.conf /etc/rsyslog.d/*.conf -h | tr \"$\" \" \" "
+              audit: "sheltie grep ^\\$FileCreateMode /etc/rsyslog.conf /etc/rsyslog.d/*.conf -h | tr \"$\" \" \" "
               constraints:
                 syslog:
                   - rsyslog
@@ -2378,7 +1762,7 @@ groups:
         description: "Ensure remote rsyslog messages are only accepted on designated log hosts."
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep ^\\$ModLoad /etc/rsyslog.conf /etc/rsyslog.d/*.conf"
+              audit: "sheltie grep ^\\$ModLoad /etc/rsyslog.conf /etc/rsyslog.d/*.conf"
               constraints:
                 syslog:
                   - rsyslog
@@ -2405,7 +1789,7 @@ groups:
         description: "Ensure remote rsyslog messages are only accepted on designated log hosts."
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep ^\\$InputTCPServerRun /etc/rsyslog.conf /etc/rsyslog.d/*.conf"
+              audit: "sheltie grep ^\\$InputTCPServerRun /etc/rsyslog.conf /etc/rsyslog.d/*.conf"
               constraints:
                 syslog:
                   - rsyslog
@@ -2432,7 +1816,7 @@ groups:
     checks:
       - id: 4.2.2.1
         description: "Ensure journald is configured to send logs to rsyslog"
-        audit: "sudo nsenter -t1 -a -- grep -e ForwardToSyslog /etc/systemd/journald.conf"
+        audit: "sheltie grep -e ForwardToSyslog /etc/systemd/journald.conf"
         tests:
           test_items:
             - flag: "ForwardToSyslog=yes"
@@ -2443,7 +1827,7 @@ groups:
         scored: true
       - id: 4.2.2.2
         description: "Ensure journald is configured to compress large log files (Scored)"
-        audit: "sudo nsenter -t1 -a -- grep -e Compress /etc/systemd/journald.conf"
+        audit: "sheltie grep -e Compress /etc/systemd/journald.conf"
         tests:
           test_items:
             - flag: "Compress=yes"
@@ -2454,7 +1838,7 @@ groups:
         scored: true
       - id: 4.2.2.3
         description: "Ensure journald is configured to write logfiles to persistent disk"
-        audit: "sudo nsenter -t1 -a -- grep -e Storage /etc/systemd/journald.conf"
+        audit: "sheltie grep -e Storage /etc/systemd/journald.conf"
         tests:
           test_items:
             - flag: "Storage=persistent"
@@ -2465,7 +1849,7 @@ groups:
         scored: true
       - id: 4.2.3
         description: "Ensure permissions on all logfiles are configured"
-        audit: "sudo nsenter -t1 -a -- find /var/log -type f -ls"
+        audit: "sheltie find /var/log -type f -ls"
         type: manual
         remediation: |
           Run the following commands to set permissions on all existing log files:
@@ -2473,7 +1857,7 @@ groups:
         scored: true
       - id: 4.3
         description: "Ensure logrotate is configured"
-        audit: "sudo nsenter -t1 -a -- cat /etc/logrotate.conf; cat /etc/logrotate.d/* ;"
+        audit: "sheltie cat /etc/logrotate.conf; cat /etc/logrotate.d/* ;"
         type: manual
         remediation: |
           Edit `/etc/logrotate.conf` and `/etc/logrotate.d/*` to ensure logs are rotated according to site policy.
@@ -2487,7 +1871,7 @@ groups:
         description: "Ensure cron daemon is enabled"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- chkconfig --list crond"
+              audit: "sheltie chkconfig --list crond"
               constraints:
                 platform:
                   - rhel6
@@ -2505,7 +1889,7 @@ groups:
 
                 # update-rc.d crond enable
           - check:
-              audit: "sudo nsenter -t1 -a -- systemctl is-enabled crond"
+              audit: "sheltie systemctl is-enabled crond"
               constraints:
                 platform:
                   - rhel7
@@ -2523,7 +1907,7 @@ groups:
 
                 # update-rc.d crond enable
           - check:
-              audit: "sudo nsenter -t1 -a -- systemctl is-enabled cron"
+              audit: "sheltie systemctl is-enabled cron"
               constraints:
                 platform:
                   - ubuntu16
@@ -2544,7 +1928,7 @@ groups:
         scored: true
       - id: 5.1.2
         description: "Ensure permissions on /etc/crontab are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/crontab"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/crontab"
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
@@ -2558,7 +1942,7 @@ groups:
 
       - id: 5.1.3
         description: "Ensure permissions on /etc/cron.hourly are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.hourly"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.hourly"
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
@@ -2572,7 +1956,7 @@ groups:
 
       - id: 5.1.4
         description: "Ensure permissions on /etc/cron.daily are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.daily"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.daily"
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
@@ -2586,7 +1970,7 @@ groups:
 
       - id: 5.1.5
         description: "Ensure permissions on /etc/cron.weekly are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.weekly"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.weekly"
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
@@ -2600,7 +1984,7 @@ groups:
 
       - id: 5.1.6
         description: "Ensure permissions on /etc/cron.monthly are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.monthly"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.monthly"
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
@@ -2614,7 +1998,7 @@ groups:
 
       - id: 5.1.7
         description: "Ensure permissions on /etc/cron.d are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.d"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.d"
         tests:
           test_items:
             - flag: "700/Uid:root/0Gid:root/0"
@@ -2628,7 +2012,7 @@ groups:
 
       - id: 5.1.8.a
         description: "Ensure at/cron is restricted to authorized users"
-        audit: "sudo nsenter -t1 -a -- stat /etc/cron.deny"
+        audit: "sheltie stat /etc/cron.deny"
         tests:
           test_items:
             - flag: "stat: cannot stat '/etc/cron.deny': No such file or directory"
@@ -2648,7 +2032,7 @@ groups:
 
       - id: 5.1.8.b
         description: "Ensure at/cron is restricted to authorized users"
-        audit: "sudo nsenter -t1 -a -- stat /etc/at.deny"
+        audit: "sheltie stat /etc/at.deny"
         tests:
           test_items:
             - flag: "stat: cannot stat '/etc/at.deny': No such file or directory"
@@ -2668,7 +2052,7 @@ groups:
 
       - id: 5.1.8.c
         description: "Ensure at/cron is restricted to authorized users"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.allow"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/cron.allow"
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
@@ -2688,7 +2072,7 @@ groups:
 
       - id: 5.1.8.d
         description: "Ensure at/cron is restricted to authorized users"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/at.allow"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/at.allow"
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
@@ -2711,7 +2095,7 @@ groups:
     checks:
       - id: 5.2.1
         description: "Ensure permissions on /etc/ssh/sshd_config are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/ssh/sshd_config"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/ssh/sshd_config"
         tests:
           test_items:
             - flag: "600/Uid:root/0Gid:root/0"
@@ -2725,7 +2109,7 @@ groups:
 
       - id: 5.2.2
         description: "Ensure permissions on SSH private host key files are configured"
-        audit: "sudo nsenter -t1 -a -- find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec stat -c \"%N permissions=%a Uid:%U/%u Gid:%G/%g\" {} \\;"
+        audit: "sheltie find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec stat -c \"%N permissions=%a Uid:%U/%u Gid:%G/%g\" {} \\;"
         use_multiple_values: true
         tests:
           bin_op: and
@@ -2743,7 +2127,7 @@ groups:
         scored: true
       - id: 5.2.3
         description: "Ensure permissions on SSH public host key files are configured"
-        audit: "sudo nsenter -t1 -a -- find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec stat -c \"%N permissions=%a Uid:%U/%u Gid:%G/%g\" {} \\;"
+        audit: "sheltie find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec stat -c \"%N permissions=%a Uid:%U/%u Gid:%G/%g\" {} \\;"
         use_multiple_values: true
         tests:
           bin_op: and
@@ -2761,7 +2145,7 @@ groups:
         scored: true
       - id: 5.2.4
         description: "Ensure SSH Protocol is set to 2"
-        audit: "sudo nsenter -t1 -a -- grep ^Protocol /etc/ssh/sshd_config"
+        audit: "sheltie grep ^Protocol /etc/ssh/sshd_config"
         tests:
           test_items:
             - flag: "Protocol 2"
@@ -2773,7 +2157,7 @@ groups:
         scored: true
       - id: 5.2.5
         description: "Ensure SSH LogLevel is set to INFO"
-        audit: "sudo nsenter -t1 -a -- grep ^LogLevel /etc/ssh/sshd_config"
+        audit: "sheltie grep ^LogLevel /etc/ssh/sshd_config"
         tests:
           bin_op: or
           test_items:
@@ -2788,7 +2172,7 @@ groups:
 
       - id: 5.2.6
         description: "Ensure SSH X11 forwarding is disabled"
-        audit: "sudo nsenter -t1 -a -- grep ^X11Forwarding /etc/ssh/sshd_config"
+        audit: "sheltie grep ^X11Forwarding /etc/ssh/sshd_config"
         tests:
           test_items:
             - flag: "X11Forwarding no"
@@ -2801,7 +2185,7 @@ groups:
 
       - id: 5.2.7
         description: "Ensure SSH MaxAuthTries is set to 4 or less"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep maxauthtries"
+        audit: "sheltie sshd -T | grep maxauthtries"
         tests:
           test_items:
             - flag: "maxauthtries"
@@ -2817,7 +2201,7 @@ groups:
 
       - id: 5.2.8
         description: "Ensure SSH IgnoreRhosts is enabled"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep ignorerhosts"
+        audit: "sheltie sshd -T | grep ignorerhosts"
         tests:
           test_items:
             - flag: "ignorerhosts yes"
@@ -2830,7 +2214,7 @@ groups:
 
       - id: 5.2.9
         description: "Ensure SSH HostbasedAuthentication is disabled"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep hostbasedauthentication"
+        audit: "sheltie sshd -T | grep hostbasedauthentication"
         tests:
           test_items:
             - flag: "hostbasedauthentication no"
@@ -2843,7 +2227,7 @@ groups:
 
       - id: 5.2.10
         description: "Ensure SSH root login is disabled"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep permitrootlogin"
+        audit: "sheltie sshd -T | grep permitrootlogin"
         tests:
           test_items:
             - flag: "permitrootlogin no"
@@ -2856,7 +2240,7 @@ groups:
 
       - id: 5.2.11
         description: "Ensure SSH PermitEmptyPasswords is disabled"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep permitemptypasswords"
+        audit: "sheltie sshd -T | grep permitemptypasswords"
         tests:
           test_items:
             - flag: "permitemptypasswords no"
@@ -2869,7 +2253,7 @@ groups:
 
       - id: 5.2.12
         description: "Ensure SSH PermitUserEnvironment is disabled"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep permituserenvironment"
+        audit: "sheltie sshd -T | grep permituserenvironment"
         tests:
           test_items:
             - flag: "permituserenvironment no"
@@ -2882,7 +2266,7 @@ groups:
 
       - id: 5.2.13
         description: "Ensure only approved MAC algorithms are used"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep ciphers"
+        audit: "sheltie sshd -T | grep ciphers"
         tests:
           bin_op: and
           test_items:
@@ -2956,7 +2340,7 @@ groups:
         scored: true
       - id: 5.2.15
         description: "Ensure only strong Key Exchange algorithms are used"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep kexalgorithms"
+        audit: "sheltie sshd -T | grep kexalgorithms"
         tests:
           bin_op: and
           test_items:
@@ -2978,7 +2362,7 @@ groups:
         scored: true
       - id: 5.2.16.a
         description: "Ensure SSH Idle Timeout Interval is configured"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep clientaliveinterval"
+        audit: "sheltie sshd -T | grep clientaliveinterval"
         tests:
           bin_op: and
           test_items:
@@ -3000,7 +2384,7 @@ groups:
 
       - id: 5.2.16.b
         description: "Ensure SSH Idle Timeout Interval is configured"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep clientalivecountmax"
+        audit: "sheltie sshd -T | grep clientalivecountmax"
         tests:
           test_items:
             - flag: "clientalivecountmax"
@@ -3017,7 +2401,7 @@ groups:
 
       - id: 5.2.17
         description: "Ensure SSH LoginGraceTime is set to one minute or less"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep logingracetime"
+        audit: "sheltie sshd -T | grep logingracetime"
         tests:
           test_items:
             - flag: "logingracetime"
@@ -3033,7 +2417,7 @@ groups:
 
       - id: 5.2.18
         description: "Ensure SSH access is limited"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep -e allowusers -e allowgroups -e denyusers -e denygroups"
+        audit: "sheltie sshd -T | grep -e allowusers -e allowgroups -e denyusers -e denygroups"
         tests:
           bin_op: and 
           test_items:
@@ -3063,7 +2447,7 @@ groups:
 
       - id: 5.2.19
         description: "Ensure SSH warning banner is configured"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep banner"
+        audit: "sheltie sshd -T | grep banner"
         tests:
           test_items:
             - flag: "banner /etc/issue.net"
@@ -3075,7 +2459,7 @@ groups:
         scored: true
       - id: 5.2.20
         description: "Ensure SSH PAM is enabled"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep -i usepam"
+        audit: "sheltie sshd -T | grep -i usepam"
         tests:
           test_items:
             - flag: "usepam yes"
@@ -3085,7 +2469,7 @@ groups:
         scored: true
       - id: 5.2.21
         description: "Ensure SSH AllowTcpForwarding is disabled"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep -i allowtcpforwarding"
+        audit: "sheltie sshd -T | grep -i allowtcpforwarding"
         tests:
           test_items:
             - flag: "allowtcpforwarding no"
@@ -3095,7 +2479,7 @@ groups:
         scored: true
       - id: 5.2.22
         description: "Ensure SSH MaxStartups is configured"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep -i maxstartups"
+        audit: "sheltie sshd -T | grep -i maxstartups"
         tests:
           test_items:
             - flag: "maxstartups 10:30:60"
@@ -3105,7 +2489,7 @@ groups:
         scored: true
       - id: 5.2.23
         description: "Ensure SSH MaxSessions is set to 4 or less"
-        audit: "sudo nsenter -t1 -a -- sshd -T | grep -i maxsessions"
+        audit: "sheltie sshd -T | grep -i maxsessions"
         tests:
           test_items:
             - flag: "maxsessions"
@@ -3122,7 +2506,7 @@ groups:
     checks:
       - id: 5.3.1
         description: "Ensure password creation requirements are configured"
-        audit: "sudo nsenter -t1 -a -- cat /etc/pam.d/common-password; cat /etc/pam.d/system-auth; cat /etc/security/pwquality.conf"
+        audit: "sheltie cat /etc/pam.d/common-password; cat /etc/pam.d/system-auth; cat /etc/security/pwquality.conf"
         tests:
           bin_op: and
           test_items:
@@ -3166,7 +2550,7 @@ groups:
 
       - id: 5.3.2
         description: "Ensure lockout for failed password attempts is configured"
-        audit: "sudo nsenter -t1 -a -- cat /etc/pam.d/system-auth; cat /etc/pam.d/password-auth; cat /etc/pam.d/common-auth"
+        audit: "sheltie cat /etc/pam.d/system-auth; cat /etc/pam.d/password-auth; cat /etc/pam.d/common-auth"
         type: manual
         remediation: |
           Set password lockouts to conform to site policy. Many distributions provide tools for updating PAM configuration, consult your documentation for details. If no tooling is provided edit the appropriate `/etc/pam.d/` configuration file and add or modify the `pam_tally2.so` or `pam_faillock.so` lines as appropriate:
@@ -3183,7 +2567,7 @@ groups:
 
       - id: 5.3.3
         description: "Ensure password reuse is limited"
-        audit: "sudo nsenter -t1 -a -- cat /etc/pam.d/common-password; cat /etc/pam.d/system-auth"
+        audit: "sheltie cat /etc/pam.d/common-password; cat /etc/pam.d/system-auth"
         type: manual
         tests:
           bin_op: and
@@ -3200,7 +2584,7 @@ groups:
 
       - id: 5.3.4
         description: "Ensure password hashing algorithm is SHA-512"
-        audit: "sudo nsenter -t1 -a -- grep -E ^[^#].*sha512 /etc/pam.d/common-password /etc/pam.d/system-auth /etc/pam.d/password-auth"
+        audit: "sheltie grep -E ^[^#].*sha512 /etc/pam.d/common-password /etc/pam.d/system-auth /etc/pam.d/password-auth"
         tests:
           test_items:
             - flag: "sha512"
@@ -3218,7 +2602,7 @@ groups:
     checks:
       - id: 5.4.1.1.a
         description: "Ensure password expiration is 365 days or less"
-        audit: "sudo nsenter -t1 -a -- grep ^PASS_MAX_DAYS /etc/login.defs"
+        audit: "sheltie grep ^PASS_MAX_DAYS /etc/login.defs"
         tests:
           test_items:
             - flag: "PASS_MAX_DAYS"
@@ -3238,7 +2622,7 @@ groups:
 
       - id: 5.4.1.1.b
         description: "Ensure password expiration is 365 days or less"
-        audit: "sudo nsenter -t1 -a -- grep -E '^[^:]+:[^!*]' /etc/shadow | cut -d: -f1,5"
+        audit: "sheltie grep -E '^[^:]+:[^!*]' /etc/shadow | cut -d: -f1,5"
         type: manual
         tests:
           test_items:
@@ -3256,7 +2640,7 @@ groups:
 
       - id: 5.4.1.2.a
         description: "Ensure minimum days between password changes is 7 or more"
-        audit: "sudo nsenter -t1 -a -- grep ^PASS_MIN_DAYS /etc/login.defs"
+        audit: "sheltie grep ^PASS_MIN_DAYS /etc/login.defs"
         tests:
           test_items:
             - flag: "PASS_MIN_DAYS"
@@ -3277,7 +2661,7 @@ groups:
 
       - id: 5.4.1.2.b
         description: "Ensure minimum days between password changes is 7 or more"
-        audit: "sudo nsenter -t1 -a -- grep -E ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1,4"
+        audit: "sheltie grep -E ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1,4"
         type: manual
         tests:
           test_items:
@@ -3295,7 +2679,7 @@ groups:
 
       - id: 5.4.1.3.a
         description: "Ensure password expiration warning days is 7 or more"
-        audit: "sudo nsenter -t1 -a -- grep ^PASS_WARN_AGE /etc/login.defs"
+        audit: "sheltie grep ^PASS_WARN_AGE /etc/login.defs"
         tests:
           test_items:
             - flag: "PASS_WARN_AGE"
@@ -3315,7 +2699,7 @@ groups:
 
       - id: 5.4.1.3.b
         description: "Ensure password expiration warning days is 7 or more"
-        audit: "sudo nsenter -t1 -a -- grep -E ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1,6"
+        audit: "sheltie grep -E ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1,6"
         type: manual
         tests:
           test_items:
@@ -3333,7 +2717,7 @@ groups:
 
       - id: 5.4.1.4.a
         description: "Ensure inactive password lock is 30 days or less"
-        audit: "sudo nsenter -t1 -a -- useradd -D | grep INACTIVE"
+        audit: "sheltie useradd -D | grep INACTIVE"
         tests:
           test_items:
             - flag: "INACTIVE"
@@ -3353,7 +2737,7 @@ groups:
 
       - id: 5.4.1.4.b
         description: "Ensure inactive password lock is 30 days or less"
-        audit: "sudo nsenter -t1 -a -- grep -E ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1,7"
+        audit: "sheltie grep -E ^[^:]+:[^\\!*] /etc/shadow | cut -d: -f1,7"
         type: manual
         tests:
           test_items:
@@ -3391,7 +2775,7 @@ groups:
 
       - id: 5.4.2.a
         description: "Ensure system accounts are non-login"
-        audit: "sudo nsenter -t1 -a -- awk -F: '($1!=\"root\" && $1!=\"sync\" && $1!=\"shutdown\" && $1!=\"halt\" && $1!~/^\\+/ && $3<'\"$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\"' && $7!=\"'\"$(which nologin)\"'\" && $7!=\"/bin/false\") {print}' /etc/passwd"
+        audit: "sheltie awk -F: '($1!=\"root\" && $1!=\"sync\" && $1!=\"shutdown\" && $1!=\"halt\" && $1!~/^\\+/ && $3<'\"$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\"' && $7!=\"'\"$(which nologin)\"'\" && $7!=\"/bin/false\") {print}' /etc/passwd"
         tests:
           test_items:
             - flag: ""
@@ -3412,7 +2796,7 @@ groups:
         scored: true
       - id: 5.4.2.b
         description: "Ensure system accounts are non-login"
-        audit: "sudo nsenter -t1 -a -- awk -F: '($1!=\"root\" && $1!~/^\\+/ && $3<'\"$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\"') {print $1}' /etc/passwd | xargs -I '{}' passwd -S '{}' | awk '($2!=\"L\" && $2!=\"LK\") {print $1}'"
+        audit: "sheltie awk -F: '($1!=\"root\" && $1!~/^\\+/ && $3<'\"$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\"') {print $1}' /etc/passwd | xargs -I '{}' passwd -S '{}' | awk '($2!=\"L\" && $2!=\"LK\") {print $1}'"
         tests:
           test_items:
             - flag: ""
@@ -3433,7 +2817,7 @@ groups:
         scored: true
       - id: 5.4.3
         description: "Ensure default group for the root account is GID 0"
-        audit: "sudo nsenter -t1 -a -- grep ^root: /etc/passwd | cut -f4 -d:"
+        audit: "sheltie grep ^root: /etc/passwd | cut -f4 -d:"
         tests:
           test_items:
             - flag: "0"
@@ -3448,7 +2832,7 @@ groups:
         description: "Ensure default user umask is 027 or more restrictive"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep umask /etc/bashrc"
+              audit: "sheltie grep umask /etc/bashrc"
               constraints:
                 platform:
                   - rhel7
@@ -3460,7 +2844,7 @@ groups:
 
                 umask 027
           - check:
-              audit: "sudo nsenter -t1 -a -- grep umask /etc/bash.bashrc"
+              audit: "sheltie grep umask /etc/bash.bashrc"
               constraints:
                 platform:
                   - ubuntu16
@@ -3476,7 +2860,7 @@ groups:
 
       - id: 5.4.4.b
         description: "Ensure default user umask is 027 or more restrictive"
-        audit: "sudo nsenter -t1 -a -- grep -h umask /etc/profile /etc/profile.d/*.sh"
+        audit: "sheltie grep -h umask /etc/profile /etc/profile.d/*.sh"
         tests:
           test_items:
             - flag: "umask 027"
@@ -3490,7 +2874,7 @@ groups:
         description: "Ensure default user shell timeout is 900 seconds or less"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- grep ^TMOUT /etc/bashrc"
+              audit: "sheltie grep ^TMOUT /etc/bashrc"
               constraints:
                 platform:
                   - rhel7
@@ -3505,7 +2889,7 @@ groups:
 
               TMOUT=600
           - check:
-              audit: "sudo nsenter -t1 -a -- grep ^TMOUT /etc/bash.bashrc"
+              audit: "sheltie grep ^TMOUT /etc/bash.bashrc"
               constraints:
                 platform:
                   - ubuntu16
@@ -3524,7 +2908,7 @@ groups:
         scored: true
       - id: 5.4.5.b
         description: "Ensure default user shell timeout is 900 seconds or less"
-        audit: "sudo nsenter -t1 -a -- grep ^TMOUT /etc/profile"
+        audit: "sheltie grep ^TMOUT /etc/profile"
         tests:
           test_items:
             - flag: "TMOUT"
@@ -3542,7 +2926,7 @@ groups:
     checks:
       - id: 5.5
         description: "Ensure root login is restricted to system console"
-        audit: "sudo nsenter -t1 -a -- cat /etc/securetty"
+        audit: "sheltie cat /etc/securetty"
         type: manual
         remediation: |
           Remove entries for any consoles that are not in a physically secure location.
@@ -3550,7 +2934,7 @@ groups:
 
       - id: 5.6.a
         description: "Ensure access to the su command is restricted"
-        audit: "sudo nsenter -t1 -a -- grep pam_wheel.so /etc/pam.d/su"
+        audit: "sheltie grep pam_wheel.so /etc/pam.d/su"
         tests:
           bin_op: and
           test_items:
@@ -3571,7 +2955,7 @@ groups:
 
       - id: 5.6.b
         description: "Ensure access to the su command is restricted"
-        audit: "sudo nsenter -t1 -a -- grep wheel /etc/group"
+        audit: "sheltie grep wheel /etc/group"
         type: manual
         tests:
           test_items:
@@ -3596,7 +2980,7 @@ groups:
         description: "Audit system file permissions"
         sub_checks:
           - check:
-              audit: "sudo nsenter -t1 -a -- rpm -Va --nomtime --nosize --nomd5 --nolinkto > <filename>"
+              audit: "sheltie rpm -Va --nomtime --nosize --nomd5 --nolinkto > <filename>"
               type: "manual"
               constraints:
                 platform:
@@ -3604,7 +2988,7 @@ groups:
               remediation: |
                 Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.
           - check:
-              audit: "sudo nsenter -t1 -a -- dpkg --verify > <filename>"
+              audit: "sheltie dpkg --verify > <filename>"
               type: "manual"
               constraints:
                 platform:
@@ -3612,7 +2996,7 @@ groups:
               remediation: |
                 Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.
           - check:
-              audit: "sudo nsenter -t1 -a -- apt-get source > <filename>"
+              audit: "sheltie apt-get source > <filename>"
               type: "manual"
               constraints:
                 platform:
@@ -3622,7 +3006,7 @@ groups:
         scored: false
       - id: 6.1.2
         description: "Ensure permissions on /etc/passwd are configured"
-        audit: "sudo nsenter -t1 -a -- stat -c %a/Uid:%U/%uGid:%G/%g /etc/passwd"
+        audit: "sheltie stat -c %a/Uid:%U/%uGid:%G/%g /etc/passwd"
         tests:
           test_items:
             - flag: "644/Uid:root/0Gid:root/0"
@@ -3784,7 +3168,7 @@ groups:
 
       - id: 6.1.10.a
         description: "Ensure no world writable files exist"
-        audit: "sudo nsenter -t1 -a -- df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002 | head -n 100"
+        audit: "sheltie df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002 | head -n 100"
         tests:
           test_items:
             - flag: ""
@@ -3797,7 +3181,7 @@ groups:
 
       - id: 6.1.10.b
         description: "Ensure no world writable files exist"
-        audit: "sudo nsenter -t1 -a -- find <partition> -xdev -type f -perm -0002 "
+        audit: "sheltie find <partition> -xdev -type f -perm -0002 "
         type: manual
         remediation: |
           Removing write access for the "other" category ( `chmod o-w ` ) is advisable, but always consult relevant vendor documentation to avoid breaking any application dependencies on a given file.
@@ -3805,7 +3189,7 @@ groups:
 
       - id: 6.1.11.a
         description: "Ensure no unowned files or directories exist"
-        audit: "sudo nsenter -t1 -a -- df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser | head -n 100"
+        audit: "sheltie df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser | head -n 100"
         tests:
           test_items:
             - flag: ""
@@ -3818,7 +3202,7 @@ groups:
 
       - id: 6.1.11.b
         description: "Ensure no unowned files or directories exist"
-        audit: "sudo nsenter -t1 -a -- find <partition> -xdev -type f -perm -0002"
+        audit: "sheltie find <partition> -xdev -type f -perm -0002"
         type: manual
         remediation: |
           Locate files that are owned by users or groups not listed in the system configuration files, and reset the ownership of these files to some active user on the system as appropriate.
@@ -3826,7 +3210,7 @@ groups:
 
       - id: 6.1.12.a
         description: "Ensure no ungrouped files or directories exist"
-        audit: "sudo nsenter -t1 -a -- df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup | head -n 100"
+        audit: "sheltie df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup | head -n 100"
         tests:
           test_items:
             - flag: ""
@@ -3839,7 +3223,7 @@ groups:
 
       - id: 6.1.12.b
         description: "Ensure no ungrouped files or directories exist"
-        audit: "sudo nsenter -t1 -a -- find <partition> -xdev -nogroup"
+        audit: "sheltie find <partition> -xdev -nogroup"
         type: manual
         remediation: |
           Locate files that are owned by users or groups not listed in the system configuration files, and reset the ownership of these files to some active user on the system as appropriate.
@@ -3847,7 +3231,7 @@ groups:
 
       - id: 6.1.13.a
         description: "Audit SUID executables"
-        audit: "sudo nsenter -t1 -a -- df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000 | head -n 100"
+        audit: "sheltie df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000 | head -n 100"
         type: manual
         tests:
           test_items:
@@ -3861,7 +3245,7 @@ groups:
 
       - id: 6.1.13.b
         description: "Audit SUID executables"
-        audit: "sudo nsenter -t1 -a -- find <partition> -xdev -type f -perm -4000"
+        audit: "sheltie find <partition> -xdev -type f -perm -4000"
         type: manual
         remediation: |
           Ensure that no rogue SUID programs have been introduced into the system. Review the files returned by the action in the Audit section and confirm the integrity of these binaries.
@@ -3869,7 +3253,7 @@ groups:
 
       - id: 6.1.14.a
         description: "Audit SGID executables"
-        audit: "sudo nsenter -t1 -a -- df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000 | head -n 100"
+        audit: "sheltie df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000 | head -n 100"
         type: manual
         tests:
           test_items:
@@ -3883,7 +3267,7 @@ groups:
 
       - id: 6.1.14.b
         description: "Audit SGID executables"
-        audit: "sudo nsenter -t1 -a -- find <partition> -xdev -type f -perm -2000"
+        audit: "sheltie find <partition> -xdev -type f -perm -2000"
         type: manual
         remediation: |
           Ensure that no rogue SGID programs have been introduced into the system. Review the files returned by the action in the Audit section and confirm the integrity of these binaries.
@@ -3911,7 +3295,7 @@ groups:
 
       - id: 6.2.2
         description: 'Ensure no legacy "+" entries exist in /etc/passwd'
-        audit: "sudo nsenter -t1 -a -- grep '^\\+:' /etc/passwd"
+        audit: "sheltie grep '^\\+:' /etc/passwd"
         tests:
           test_items:
             - flag: ""
@@ -3924,7 +3308,7 @@ groups:
 
       - id: 6.2.3
         description: 'Ensure no legacy "+" entries exist in /etc/shadow'
-        audit: "sudo nsenter -t1 -a -- grep '^\\+:' /etc/shadow"
+        audit: "sheltie grep '^\\+:' /etc/shadow"
         tests:
           test_items:
             - flag: ""
@@ -3937,7 +3321,7 @@ groups:
 
       - id: 6.2.4
         description: 'Ensure no legacy "+" entries exist in /etc/group'
-        audit: "sudo nsenter -t1 -a -- grep '^\\+:' /etc/group"
+        audit: "sheltie grep '^\\+:' /etc/group"
         tests:
           test_items:
             - flag: ""
@@ -3950,7 +3334,7 @@ groups:
 
       - id: 6.2.5
         description: "Ensure root is the only UID 0 account"
-        audit: "sudo nsenter -t1 -a -- awk -F: '($3 == 0) { print $1 }' /etc/passwd"
+        audit: "sheltie awk -F: '($3 == 0) { print $1 }' /etc/passwd"
         tests:
           test_items:
             - flag: "root"
@@ -4340,7 +3724,7 @@ groups:
 
       - id: 6.2.20.a
         description: "Ensure shadow group is empty"
-        audit: "sudo nsenter -t1 -a -- grep ^shadow:[^:]*:[^:]*:[^:]+ /etc/group"
+        audit: "sheltie grep ^shadow:[^:]*:[^:]*:[^:]+ /etc/group"
         tests:
           test_items:
             - flag: ""
