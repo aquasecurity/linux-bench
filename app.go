@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/aquasecurity/bench-common/check"
 	"github.com/aquasecurity/bench-common/util"
@@ -14,9 +15,16 @@ import (
 func app(cmd *cobra.Command, args []string) {
 	var version string
 	var err error
+	platform, err := GetOperatingSystem()
+	if err != nil {
+		glog.V(1).Info(fmt.Sprintf("Failed to get operating system platform, %s", err))
+	}
+	platform = strings.TrimSpace(platform)
 
 	if linuxCisVersion != "" {
 		version = linuxCisVersion
+	} else if strings.HasPrefix(platform, "amzn2023") {
+		version = "Amazon_Linux_2023"
 	} else {
 		version = "2.0.0"
 	}
