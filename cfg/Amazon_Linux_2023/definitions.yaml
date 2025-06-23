@@ -10,15 +10,17 @@ groups:
     checks:
       - id: 1.1.1
         description: "Configure Filesystem Kernel Modules"
+        type: "skip"
         checks:
       - id: 1.1.1.1
-        description: "Ensure mounting of squashfs filesystems is disabled"
-        audit: "modprobe -n -v squashfs"
+        description: "Ensure mounting of squashfs filesystems is disabled (Automated)"
+        audit: |
+          modprobe -n -v squashfs 2>/dev/null | grep -qE 'install /bin/(true|false)' && \
+          modprobe --showconfig 2>/dev/null | grep -Pq '^\h*blacklist\h+squashfs\b' && \
+          ! lsmod | grep -q squashfs && echo "pass" || echo "fail"
         tests:
           test_items:
-            - flag: "install /bin/false"
-              set: true
-            - flag: "blacklist squashfs"
+            - flag: "pass"
               set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/squashfs.conf` and add the following lines:
@@ -28,13 +30,32 @@ groups:
           # modprobe -r squashfs
         scored: true
       - id: 1.1.1.2
-        description: "Ensure mounting of udf filesystems is disabled"
-        audit: "modprobe -n -v udf"
+        description: "Ensure mounting of udf filesystems is disabled (Automated)"
+        audit: |
+          if modprobe -n -v udf | grep -q 'install /bin/false'; then
+            echo "install_ok"
+          else
+            echo "install_bad"
+          fi
+
+          if modprobe --showconfig 2>/dev/null | grep -Pq '^\s*blacklist\s+udf\b'; then
+            echo "blacklist_ok"
+          else
+            echo "blacklist_bad"
+          fi
+
+          if ! lsmod | grep -q "^udf"; then
+            echo "not_loaded"
+          else
+            echo "loaded"
+          fi
         tests:
           test_items:
-            - flag: "install /bin/false"
+            - flag: "install_ok"
               set: true
-            - flag: "blacklist udf"
+            - flag: "blacklist_ok"
+              set: true
+            - flag: "not_loaded"
               set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/udf.conf` and add the following lines:
@@ -45,13 +66,18 @@ groups:
         scored: true
 
       - id: 1.1.1.3
-        description: "Ensure mounting of cramfs filesystems is disabled"
-        audit: "modprobe -n -v cramfs"
+        description: "Ensure mounting of cramfs filesystems is disabled (Automated)"
+        audit: |
+          out="$(modprobe -n -v cramfs 2>/dev/null)"; 
+          deny="$(modprobe --showconfig 2>/dev/null | grep -P '^\s*blacklist\s+cramfs\b')"; 
+          loaded="$(lsmod | grep -w cramfs || true)";
+
+          [[ "$out" =~ "install /bin/false" || "$out" =~ "install /bin/true" ]] && 
+          [[ -n "$deny" ]] && 
+          [[ -z "$loaded" ]] && echo "pass" || echo "fail"
         tests:
           test_items:
-            - flag: "install /bin/false"
-              set: true
-            - flag: "blacklist cramfs"
+            - flag: "pass"
               set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/cramfs.conf` and add the following lines:
@@ -62,13 +88,18 @@ groups:
         scored: true
 
       - id: 1.1.1.4
-        description: "Ensure mounting of freevxfs filesystems is disabled"
-        audit: "modprobe -n -v freevxfs"
+        description: "Ensure mounting of freevxfs filesystems is disabled (Automated)"
+        audit: |
+          out="$(modprobe -n -v freevxfs 2>/dev/null)"; 
+          deny="$(modprobe --showconfig 2>/dev/null | grep -P '^\s*blacklist\s+freevxfs\b')"; 
+          loaded="$(lsmod | grep -w freevxfs || true)";
+
+          [[ "$out" =~ "install /bin/false" || "$out" =~ "install /bin/true" ]] && 
+          [[ -n "$deny" ]] && 
+          [[ -z "$loaded" ]] && echo "pass" || echo "fail"
         tests:
           test_items:
-            - flag: "install /bin/false"
-              set: true
-            - flag: "blacklist freevxfs"
+            - flag: "pass"
               set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/freevxfs.conf` and add the following lines:
@@ -77,14 +108,20 @@ groups:
           Run the following command to unload the `freevxfs` module:
           # modprobe -r freevxfs
         scored: true
+
       - id: 1.1.1.5
-        description: "Ensure mounting of jffs2 filesystems is disabled"
-        audit: "modprobe -n -v jffs2"
+        description: "Ensure mounting of jffs2 filesystems is disabled (Automated)"
+        audit: |
+          out="$(modprobe -n -v jffs2 2>/dev/null)"; 
+          deny="$(modprobe --showconfig 2>/dev/null | grep -P '^\s*blacklist\s+jffs2\b')"; 
+          loaded="$(lsmod | grep -w jffs2 || true)";
+
+          [[ "$out" =~ "install /bin/false" || "$out" =~ "install /bin/true" ]] && 
+          [[ -n "$deny" ]] && 
+          [[ -z "$loaded" ]] && echo "pass" || echo "fail"
         tests:
           test_items:
-            - flag: "install /bin/false"
-              set: true
-            - flag: "blacklist jffs2"
+            - flag: "pass"
               set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/jffs2.conf` and add the following lines:
@@ -93,14 +130,20 @@ groups:
           Run the following command to unload the `jffs2` module:
           # modprobe -r jffs2
         scored: true
+
       - id: 1.1.1.6
-        description: "Ensure mounting of hfs filesystems is disabled"
-        audit: "modprobe -n -v hfs"
+        description: "Ensure mounting of hfs filesystems is disabled (Automated)"
+        audit: |
+          out="$(modprobe -n -v hfs 2>/dev/null)"
+          deny="$(modprobe --showconfig 2>/dev/null | grep -P '^\s*blacklist\s+hfs\b')"
+          loaded="$(lsmod | grep -w hfs || true)"
+
+          [[ "$out" =~ "install /bin/false" || "$out" =~ "install /bin/true" ]] && 
+          [[ -n "$deny" ]] && 
+          [[ -z "$loaded" ]] && echo "pass" || echo "fail"
         tests:
           test_items:
-            - flag: "install /bin/false"
-              set: true
-            - flag: "blacklist hfs"
+            - flag: "pass"
               set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/hfs.conf` and add the following lines:
@@ -109,14 +152,20 @@ groups:
           Run the following command to unload the `hfs` module:
           # modprobe -r hfs
         scored: true
+
       - id: 1.1.1.7
-        description: "Ensure mounting of hfsplus filesystems is disabled"
-        audit: "modprobe -n -v hfsplus"
+        description: "Ensure mounting of hfsplus filesystems is disabled (Automated)"
+        audit: |
+          out="$(modprobe -n -v hfsplus 2>/dev/null)"
+          deny="$(modprobe --showconfig 2>/dev/null | grep -P '^\s*blacklist\s+hfsplus\b')"
+          loaded="$(lsmod | grep -w hfsplus || true)"
+
+          [[ "$out" =~ "install /bin/false" || "$out" =~ "install /bin/true" ]] && 
+          [[ -n "$deny" ]] && 
+          [[ -z "$loaded" ]] && echo "pass" || echo "fail"
         tests:
           test_items:
-            - flag: "install /bin/false"
-              set: true
-            - flag: "blacklist hfsplus"
+            - flag: "pass"
               set: true
         remediation: |
           Edit or create the file `/etc/modprobe.d/hfsplus.conf` and add the following lines:
@@ -129,9 +178,10 @@ groups:
 
       - id: 1.1.2
         description: "Configure /tmp"
+        type: "skip"
         checks:
       - id: 1.1.2.1
-        description: "Ensure /tmp is a separate partition and mounted on boot"
+        description: "Ensure /tmp is a separate partition (Automated)"
         audit: |
           if findmnt -nk /tmp > /dev/null; then
             echo "tmp_mounted"
@@ -170,7 +220,7 @@ groups:
              # systemctl start tmp.mount
         scored: true
       - id: 1.1.2.2
-        description: "Ensure nodev option set on /tmp partition"
+        description: "Ensure nodev option set on /tmp partition (Automated)"
         audit: "findmnt -kn /tmp | grep nodev"
         tests:
           test_items:
@@ -187,7 +237,7 @@ groups:
         scored: true
 
       - id: 1.1.2.3
-        description: "Ensure noexec option set on /tmp partition"
+        description: "Ensure noexec option set on /tmp partition (Automated)"
         audit: "findmnt -kn /tmp | grep noexec"
         tests:
           test_items:
@@ -204,7 +254,7 @@ groups:
 
         scored: true
       - id: 1.1.2.4
-        description: "Ensure nosuid option set on /tmp partition"
+        description: "Ensure nosuid option set on /tmp partition (Automated)"
         audit: "findmnt -kn /tmp | grep nosuid"
         tests:
           test_items:
@@ -223,9 +273,10 @@ groups:
 
       - id: 1.1.3
         description: "Configure /var"
+        type: "skip"
         checks:
       - id: 1.1.3.1
-        description: "Ensure separate partition exists for /var"
+        description: "Ensure separate partition exists for /var (Automated)"
         audit: "findmnt --kernel /var"
         tests:
           test_items:
@@ -242,7 +293,7 @@ groups:
         scored: true
 
       - id: 1.1.3.2
-        description: "Ensure nodev option set on /var partition"
+        description: "Ensure nodev option set on /var partition (Automated)"
         audit: "findmnt --kernel /var | grep nodev"
         tests:
           test_items:
@@ -259,7 +310,7 @@ groups:
         scored: true
 
       - id: 1.1.3.3
-        description: "Ensure nosuid option set on /var partition"
+        description: "Ensure nosuid option set on /var partition (Automated)"
         audit: "findmnt --kernel /var | grep nosuid"
         tests:
           test_items:
@@ -278,9 +329,10 @@ groups:
 
       - id: 1.1.4
         description: "Configure /var/tmp"
+        type: "skip"
         checks:
       - id: 1.1.4.1
-        description: "Ensure separate partition exists for /var/tmp"
+        description: "Ensure separate partition exists for /var/tmp (Automated)"
         audit: "findmnt --kernel /var/tmp"
         tests:
           test_items:
@@ -299,7 +351,7 @@ groups:
         scored: true
 
       - id: 1.1.4.2
-        description: "Ensure noexec option set on /var/tmp partition"
+        description: "Ensure noexec option set on /var/tmp partition (Automated)"
         audit: "findmnt --kernel /var/tmp | grep noexec"
         tests:
           test_items:
@@ -315,7 +367,7 @@ groups:
           # mount -o remount /var/tmp
         scored: true
       - id: 1.1.4.3
-        description: "Ensure nosuid option set on /var/tmp partition"
+        description: "Ensure nosuid option set on /var/tmp partition (Automated)"
         audit: "findmnt --kernel /var/tmp | grep nosuid"
         tests:
           test_items:
@@ -331,7 +383,7 @@ groups:
           # mount -o remount /var/tmp
         scored: true
       - id: 1.1.4.4
-        description: "Ensure nodev option set on /var/tmp partition"
+        description: "Ensure nodev option set on /var/tmp partition (Automated)"
         audit: "findmnt --kernel /var/tmp | grep nodev"
         tests:
           test_items:
@@ -350,9 +402,10 @@ groups:
 
       - id: 1.1.5
         description: "Configure /var/log"
+        type: "skip"
         checks:
       - id: 1.1.5.1
-        description: "Ensure separate partition exists for /var/log"
+        description: "Ensure separate partition exists for /var/log (Automated)"
         audit: "findmnt --kernel /var/log"
         tests:
           test_items:
@@ -370,7 +423,7 @@ groups:
           5. Reboot or remount to apply changes.
         scored: true
       - id: 1.1.5.2
-        description: "Ensure nodev option set on /var/log partition"
+        description: "Ensure nodev option set on /var/log partition (Automated)"
         audit: "findmnt --kernel /var/log | grep nodev"
         tests:
           test_items:
@@ -387,7 +440,7 @@ groups:
         scored: true
 
       - id: 1.1.5.3
-        description: "Ensure noexec option set on /var/log partition"
+        description: "Ensure noexec option set on /var/log partition (Automated)"
         audit: "findmnt --kernel /var/log | grep noexec"
         tests:
           test_items:
@@ -404,7 +457,7 @@ groups:
         scored: true
 
       - id: 1.1.5.4
-        description: "Ensure nosuid option set on /var/log partition"
+        description: "Ensure nosuid option set on /var/log partition (Automated)"
         audit: "findmnt --kernel /var/log | grep nosuid"
         tests:
           test_items:
@@ -423,9 +476,10 @@ groups:
 
       - id: 1.1.6
         description: "Configure /var/log/audit"
+        type: "skip"
         checks:
       - id: 1.1.6.1
-        description: "Ensure separate partition exists for /var/log/audit"
+        description: "Ensure separate partition exists for /var/log/audit (Automated)"
         audit: "findmnt --kernel /var/log/audit"
         tests:
           test_items:
@@ -444,7 +498,7 @@ groups:
         scored: true
 
       - id: 1.1.6.2
-        description: "Ensure noexec option set on /var/log/audit partition"
+        description: "Ensure noexec option set on /var/log/audit partition (Automated)"
         audit: "findmnt --kernel /var/log/audit | grep noexec"
         tests:
           test_items:
@@ -461,7 +515,7 @@ groups:
         scored: true
 
       - id: 1.1.6.3
-        description: "Ensure nodev option set on /var/log/audit partition"
+        description: "Ensure nodev option set on /var/log/audit partition (Automated)"
         audit: "findmnt --kernel /var/log/audit | grep nodev"
         tests:
           test_items:
@@ -478,7 +532,7 @@ groups:
         scored: true
 
       - id: 1.1.6.4
-        description: "Ensure nosuid option set on /var/log/audit partition"
+        description: "Ensure nosuid option set on /var/log/audit partition (Automated)"
         audit: "findmnt --kernel /var/log/audit | grep nosuid"
         tests:
           test_items:
@@ -497,9 +551,10 @@ groups:
 
       - id: 1.1.7
         description: "Configure /home"
+        type: "skip"
         checks:
       - id: 1.1.7.1
-        description: "Ensure separate partition exists for /home"
+        description: "Ensure separate partition exists for /home (Automated)"
         audit: "findmnt --kernel /home"
         tests:
           test_items:
@@ -518,7 +573,7 @@ groups:
         scored: true
 
       - id: 1.1.7.2
-        description: "Ensure nodev option set on /home partition"
+        description: "Ensure nodev option set on /home partition (Automated)"
         audit: "findmnt --kernel /home | grep nodev"
         tests:
           test_items:
@@ -535,7 +590,7 @@ groups:
         scored: true
 
       - id: 1.1.7.3
-        description: "Ensure nosuid option set on /home partition"
+        description: "Ensure nosuid option set on /home partition (Automated)"
         audit: "findmnt --kernel /home | grep nosuid"
         tests:
           test_items:
@@ -554,9 +609,10 @@ groups:
 
       - id: 1.1.8
         description: "Configure /dev/shm"
+        type: "skip"
         checks:
       - id: 1.1.8.1
-        description: "Ensure /dev/shm is a separate partition"
+        description: "Ensure /dev/shm is a separate partition (Automated)"
         audit: "findmnt --kernel /dev/shm"
         tests:
           test_items:
@@ -573,7 +629,7 @@ groups:
         scored: true
 
       - id: 1.1.8.2
-        description: "Ensure nodev option set on /dev/shm partition"
+        description: "Ensure nodev option set on /dev/shm partition (Automated)"
         audit: "mount | grep -E '\\s/dev/shm\\s' | grep -v nodev"
         tests:
           test_items:
@@ -591,7 +647,7 @@ groups:
         scored: true
 
       - id: 1.1.8.3
-        description: "Ensure noexec option set on /dev/shm partition"
+        description: "Ensure noexec option set on /dev/shm partition (Automated)"
         audit: "findmnt --kernel /dev/shm | grep noexec"
         tests:
           test_items:
@@ -607,7 +663,7 @@ groups:
         scored: true
 
       - id: 1.1.8.4
-        description: "Ensure nosuid option set on /dev/shm partition"
+        description: "Ensure nosuid option set on /dev/shm partition (Automated)"
         audit: "mount | grep -E '\\s/dev/shm\\s' | grep -v nosuid"
         tests:
           test_items:
@@ -624,7 +680,7 @@ groups:
 
 
       - id: 1.1.9
-        description: "Ensure usb-storage is disabled"
+        description: "Ensure usb-storage is disabled (Automated)"
         audit: "modprobe -n -v usb-storage"
         tests:
           test_items:
@@ -643,14 +699,14 @@ groups:
     description: "Configure Software and Patch Management"
     checks:
       - id: 1.2.1
-        description: "Ensure GPG keys are configured"
+        description: "Ensure GPG keys are configured (Manual)"
         type: manual
         remediation: |
           Update your package manager GPG keys in accordance with site policy.
         scored: false
 
       - id: 1.2.2
-        description: "Ensure gpgcheck is globally activated"
+        description: "Ensure gpgcheck is globally activated (Automated)"
         audit: |
           main_check=$(grep -Pi '^\s*gpgcheck\s*=\s*(1|true)\b' /etc/dnf/dnf.conf)
           repo_override=$(grep -Prs -- '^\s*gpgcheck\s*=\s*(0|[2-9]|[1-9][0-9]+|[a-zA-Z_]+)' /etc/yum.repos.d/)
@@ -691,7 +747,7 @@ groups:
 
 
       - id: 1.2.3
-        description: "Ensure package manager repositories are configured"
+        description: "Ensure package manager repositories are configured (Automated)"
         audit: "dnf repolist"
         tests:
           test_items:
@@ -716,7 +772,7 @@ groups:
 
 
       - id: 1.2.4
-        description: "Ensure repo_gpgcheck is globally activated"
+        description: "Ensure repo_gpgcheck is globally activated (Manual)"
         type: manual
         remediation: |
           Edit /etc/dnf/dnf.conf and set repo_gpgcheck=1 in the [main] section.
@@ -732,7 +788,7 @@ groups:
     description: "Filesystem Integrity Checking"
     checks:
       - id: 1.3.1
-        description: "Ensure AIDE is installed"
+        description: "Ensure AIDE is installed (Automated)"
         audit: "rpm -q aide"
         tests:
           test_items:
@@ -750,7 +806,7 @@ groups:
         scored: true
 
       - id: 1.3.2
-        description: "Ensure filesystem integrity is regularly checked"
+        description: "Ensure filesystem integrity is regularly checked (Automated)"
         audit: |
           grep -Prs '^(?:[^#]+\s+)?(/usr/s?bin/|^\s*)aide(\.wrapper)?\s(?:--?\S+\s)*(?:(?:--check|--update)|\$AIDEARGS)\b' \/etc/cron.* /etc/crontab /var/spool/cron/ || \
           (systemctl is-enabled aidecheck.service && systemctl is-enabled aidecheck.timer && systemctl is-active aidecheck.timer)
@@ -793,7 +849,7 @@ groups:
         scored: true
 
       - id: 1.3.3
-        description: "Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
+        description: "Ensure cryptographic mechanisms are used to protect the integrity of audit tools (Automated)"
         audit: |
           grep -Ps -- '(\/sbin\/(audit|au)\H*\b)' /etc/aide.conf.d/*.conf /etc/aide.conf
         tests:
@@ -832,7 +888,7 @@ groups:
     description: "Secure Boot Settings"
     checks:
       - id: 1.4.1
-        description: "Ensure permissions on bootloader config are configured"
+        description: "Ensure permissions on bootloader config are configured (Automated)"
         audit: |
           find /boot -type f \( -name 'grub*' -o -name 'user.cfg' \) -exec stat -Lc '%n %a %U %G' {} \;
         tests:
@@ -873,7 +929,7 @@ groups:
     description: "Additional Process Hardening"
     checks:
       - id: 1.5.1
-        description: "Ensure address space layout randomization (ASLR) is enabled"
+        description: "Ensure address space layout randomization (ASLR) is enabled (Automated)"
         audit: |
           current=$(sysctl -n kernel.randomize_va_space)
           if [ "$current" -eq 2 ]; then
@@ -905,7 +961,7 @@ groups:
 
 
       - id: 1.5.2
-        description: "Ensure ptrace_scope is restricted"
+        description: "Ensure ptrace_scope is restricted (Automated)"
         audit: |
           current=$(sysctl -n kernel.yama.ptrace_scope 2>/dev/null)
           if [ "$current" -eq 1 ]; then
@@ -937,7 +993,7 @@ groups:
 
 
       - id: 1.5.3
-        description: "Ensure core dump storage is disabled"
+        description: "Ensure core dump storage is disabled (Automated)"
         audit: |
           grep -i '^\s*storage\s*=\s*none' /etc/systemd/coredump.conf
         tests:
@@ -950,7 +1006,7 @@ groups:
         scored: true
 
       - id: 1.5.4
-        description: "Ensure core dump backtraces are disabled"
+        description: "Ensure core dump backtraces are disabled (Automated)"
         audit: |
           grep -Pi '^\h*ProcessSizeMax\h*=\h*0\b' /etc/systemd/coredump.conf || echo -e "\n- Audit results:\n  ** FAIL **\n - \"ProcessSizeMax\" is: \"$(grep -i 'ProcessSizeMax' /etc/systemd/coredump.conf)\""
         tests:
@@ -972,9 +1028,10 @@ groups:
     checks:
       - id: 1.6.1
         description: "Configure SELinux"
+        type: "skip"
         checks:
       - id: 1.6.1.1
-        description: "Ensure SELinux is installed"
+        description: "Ensure SELinux is installed (Automated)"
         audit: 'rpm -q libselinux'
         tests:
           test_items:
@@ -988,7 +1045,7 @@ groups:
         scored: true
 
       - id: 1.6.1.2
-        description: "Ensure SELinux is not disabled in bootloader configuration"
+        description: "Ensure SELinux is not disabled in bootloader configuration (Automated)"
         audit: |
           grubby --info=ALL | grep -Po '(selinux|enforcing)=0\b'
         tests:
@@ -1008,7 +1065,7 @@ groups:
         scored: true
 
       - id: 1.6.1.3
-        description: "Ensure SELinux policy is configured to 'targeted'"
+        description: "Ensure SELinux policy is configure (Automated)"
         audit: |
           grep -E '^\s*SELINUXTYPE=(targeted|mls)\b' /etc/selinux/config || echo "missing_config_policy"
           sestatus | grep -E 'Loaded policy name:\s+targeted' || echo "runtime_not_targeted"
@@ -1038,7 +1095,7 @@ groups:
 
 
       - id: 1.6.1.4
-        description: "Ensure the SELinux mode is not disabled"
+        description: "Ensure the SELinux mode is not disabled (Automated)"
         audit: |
           runtime_mode=$(getenforce)
           if [ "$runtime_mode" = "Enforcing" ] || [ "$runtime_mode" = "Permissive" ]; then
@@ -1069,7 +1126,7 @@ groups:
 
 
       - id: 1.6.1.5
-        description: "Ensure the SELinux mode is enforcing"
+        description: "Ensure the SELinux mode is enforcing (Automated)"
         audit: |
           runtime_mode=$(getenforce)
           if [ "$runtime_mode" = "Enforcing" ]; then
@@ -1095,7 +1152,7 @@ groups:
 
 
       - id: 1.6.1.6
-        description: "Ensure no unconfined services exist"
+        description: "Ensure no unconfined services exist (Manual)"
         type: manual
         audit: |
           ps -eZ | grep unconfined_service_t
@@ -1110,7 +1167,7 @@ groups:
         scored: false
 
       - id: 1.6.1.7
-        description: "Ensure SETroubleshoot is not installed"
+        description: "Ensure SETroubleshoot is not installed (Automated)"
         audit: |
           rpm -q setroubleshoot
         tests:
@@ -1123,7 +1180,7 @@ groups:
         scored: true
 
       - id: 1.6.1.8
-        description: "Ensure the MCS Translation Service (mcstrans) is not installed"
+        description: "Ensure the MCS Translation Service (mcstrans) is not installed (Automated)"
         audit: |
           rpm -q mcstrans
         tests:
@@ -1139,7 +1196,7 @@ groups:
     description: "Command Line Warning Banners"
     checks:
       - id: 1.7.1
-        description: "Ensure message of the day is configured properly"
+        description: "Ensure message of the day is configured properly (Automated)"
         audit: |
           grep -E -i "(\\\v|\\\r|\\\m|\\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/\"//g'))" /etc/motd && echo "disallowed_found" || echo "no_disallowed_found"
         tests:
@@ -1155,7 +1212,7 @@ groups:
 
 
       - id: 1.7.2
-        description: "Ensure local login warning banner is configured properly"
+        description: "Ensure local login warning banner is configured properly (Automated)"
         audit: |
           grep -E -i "(\\\v|\\\r|\\\m|\\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/\"//g'))" /etc/issue
         tests:
@@ -1172,7 +1229,7 @@ groups:
         scored: true
 
       - id: 1.7.3
-        description: "Ensure remote login warning banner is configured properly"
+        description: "Ensure remote login warning banner is configured properly (Automated)"
         audit: |
           grep -E -i "(\\\v|\\\r|\\\m|\\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/"//g'))" /etc/issue.net
         tests:
@@ -1188,7 +1245,7 @@ groups:
         scored: true
 
       - id: 1.7.4
-        description: "Ensure permissions on /etc/motd are configured"
+        description: "Ensure permissions on /etc/motd are configured (Automated)"
         audit: |
           if stat -L /etc/motd | grep -qE 'Access:\s+\(0644/-rw-r--r--\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "motd_permissions_ok"
@@ -1207,7 +1264,7 @@ groups:
         scored: true
 
       - id: 1.7.5
-        description: "Ensure permissions on /etc/issue are configured"
+        description: "Ensure permissions on /etc/issue are configured (Automated)"
         audit: |
           if stat -L /etc/issue | grep -qE 'Access:\s+\(0644/-rw-r--r--\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "issue_permissions_ok"
@@ -1226,7 +1283,7 @@ groups:
         scored: true
 
       - id: 1.7.5
-        description: "Ensure permissions on /etc/issue.net are configured"
+        description: "Ensure permissions on /etc/issue.net are configured (Automated)"
         audit: |
           if stat -L /etc/issue.net | grep -qE 'Access:\s+\(0644/-rw-r--r--\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "permissions_ok"
@@ -1244,16 +1301,11 @@ groups:
           # chmod u-x,go-wx /etc/issue.net
         scored: true
 
-
       - id: 1.8
-        description: "Ensure updates, patches, and additional security software are installed"
+        description: "Ensure updates, patches, and additional security software are installed (Manual)"
         type: manual
         audit: |
           dnf check-update
-        tests:
-          test_items:
-            - flag: "No packages marked for update"
-              set: true
         remediation: |
           # Update all packages and reboot if needed
           dnf upgrade --releasever=<latest_version>
@@ -1261,8 +1313,9 @@ groups:
           # Then check if reboot is required
           dnf needs-restarting -r
         scored: false
+
       - id: 1.9
-        description: "Ensure system-wide crypto policy is not LEGACY"
+        description: "Ensure system-wide crypto policy is not LEGACY (Automated)"
         audit: |
           grep -E -i '^\s*LEGACY\s*(\s+#.*)?$' /etc/crypto-policies/config
         tests:
@@ -1284,7 +1337,7 @@ groups:
     description: "Configure Time Synchronization"
     checks:
       - id: 2.1.1
-        description: "Ensure time synchronization is in use"
+        description: "Ensure time synchronization is in use (Automated)"
         audit: "rpm -q chrony"
         tests:
           test_items:
@@ -1297,7 +1350,7 @@ groups:
         scored: true
 
       - id: 2.1.2
-        description: "Ensure chrony is configured"
+        description: "Ensure chrony is configured (Automated)"
         audit: |
           grep -Pr -- '^\h*(server|pool)\h+[^#\n\r]+' /etc/chrony.d/
         tests:
@@ -1321,7 +1374,7 @@ groups:
     description: "Configure Special Purpose Services"
     checks:
       - id: 2.2.1
-        description: "Ensure xorg-x11-server-common is not installed"
+        description: "Ensure xorg-x11-server-common is not installed (Automated)"
         audit: "rpm -q xorg-x11-server-common"
         tests:
           test_items:
@@ -1334,7 +1387,7 @@ groups:
         scored: true
 
       - id: 2.2.2
-        description: "Ensure avahi is not installed"
+        description: "Ensure avahi is not installed (Automated)"
         audit: "rpm -q avahi"
         tests:
           test_items:
@@ -1347,7 +1400,7 @@ groups:
         scored: true
 
       - id: 2.2.3
-        description: "Ensure a print server is not installed"
+        description: "Ensure a print server is not installed (Automated)"
         audit: "rpm -q cups"
         tests:
           test_items:
@@ -1360,7 +1413,7 @@ groups:
         scored: true
 
       - id: 2.2.4
-        description: "Ensure a dhcp server is not installed"
+        description: "Ensure a dhcp server is not installed (Automated)"
         audit: "rpm -q dhcp-server"
         tests:
           test_items:
@@ -1373,7 +1426,7 @@ groups:
         scored: true
 
       - id: 2.2.5
-        description: "Ensure a dns server is not installed"
+        description: "Ensure a dns server is not installed (Automated)"
         audit: "rpm -q bind"
         tests:
           test_items:
@@ -1386,7 +1439,7 @@ groups:
         scored: true
 
       - id: 2.2.6
-        description: "Ensure a ftp server is not installed"
+        description: "Ensure a ftp server is not installed (Automated)"
         audit: "rpm -q vsftpd"
         tests:
           test_items:
@@ -1399,7 +1452,7 @@ groups:
         scored: true
 
       - id: 2.2.7
-        description: "Ensure a tftp server is not installed"
+        description: "Ensure a tftp server is not installed (Automated)"
         audit: "rpm -q tftp-server"
         tests:
           test_items:
@@ -1412,7 +1465,7 @@ groups:
         scored: true
 
       - id: 2.2.8
-        description: "Ensure a web server is not installed"
+        description: "Ensure a web server is not installed (Automated)"
         audit: "rpm -q httpd nginx"
         tests:
           test_items:
@@ -1428,7 +1481,7 @@ groups:
 
 
       - id: 2.2.9
-        description: "Ensure IMAP and POP3 server is not installed"
+        description: "Ensure IMAP and POP3 server is not installed (Automated)"
         audit: "rpm -q dovecot cyrus-imapd"
         tests:
           test_items:
@@ -1443,7 +1496,7 @@ groups:
         scored: true
 
       - id: 2.2.10
-        description: "Ensure Samba is not installed"
+        description: "Ensure Samba is not installed (Automated)"
         audit: "rpm -q samba"
         tests:
           test_items:
@@ -1456,7 +1509,7 @@ groups:
         scored: true
 
       - id: 2.2.11
-        description: "Ensure HTTP Proxy Server is not installed"
+        description: "Ensure HTTP Proxy Server is not installed (Automated)"
         audit: "rpm -q squid"
         tests:
           test_items:
@@ -1469,7 +1522,7 @@ groups:
         scored: true
 
       - id: 2.2.12
-        description: "Ensure net-snmp is not installed or the snmpd service is disabled"
+        description: "Ensure net-snmp is not installed or the snmpd service is disabled (Automated)"
         audit: |
           if rpm -q net-snmp > /dev/null 2>&1; then
             echo "net-snmp_installed"
@@ -1495,7 +1548,7 @@ groups:
 
 
       - id: 2.2.13
-        description: "Ensure telnet-server is not installed"
+        description: "Ensure telnet-server is not installed (Automated)"
         audit: "rpm -q telnet-server"
         tests:
           test_items:
@@ -1508,7 +1561,7 @@ groups:
         scored: true
 
       - id: 2.2.14
-        description: "Ensure dnsmasq is not installed"
+        description: "Ensure dnsmasq is not installed (Automated)"
         audit: "rpm -q dnsmasq"
         tests:
           test_items:
@@ -1521,7 +1574,7 @@ groups:
         scored: true
 
       - id: 2.2.15
-        description: "Ensure mail transfer agent is configured for local-only mode"
+        description: "Ensure mail transfer agent is configured for local-only mode (Automated)"
         audit: |
           ss -lntu | grep -P ':25\b' | grep -Pv '\h+(127\.0\.0\.1|\[?::1\]?):25\b'
         tests:
@@ -1539,7 +1592,7 @@ groups:
         scored: true
 
       - id: 2.2.16
-        description: "Ensure nfs-utils is not installed or the nfs-server service is masked"
+        description: "Ensure nfs-utils is not installed or the nfs-server service is masked (Automated)"
         audit: |
           if rpm -q nfs-utils > /dev/null 2>&1; then
             echo "nfs-utils_installed"
@@ -1565,7 +1618,7 @@ groups:
 
 
       - id: 2.2.17
-        description: "Ensure rpcbind is not installed or the rpcbind services are masked"
+        description: "Ensure rpcbind is not installed or the rpcbind services are masked (Automated)"
         audit: |
           if rpm -q rpcbind > /dev/null 2>&1; then
             echo "rpcbind_installed"
@@ -1594,7 +1647,7 @@ groups:
         scored: true
 
       - id: 2.2.18
-        description: "Ensure rsync-daemon is not installed or the rsyncd service is masked"
+        description: "Ensure rsync-daemon is not installed or the rsyncd service is masked (Automated)"
         audit: |
           if rpm -q rsync-daemon > /dev/null 2>&1; then
             echo "rsync_installed"
@@ -1623,7 +1676,7 @@ groups:
     description: "Service Clients"
     checks:
       - id: 2.3.1
-        description: "Ensure telnet client is not installed"
+        description: "Ensure telnet client is not installed (Automated)"
         audit: "rpm -q telnet"
         tests:
           test_items:
@@ -1636,7 +1689,7 @@ groups:
         scored: true
 
       - id: 2.3.2
-        description: "Ensure LDAP client is not installed"
+        description: "Ensure LDAP client is not installed (Automated)"
         audit: "rpm -q openldap-clients"
         tests:
           test_items:
@@ -1649,7 +1702,7 @@ groups:
         scored: true
 
       - id: 2.3.3
-        description: "Ensure FTP client is not installed"
+        description: "Ensure FTP client is not installed (Automated)"
         audit: "rpm -q ftp"
         tests:
           test_items:
@@ -1662,7 +1715,7 @@ groups:
         scored: true
 
       - id: 2.4
-        description: "Ensure nonessential services listening on the system are removed or masked"
+        description: "Ensure nonessential services listening on the system are removed or masked (Manual)"
         type: manual
         remediation: |
           Run the following command to remove the package containing the service:
@@ -1685,7 +1738,7 @@ groups:
     description: "Disable unused network protocols and devices"
     checks:
       - id: 3.1.1
-        description: "Ensure IPv6 status is identified"
+        description: "Ensure IPv6 status is identified (Manual)"
         type: manual
         audit: |
           grep -Pqs '^\h*0\b' /sys/module/ipv6/parameters/disable && echo -e "\n - IPv6 is enabled\n" || echo -e "\n - IPv6 is not enabled\n"
@@ -1703,7 +1756,7 @@ groups:
         scored: false
 
       - id: 3.1.2
-        description: "Ensure DCCP is disabled"
+        description: "Ensure DCCP is disabled (Automated)"
         audit: |
           modprobe -n -v dccp | grep -qE 'install\s+/bin/' && echo "denylisted" || echo "not_denylisted"
           lsmod | grep -q dccp && echo "dccp_loaded" || echo "dccp_not_loaded"
@@ -1724,7 +1777,7 @@ groups:
 
 
       - id: 3.1.3
-        description: "Ensure SCTP is disabled"
+        description: "Ensure SCTP is disabled (Automated)"
         audit: |
           modprobe -n -v sctp | grep -qE 'install\s+/bin/' && echo "denylisted" || echo "not_denylisted"
           lsmod | grep -q sctp && echo "sctp_loaded" || echo "sctp_not_loaded"
@@ -1745,7 +1798,7 @@ groups:
 
 
       - id: 3.1.4
-        description: "Ensure RDS is disabled"
+        description: "Ensure RDS is disabled (Automated)"
         audit: |
           modprobe -n -v rds | grep -qE 'install\s+/bin/' && echo "denylisted" || echo "not_denylisted"
           lsmod | grep -q rds && echo "rds_loaded" || echo "rds_not_loaded"
@@ -1766,7 +1819,7 @@ groups:
 
 
       - id: 3.1.5
-        description: "Ensure TIPC is disabled"
+        description: "Ensure TIPC is disabled (Automated)"
         audit: |
           modprobe -n -v tipc | grep -qE 'install\s+/bin/' && echo "denylisted" || echo "not_denylisted"
           lsmod | grep -q tipc && echo "tipc_loaded" || echo "tipc_not_loaded"
@@ -1790,7 +1843,7 @@ groups:
     description: "Configure Network Parameters (Host Only)"
     checks:
       - id: 3.2.1
-        description: "Ensure IP forwarding is disabled (IPv4 and IPv6)"
+        description: "Ensure IP forwarding is disabled (Automated)"
         audit: |
           echo "Runtime IPv4 Forwarding:"
           sysctl net.ipv4.ip_forward | awk -F'=' '{print $2}' | xargs
@@ -1839,7 +1892,7 @@ groups:
 
 
       - id: 3.2.2
-        description: "Ensure packet redirect sending is disabled (IPv4 all & default)"
+        description: "Ensure packet redirect sending is disabled (Automated)"
         audit: |
           echo "Runtime Checks:"
           sysctl net.ipv4.conf.all.send_redirects | awk -F'=' '{print $2}' | xargs
@@ -1879,7 +1932,7 @@ groups:
     description: "Configure Network Parameters (Host and Router)"
     checks:
       - id: 3.3.1
-        description: "Ensure source routed packets are not accepted (IPv4 and IPv6)"
+        description: "Ensure source routed packets are not accepted (Automated)"
         audit: |
           if [ "$(sysctl -n net.ipv4.conf.all.accept_source_route)" = "0" ] && \
           [ "$(sysctl -n net.ipv4.conf.default.accept_source_route)" = "0" ] && \
@@ -1922,7 +1975,7 @@ groups:
 
 
       - id: 3.3.2
-        description: "Ensure ICMP redirects are not accepted"
+        description: "Ensure ICMP redirects are not accepted (Automated)"
         audit: |
           if [ "$(sysctl -n net.ipv4.conf.all.accept_redirects)" = "0" ] && \
              [ "$(sysctl -n net.ipv4.conf.default.accept_redirects)" = "0" ] && \
@@ -1963,7 +2016,7 @@ groups:
         scored: true
 
       - id: 3.3.3
-        description: "Ensure secure ICMP redirects are not accepted"
+        description: "Ensure secure ICMP redirects are not accepted (Automated)"
         audit: |
           if [ "$(sysctl -n net.ipv4.conf.all.secure_redirects)" = "0" ] && \
              [ "$(sysctl -n net.ipv4.conf.default.secure_redirects)" = "0" ]; then
@@ -1995,7 +2048,7 @@ groups:
 
 
       - id: 3.3.4
-        description: "Ensure suspicious packets are logged"
+        description: "Ensure suspicious packets are logged (Automated)"
         audit: |
           if [ "$(sysctl -n net.ipv4.conf.all.log_martians)" = "1" ] && \
              [ "$(sysctl -n net.ipv4.conf.default.log_martians)" = "1" ]; then
@@ -2027,7 +2080,7 @@ groups:
 
 
       - id: 3.3.5
-        description: "Ensure broadcast ICMP requests are ignored"
+        description: "Ensure broadcast ICMP requests are ignored (Automated)"
         audit: |
           sysctl net.ipv4.icmp_echo_ignore_broadcasts | awk -F'=' '{print $2}' | xargs
         tests:
@@ -2042,7 +2095,7 @@ groups:
         scored: true
 
       - id: 3.3.6
-        description: "Ensure bogus ICMP responses are ignored"
+        description: "Ensure bogus ICMP responses are ignored (Automated)"
         audit: |
           sysctl net.ipv4.icmp_ignore_bogus_error_responses | awk -F'=' '{print $2}' | xargs
         tests:
@@ -2058,7 +2111,7 @@ groups:
         scored: true
 
       - id: 3.3.7
-        description: "Ensure Reverse Path Filtering is enabled"
+        description: "Ensure Reverse Path Filtering is enabled (Automated)"
         audit: |
           if [ "$(sysctl -n net.ipv4.conf.all.rp_filter)" = "1" ] && \
              [ "$(sysctl -n net.ipv4.conf.default.rp_filter)" = "1" ]; then
@@ -2090,7 +2143,7 @@ groups:
 
 
       - id: 3.3.8
-        description: "Ensure TCP SYN Cookies is enabled"
+        description: "Ensure TCP SYN Cookies is enabled (Automated)"
         audit: |
           sysctl net.ipv4.tcp_syncookies | awk -F'=' '{print $2}' | xargs
         tests:
@@ -2106,7 +2159,7 @@ groups:
         scored: true
 
       - id: 3.3.9
-        description: "Ensure IPv6 router advertisements are not accepted"
+        description: "Ensure IPv6 router advertisements are not accepted (Automated)"
         audit: |
           if [ "$(cat /sys/module/ipv6/parameters/disable 2>/dev/null)" = "1" ]; then
             echo "ipv6_disabled"
@@ -2147,9 +2200,10 @@ groups:
     checks:
       - id: 3.4.1
         description: "Configure a firewall utility"
+        type: "skip"
         checks:
       - id: 3.4.1.1
-        description: "Ensure nftables is installed"
+        description: "Ensure nftables is installed (Automated)"
         audit: "rpm -q nftables"
         tests:
           test_items:
@@ -2162,7 +2216,7 @@ groups:
         scored: true
 
       - id: 3.4.1.2
-        description: "Ensure a single firewall configuration utility is in use"
+        description: "Ensure a single firewall configuration utility is in use (Automated)"
         audit: |
           rpm -q firewalld > /dev/null 2>&1 && fwd_status="$(systemctl is-enabled firewalld):$(systemctl is-active firewalld)" || fwd_status="not_installed"
           rpm -q nftables > /dev/null 2>&1 && nft_status="$(systemctl is-enabled nftables):$(systemctl is-active nftables)" || nft_status="not_installed"
@@ -2203,9 +2257,10 @@ groups:
 
       - id: 3.4.2
         description: "Configure firewall rules"
+        type: "skip"
         checks:
       - id: 3.4.2.1
-        description: "Ensure firewalld default zone is set"
+        description: "Ensure firewalld default zone is set (Automated)"
         audit: |
           if systemctl is-enabled firewalld.service | grep -q 'enabled'; then
             firewall-cmd --get-default-zone
@@ -2232,7 +2287,7 @@ groups:
         scored: true
 
       - id: 3.4.2.2
-        description: "Ensure at least one nftables table exists"
+        description: "Ensure at least one nftables table exists (Automated)"
         audit: |
           nft list tables
         tests:
@@ -2250,7 +2305,7 @@ groups:
         scored: true
 
       - id: 3.4.2.3
-        description: "Ensure nftables base chains exist"
+        description: "Ensure nftables base chains exist (Automated)"
         audit: |
           nft list ruleset | grep 'hook input'
           nft list ruleset | grep 'hook forward'
@@ -2280,7 +2335,7 @@ groups:
         scored: true
 
       - id: 3.4.2.4
-        description: "Ensure host based firewall loopback traffic is configured"
+        description: "Ensure host based firewall loopback traffic is configured (Automated)"
         audit: |
           nft list ruleset | awk '/hook\s+input\s+/,/\}\s*(#.*)?$/' | grep -P -- '\H+\h+"lo"\h+accept'
           nft list ruleset | awk '/filter_IN_public_deny|hook\s+input\s+/,/\}\s*(#.*)?$/' | grep -P -- 'ip\h+saddr\h+127\.0\.0\.0\/8.*drop'
@@ -2320,7 +2375,7 @@ groups:
         scored: true
 
       - id: 3.4.2.5
-        description: "Ensure firewalld drops unnecessary services and ports"
+        description: "Ensure firewalld drops unnecessary services and ports (Manual)"
         type: manual
         audit: |
           systemctl is-enabled firewalld.service | grep -q 'enabled' && \
@@ -2344,7 +2399,7 @@ groups:
         scored: false
 
       - id: 3.4.2.6
-        description: "Ensure nftables established connections are configured"
+        description: "Ensure nftables established connections are configured (Manual)"
         type: manual
         audit: |
           systemctl is-enabled nftables.service | grep -q 'enabled' && \
@@ -2361,7 +2416,7 @@ groups:
         scored: false
 
       - id: 3.4.2.7
-        description: "Ensure nftables default deny firewall policy is set for input and forward chains"
+        description: "Ensure nftables default deny firewall policy (Automated)"
         audit: |
           if systemctl --quiet is-enabled nftables.service; then
             input_policy=$(nft list ruleset | grep -E 'hook input' | grep -v 'policy drop')
@@ -2399,7 +2454,7 @@ groups:
     description: "Configure time-based job schedulers"
     checks:
       - id: 4.1.1
-        description: "Ensure cron daemon is installed and enabled"
+        description: "Ensure cron daemon is installed and enabled (Automated)"
         audit: |
           if rpm -q cronie > /dev/null 2>&1; then
             echo "cronie_installed"
@@ -2429,7 +2484,7 @@ groups:
         scored: true
 
       - id: 4.1.2
-        description: "Ensure permissions on /etc/crontab are configured"
+        description: "Ensure permissions on /etc/crontab are configured (Automated)"
         audit: |
           if stat -L /etc/crontab | grep -qE 'Access:\s+\(0600/-rw-------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "crontab_permission_ok"
@@ -2449,7 +2504,7 @@ groups:
         scored: true
 
       - id: 4.1.3
-        description: "Ensure permissions on /etc/cron.hourly are configured"
+        description: "Ensure permissions on /etc/cron.hourly are configured (Automated)"
         audit: |
           if stat -L /etc/cron.hourly | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "cron_hourly_permission_ok"
@@ -2471,7 +2526,7 @@ groups:
         scored: true
 
       - id: 4.1.4
-        description: "Ensure permissions on /etc/cron.daily are configured"
+        description: "Ensure permissions on /etc/cron.daily are configured (Automated)"
         audit: |
           if stat -L /etc/cron.daily | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "cron_daily_permission_ok"
@@ -2493,7 +2548,7 @@ groups:
         scored: true
 
       - id: 4.1.5
-        description: "Ensure permissions on /etc/cron.weekly are configured"
+        description: "Ensure permissions on /etc/cron.weekly are configured (Automated)"
         audit: |
           if stat -L /etc/cron.weekly | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "cron_weekly_permission_ok"
@@ -2515,7 +2570,7 @@ groups:
         scored: true
 
       - id: 4.1.6
-        description: "Ensure permissions on /etc/cron.monthly are configured"
+        description: "Ensure permissions on /etc/cron.monthly are configured (Automated)"
         audit: |
           if stat -L /etc/cron.monthly | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "cron_monthly_permission_ok"
@@ -2537,7 +2592,7 @@ groups:
         scored: true
 
       - id: 4.1.7
-        description: "Ensure permissions on /etc/cron.d are configured"
+        description: "Ensure permissions on /etc/cron.d are configured (Automated)"
         audit: |
           if stat -L /etc/cron.d | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
             echo "cron_d_permission_ok"
@@ -2559,7 +2614,7 @@ groups:
         scored: true
 
       - id: 4.1.8
-        description: "Ensure cron is restricted to authorized users"
+        description: "Ensure cron is restricted to authorized users (Automated)"
         audit: |
           bash -c '[ -e /etc/cron.allow ] && [ "$(stat -c "%a" /etc/cron.allow)" = "600" ] && [ "$(stat -c "%u:%g" /etc/cron.allow)" = "0:0" ] && [ ! -e /etc/cron.deny ] && echo "Pass" || echo "Fail"'
         tests:
@@ -2580,7 +2635,7 @@ groups:
         scored: true
 
       - id: 4.1.9
-        description: "Ensure at is restricted to authorized users"
+        description: "Ensure at is restricted to authorized users (Automated)"
         audit: |
           bash -c '[ -e /etc/at.allow ] && [ "$(stat -c "%a" /etc/at.allow)" = "600" ] && [ "$(stat -c "%u:%g" /etc/at.allow)" = "0:0" ] && [ ! -e /etc/at.deny ] && echo "Pass" || echo "Fail"'
         tests:
@@ -2604,7 +2659,7 @@ groups:
     description: "Configure SSH Server"
     checks:
       - id: 4.2.1
-        description: "Ensure permissions on /etc/ssh/sshd_config are configured"
+        description: "Ensure permissions on /etc/ssh/sshd_config are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/ssh/sshd_config
         tests:
@@ -2621,7 +2676,7 @@ groups:
           # chmod u-x,go-rwx /etc/ssh/sshd_config
         scored: true
       - id: 4.2.2
-        description: "Ensure permissions on SSH private host key files are configured"
+        description: "Ensure permissions on SSH private host key files are configured (Automated)"
         audit: |
           find /etc/ssh -xdev -type f -name "ssh_host_*_key" -exec stat -c "%n %a %U %G" {} \; | while read file perm user group; do
             if [ "$perm" != "600" ] || [ "$user" != "root" ] || ([ "$group" != "root" ] && [ "$group" != "ssh_keys" ]); then
@@ -2640,7 +2695,7 @@ groups:
         scored: true
 
       - id: 4.2.3
-        description: "Ensure permissions on SSH public host key files are configured"
+        description: "Ensure permissions on SSH public host key files are configured (Automated)"
         audit: |
           bash -c 'found_fail=0; find /etc/ssh -xdev -type f -exec stat -c "%n %a %U %G" {} + 2>/dev/null | while read -r file mode user group; do
           if file "$file" | grep -Pq "OpenSSH.*public key"; then
@@ -2673,7 +2728,7 @@ groups:
         scored: true
 
       - id: 4.2.4
-        description: "Ensure SSH access is limited"
+        description: "Ensure SSH access is limited (Automated)"
         audit: |
           sshd_config_output=$(sshd -T -C user=root -C host="$(hostname)" -C addr="$(hostname -I | awk '{print $1}')" 2>/dev/null | grep -Pi "^\s*(allow|deny)(users|groups)\s+\S+")
           file_config_output=$(grep -Pi "^\s*(allow|deny)(users|groups)\s+\S+" /etc/ssh/sshd_config /etc/ssh/sshd_config.d/*.conf 2>/dev/null)
@@ -2698,7 +2753,7 @@ groups:
         scored: true
 
       - id: 4.2.5
-        description: "Ensure SSH LogLevel is appropriate"
+        description: "Ensure SSH LogLevel is appropriate (Automated)"
         audit: |
           # Check runtime config
           sshd -T -C user=root -C host="$(hostname)" -C addr="$(grep $(hostname) /etc/hosts | awk '{print $1}')" | grep loglevel
@@ -2726,7 +2781,7 @@ groups:
 
 
       - id: 4.2.6
-        description: "Ensure SSH PAM is enabled"
+        description: "Ensure SSH PAM is enabled (Automated)"
         audit: |
           if sshd -T -C user=root -C host="$(hostname)" -C addr="$(getent hosts "$(hostname)" | awk '{print $1}')" | grep -i usepam | grep -iq 'yes'; then
            runtime="runtime_pam_ok"
@@ -2764,7 +2819,7 @@ groups:
 
 
       - id: 4.2.7
-        description: "Ensure SSH root login is disabled"
+        description: "Ensure SSH root login is disabled (Automated)"
         audit: |
           runtime_status="$(sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(getent hosts $(hostname) | awk '{print $1}')\" | grep -i '^permitrootlogin' | awk '{print $2}')"
 
@@ -2806,7 +2861,7 @@ groups:
 
 
       - id: 4.2.8
-        description: "Ensure SSH HostbasedAuthentication is disabled"
+        description: "Ensure SSH HostbasedAuthentication is disabled (Automated)"
         audit: |
           runtime_status="$(sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(getent hosts $(hostname) | awk '{print $1}')\" | grep -i '^hostbasedauthentication' | awk '{print $2}')"
 
@@ -2848,7 +2903,7 @@ groups:
 
 
       - id: 4.2.9
-        description: "Ensure SSH PermitEmptyPasswords is disabled"
+        description: "Ensure SSH PermitEmptyPasswords is disabled (Automated)"
         audit: |
           runtime_status="$(sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(getent hosts $(hostname) | awk '{print $1}')\" | grep -i '^permitemptypasswords' | awk '{print $2}')"
 
@@ -2890,7 +2945,7 @@ groups:
 
 
       - id: 4.2.10
-        description: "Ensure SSH PermitUserEnvironment is disabled"
+        description: "Ensure SSH PermitUserEnvironment is disabled (Automated)"
         audit: |
           runtime_status="$(sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(getent hosts $(hostname) | awk '{print $1}')\" | grep -i '^permituserenvironment' | awk '{print $2}')"
 
@@ -2932,7 +2987,7 @@ groups:
 
 
       - id: 4.2.11
-        description: "Ensure SSH IgnoreRhosts is enabled"
+        description: "Ensure SSH IgnoreRhosts is enabled (Automated)"
         audit: |
           runtime_status="$(sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(getent hosts $(hostname) | awk '{print $1}')\" | grep -i '^ignorerhosts' | awk '{print $2}')"
 
@@ -2974,7 +3029,7 @@ groups:
 
 
       - id: 4.2.12
-        description: "Ensure SSH X11 forwarding is disabled"
+        description: "Ensure SSH X11 forwarding is disabled (Automated)"
         audit: |
           runtime_status="$(sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(getent hosts $(hostname) | awk '{print $1}')\" | grep -i '^x11forwarding' | awk '{print $2}')"
 
@@ -3016,7 +3071,7 @@ groups:
 
 
       - id: 4.2.13
-        description: "Ensure SSH AllowTcpForwarding is disabled"
+        description: "Ensure SSH AllowTcpForwarding is disabled (Automated)"
         audit: |
           runtime_status="$(sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(getent hosts $(hostname) | awk '{print $1}')\" | grep -i '^allowtcpforwarding' | awk '{print $2}')"
 
@@ -3058,7 +3113,7 @@ groups:
 
 
       - id: 4.2.14
-        description: "Ensure system-wide crypto policy is not over-ridden"
+        description: "Ensure system-wide crypto policy is not over-ridden (Automated)"
         audit: |
           grep -i '^\s*CRYPTO_POLICY=' /etc/sysconfig/sshd /etc/ssh/sshd_config.d/*.conf
         tests:
@@ -3076,7 +3131,7 @@ groups:
         scored: true
 
       - id: 4.2.15
-        description: "Ensure SSH warning banner is configured"
+        description: "Ensure SSH warning banner is configured (Automated)"
         audit: |
           sshd -T -C user=root -C host="$(hostname)" -C addr="$(grep $(hostname) /etc/hosts | awk '{print $1}')" | grep banner
         tests:
@@ -3092,7 +3147,7 @@ groups:
         scored: true
 
       - id: 4.2.16
-        description: "Ensure SSH MaxAuthTries is set to 4 or less"
+        description: "Ensure SSH MaxAuthTries is set to 4 or less (Automated)"
         audit: |
           # Check runtime value
           runtime_value="$(sshd -T -C user=root -C host="$(hostname)" -C addr="$(getent hosts "$(hostname)" | awk '{print $1}')" | grep -i '^maxauthtries' | awk '{print $2}')"
@@ -3135,7 +3190,7 @@ groups:
 
 
       - id: 4.2.17
-        description: "Ensure SSH MaxStartups is configured (10:30:60 or stricter)"
+        description: "Ensure SSH MaxStartups is configured (Automated)"
         audit: |
           # Get runtime value
           runtime_val="$(sshd -T -C user=root -C host="$(hostname)" -C addr="$(getent hosts "$(hostname)" | awk '{print $1}')" | grep -i '^maxstartups' | awk '{print $2}')"
@@ -3181,7 +3236,7 @@ groups:
 
 
       - id: 4.2.18
-        description: "Ensure SSH MaxSessions is set to 10 or less"
+        description: "Ensure SSH MaxSessions is set to 10 or less (Automated)"
         audit: |
           # Get runtime MaxSessions value
           runtime_val="$(sshd -T -C user=root -C host="$(hostname)" -C addr="$(getent hosts "$(hostname)" | awk '{print $1}')" | grep -i '^maxsessions' | awk '{print $2}')"
@@ -3226,7 +3281,7 @@ groups:
         scored: true
 
       - id: 4.2.19
-        description: "Ensure SSH LoginGraceTime is set to one minute or less"
+        description: "Ensure SSH LoginGraceTime is set to one minute or less (Automated)"
         audit: |
           # Get runtime LoginGraceTime value (in seconds)
           runtime_val="$(sshd -T -C user=root -C host="$(hostname)" -C addr="$(getent hosts "$(hostname)" | awk '{print $1}')" | grep -i '^logingracetime' | awk '{print $2}')"
@@ -3279,7 +3334,7 @@ groups:
 
 
       - id: 4.2.20
-        description: "Ensure SSH Idle Timeout Interval is configured"
+        description: "Ensure SSH Idle Timeout Interval is configured (Automated)"
         audit: |
           clientaliveinterval_val="$(sshd -T -C user=root -C host="$(hostname)" -C addr="$(getent hosts "$(hostname)" | awk '{print $1}')" | grep -i '^clientaliveinterval' | awk '{print $2}')"
           clientalivecountmax_val="$(sshd -T -C user=root -C host="$(hostname)" -C addr="$(getent hosts "$(hostname)" | awk '{print $1}')" | grep -i '^clientalivecountmax' | awk '{print $2}')"
@@ -3331,7 +3386,7 @@ groups:
     description: "Configure privilege escalation"
     checks:
       - id: 4.3.1
-        description: "Ensure sudo is installed"
+        description: "Ensure sudo is installed (Automated)"
         audit: "rpm -q sudo"
         tests:
           test_items:
@@ -3343,7 +3398,7 @@ groups:
           # dnf install sudo
         scored: true
       - id: 4.3.2
-        description: "Ensure sudo commands use pty"
+        description: "Ensure sudo commands use pty (Automated)"
         audit: |
           grep -rPi '^\h*Defaults\h+([^#\n\r]+,)?use_pty(,\h*\h+\h*)*\h*(#.*)?$' /etc/sudoers*
         tests:
@@ -3363,7 +3418,7 @@ groups:
         scored: true
 
       - id: 4.3.3
-        description: "Ensure sudo log file exists"
+        description: "Ensure sudo log file exists (Automated)"
         audit: |
           grep -rPsi "^\h*Defaults\h+([^#]+,\h*)?logfile\h*=\h*(\"|\')?\H+(\"|\')?(,\h*\H+\h*)*\h*(#.*)?$" /etc/sudoers*
         tests:
@@ -3384,7 +3439,7 @@ groups:
         scored: true
 
       - id: 4.3.4
-        description: "Ensure re-authentication for privilege escalation is not disabled globally"
+        description: "Ensure re-authentication for privilege escalation is not disabled globally (Automated)"
         audit: |
           grep -r "^[^#].*\!authenticate" /etc/sudoers /etc/sudoers.d 2>/dev/null
         tests:
@@ -3408,7 +3463,7 @@ groups:
         scored: true
 
       - id: 4.3.5
-        description: "Ensure sudo authentication timeout is configured correctly"
+        description: "Ensure sudo authentication timeout is configured correctly (Automated)"
         audit: |
           timeout=$(grep -roP "timestamp_timeout=\K-?[0-9]+" /etc/sudoers* 2>/dev/null | head -n 1)
 
@@ -3447,7 +3502,7 @@ groups:
 
 
       - id: 4.3.6
-        description: "Ensure access to the su command is restricted"
+        description: "Ensure access to the su command is restricted (Automated)"
         audit: |
           if grep -Pi '^\s*auth\s+(required|requisite)\s+pam_wheel\.so.*use_uid.*group=\w+' /etc/pam.d/su; then
             group_name=$(grep -Pi '^\s*auth\s+(required|requisite)\s+pam_wheel\.so.*group=\w+' /etc/pam.d/su | sed -n 's/.*group=\(\w\+\).*/\1/p')
@@ -3482,7 +3537,7 @@ groups:
     description: "Configure authselect"
     checks:
       - id: 4.4.1
-        description: "Ensure custom authselect profile is used"
+        description: "Ensure custom authselect profile is used (Manual)"
         type: manual
         remediation: |
           Run the following command to install authselect if needed
@@ -3503,7 +3558,7 @@ groups:
         scored: false
 
       - id: 4.4.2
-        description: "Ensure authselect includes with-faillock"
+        description: "Ensure authselect includes with-faillock (Automated)"
         audit: |
           authselect current | grep -q 'with-faillock' && \
           grep -q 'pam_faillock.so' /etc/pam.d/system-auth && \
@@ -3531,7 +3586,7 @@ groups:
     description: "Configure PAM"
     checks:
       - id: 4.5.1
-        description: "Ensure password creation requirements are configured"
+        description: "Ensure password creation requirements are configured (Automated)"
         audit: |
           retry_check=$(grep -E '^\s*password\s+requisite\s+pam_pwquality\.so.*retry=3\b' /etc/pam.d/system-auth /etc/pam.d/password-auth)
           minlen_check=$(grep -E '^minlen\s*=\s*(1[4-9]|[2-9][0-9]+)' /etc/security/pwquality.conf)
@@ -3575,7 +3630,7 @@ groups:
         scored: true
 
       - id: 4.5.2
-        description: "Ensure lockout for failed password attempts is configured"
+        description: "Ensure lockout for failed password attempts is configured (Automated)"
         audit: |
           if grep -Pq '^\s*deny\s*=\s*([1-5])\b' /etc/security/faillock.conf && \
           grep -Pq '^\s*unlock_time\s*=\s*(0|9[0-9]{2,}|[1-9][0-9]{3,})\b' /etc/security/faillock.conf; then
@@ -3600,7 +3655,7 @@ groups:
         scored: true
 
       - id: 4.5.3
-        description: "Ensure password reuse is limited"
+        description: "Ensure password reuse is limited (Automated)"
         audit: |
           pam_file="/etc/pam.d/system-auth"
           if grep -Pq '^\s*password\s+(requisite|required|sufficient)\s+pam_pwhistory\.so.*\bremember=([5-9]|[1-9][0-9]+)\b' "$pam_file" && \
@@ -3646,7 +3701,7 @@ groups:
         scored: true
 
       - id: 4.5.4
-        description: "Ensure password hashing algorithm is SHA-512"
+        description: "Ensure password hashing algorithm is SHA-512 (Automated)"
         audit: |
           result=0
 
@@ -3724,9 +3779,10 @@ groups:
     checks:
       - id: 4.6.1
         description: "Set Shadow Password Suite Parameters"
+        type: "skip"
         checks:
       - id: 4.6.1.1
-        description: "Ensure password expiration is 365 days or less"
+        description: "Ensure password expiration is 365 days or less (Automated)"
         audit: |
           grep -Eq '^\s*PASS_MAX_DAYS\s+(3[0-5][0-9]|36[0-5]|[1-2][0-9]{2}|[1-9][0-9]?|[1-9])\b' /etc/login.defs && ! awk -F: '($2 !~ /^[!*]/ && $5 > 365) { exit 1 }' /etc/shadow && echo "PASS" || echo "FAIL"
         tests:
@@ -3748,7 +3804,7 @@ groups:
         scored: true
 
       - id: 4.6.1.2
-        description: "Ensure minimum days between password changes is configured"
+        description: "Ensure minimum days between password changes is configured (Automated)"
         audit: |
           grep -Eq '^\s*PASS_MIN_DAYS\s+([1-9][0-9]*)\b' /etc/login.defs && ! awk -F: '($2 !~ /^[!*]/ && $4 < 1) { exit 1 }' /etc/shadow && echo "PASS" || echo "FAIL"
         tests:
@@ -3770,7 +3826,7 @@ groups:
         scored: true
 
       - id: 4.6.1.3
-        description: "Ensure password expiration warning days is 7 or more"
+        description: "Ensure password expiration warning days is 7 or more (Automated)"
         audit: |
           grep -Eq '^\s*PASS_WARN_AGE\s+(7|[8-9]|[1-9][0-9]+)\b' /etc/login.defs && ! awk -F: '($2 !~ /^[!*]/ && $6 < 7) { exit 1 }' /etc/shadow && echo "PASS" || echo "FAIL"
         tests:
@@ -3792,7 +3848,7 @@ groups:
         scored: true
 
       - id: 4.6.1.4
-        description: "Ensure inactive password lock is 30 days or less"
+        description: "Ensure inactive password lock is 30 days or less (Automated)"
         audit: |
           useradd -D | grep -Eq '^INACTIVE=([0-9]|[1-2][0-9]|30)$' && ! awk -F: '($2 !~ /^[!*]/ && ($7 == "" || $7 ~ /^-1$|^3[1-9]$|^[4-9][0-9]+$|^[1-9][0-9]{2,}$/)) { exit 1 }' /etc/shadow && echo "PASS" || echo "FAIL"
         tests:
@@ -3814,7 +3870,7 @@ groups:
         scored: true
 
       - id: 4.6.1.5
-        description: "Ensure all users last password change date is in the past"
+        description: "Ensure all users last password change date is in the past (Automated)"
         audit: |
           awk -F: '/^[^:]+:[^!*]/{print $1}' /etc/shadow | while read -r usr; \
           do change=$(date -d "$(chage --list $usr | grep '^Last password change' | cut -d: -f2 | grep -v 'never$')" +%s); \
@@ -3831,7 +3887,7 @@ groups:
         scored: true
 
       - id: 4.6.2
-        description: "Ensure system accounts use nologin shell and are locked if not required"
+        description: "Ensure system accounts are secured (Automated)"
         audit: |
           result=0
           awk -F: '($1!~/^(root|halt|sync|shutdown|nfsnobody)$/ && ($3 < '"$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)"' || $3 == 65534) && $7 !~ /(\/usr)?\/sbin\/nologin$/) { print "FAIL: System account with login shell ->", $1; result=1 }' /etc/passwd
@@ -3869,7 +3925,7 @@ groups:
 
 
       - id: 4.6.3
-        description: "Ensure default user shell timeout is 900 seconds or less"
+        description: "Ensure default user shell timeout is 900 seconds or less (Automated)"
         audit: |
           find /etc/profile /etc/bashrc /etc/profile.d/ -type f -name "*.sh" -exec grep -EH '^\s*TMOUT=' {} \; | while read -r line; do
             file=$(echo "$line" | cut -d: -f1)
@@ -3900,7 +3956,7 @@ groups:
 
 
       - id: 4.6.4
-        description: "Ensure default group for the root account is GID 0"
+        description: "Ensure default group for the root account is GID 0 (Automated)"
         audit: |
           grep "^root:" /etc/passwd | cut -f4 -d:
         tests:
@@ -3916,7 +3972,7 @@ groups:
         scored: true
 
       - id: 4.6.5
-        description: "Ensure default user umask is 027 or more restrictive"
+        description: "Ensure default user umask is 027 or more restrictive (Automated)"
         audit: |
           {
             result=0
@@ -3971,7 +4027,7 @@ groups:
         scored: true
 
       - id: 4.6.6
-        description: "Ensure root password is set"
+        description: "Ensure root password is set (Automated)"
         audit: "passwd -S root"
         tests:
           test_items:
@@ -3991,9 +4047,10 @@ groups:
     checks:
       - id: 5.1.1
         description: "Configure rsyslog"
+        type: "skip"
         checks:
       - id: 5.1.1.1
-        description: "Ensure rsyslog is installed"
+        description: "Ensure rsyslog is installed (Manual)"
         type: manual
         audit: "rpm -q rsyslog"
         remediation: |
@@ -4003,7 +4060,7 @@ groups:
         scored: false
 
       - id: 5.1.1.2
-        description: "Ensure rsyslog is installed"
+        description: "Ensure rsyslog service is enabled (Manual)"
         type: manual
         audit: "systemctl is-enabled rsyslog"
         remediation: |
@@ -4013,7 +4070,7 @@ groups:
         scored: false
 
       - id: 5.1.1.3
-        description: "Ensure journald is configured to send logs to rsyslog"
+        description: "Ensure journald is configured to send logs to rsyslog (Manual)"
         type: manual
         remediation: |
           Edit the /etc/systemd/journald.conf file and add the following line:
@@ -4025,7 +4082,7 @@ groups:
         scored: false
 
       - id: 5.1.1.4
-        description: "Ensure rsyslog default file permissions are configured"
+        description: "Ensure rsyslog default file permissions are configured (Automated)"
         audit: |
           grep -Ps "^\s*\$FileCreateMode\s+0[0,2,4,6][0,2,4]0\b" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null
         tests:
@@ -4042,7 +4099,7 @@ groups:
         scored: true
 
       - id: 5.1.1.5
-        description: "Ensure logging is configured"
+        description: "Ensure logging is configured (Manual)"
         type: manual
         audit: "ls -l /var/log/"
         remediation: |
@@ -4054,7 +4111,7 @@ groups:
         scored: false
 
       - id: 5.1.1.6
-        description: "Ensure rsyslog is configured to send logs to a remote log host"
+        description: "Ensure rsyslog is configured to send logs to a remote log host (Manual)"
         type: manual
         audit: |
           grep -E '^\s*([^#]+\s+)?action\(([^#]+\s+)?\btarget=\"?[^#"]+\"?\b' /etc/rsyslog.conf /etc/rsyslog.d/*.conf
@@ -4071,7 +4128,7 @@ groups:
         scored: false
 
       - id: 5.1.1.7
-        description: "Ensure rsyslog is not configured to receive logs from a remote client"
+        description: "Ensure rsyslog is not configured to receive logs from a remote client (Automated)"
         audit: |
           grep -Ps -- '^\h*module\(load="imtcp"\)' /etc/rsyslog.conf /etc/rsyslog.d/*.conf
           grep -Ps -- '^\h*input\(type="imtcp" port="514"\)' /etc/rsyslog.conf /etc/rsyslog.d/*.conf
@@ -4098,12 +4155,14 @@ groups:
 
       - id: 5.1.2
         description: "Configure journald"
+        type: "skip"
         checks:
       - id: 5.1.2.1
         description: "Ensure journald is configured to send logs to a remote log host"
+        type: "skip"
         checks:
       - id: 5.1.2.1.1
-        description: "Ensure systemd-journal-remote is installed"
+        description: "Ensure systemd-journal-remote is installed (Manual)"
         type: manual
         audit: "rpm -q systemd-journal-remote"
         remediation: |
@@ -4113,7 +4172,7 @@ groups:
         scored: false
 
       - id: 5.1.2.1.2
-        description: "Ensure systemd-journal-remote is configured"
+        description: "Ensure systemd-journal-remote is configured (Manual)"
         type: manual
         audit: |
           grep -P "^ *URL=|^ *ServerKeyFile=|^ *ServerCertificateFile=|^ *TrustedCertificateFile=" /etc/systemd/journal-upload.conf
@@ -4130,7 +4189,7 @@ groups:
         scored: false
 
       - id: 5.1.2.1.3
-        description: "Ensure systemd-journal-remote is enabled"
+        description: "Ensure systemd-journal-remote is enabled (Manual)"
         type: manual
         audit: "systemctl is-enabled systemd-journal-upload.service"
         remediation: |
@@ -4140,7 +4199,7 @@ groups:
         scored: false
 
       - id: 5.1.2.1.4
-        description: "Ensure journald is not configured to receive logs from a remote client"
+        description: "Ensure journald is not configured to receive logs from a remote client (Automated)"
         audit: |
           systemctl is-enabled systemd-journal-remote.socket
         tests:
@@ -4153,7 +4212,7 @@ groups:
           # systemctl --now mask systemd-journal-remote.socket
         scored: true
       - id: 5.1.2.2
-        description: "Ensure journald service is enabled"
+        description: "Ensure journald service is enabled (Automated)"
         audit: "systemctl is-enabled systemd-journald.service"
         tests:
           test_items:
@@ -4164,7 +4223,7 @@ groups:
         scored: true
 
       - id: 5.1.2.3
-        description: "Ensure journald is configured to compress large log files"
+        description: "Ensure journald is configured to compress large log files (Automated)"
         audit: |
           grep -E ^\s*Compress /etc/systemd/journald.conf
         tests:
@@ -4181,7 +4240,7 @@ groups:
         scored: true
 
       - id: 5.1.2.4
-        description: "Ensure journald is configured to write logfiles to persistent disk"
+        description: "Ensure journald is configured to write logfiles to persistent disk (Automated)"
         audit: |
           grep -E ^\s*Storage /etc/systemd/journald.conf
         tests:
@@ -4198,7 +4257,7 @@ groups:
         scored: true
 
       - id: 5.1.2.5
-        description: "Ensure journald is not configured to send logs to rsyslog"
+        description: "Ensure journald is not configured to send logs to rsyslog (Manual)"
         type: manual
         audit: |
           grep ^\s*ForwardToSyslog /etc/systemd/journald.conf
@@ -4211,7 +4270,7 @@ groups:
         scored: false
 
       - id: 5.1.2.6
-        description: "Ensure journald log rotation is configured per site policy"
+        description: "Ensure journald log rotation is configured per site policy (Manual)"
         type: manual
         remediation: |
           Review /etc/systemd/journald.conf and verify logs are rotated according to site policy. The settings should be carefully understood as there are specific edge cases and prioritization of parameters.
@@ -4224,14 +4283,14 @@ groups:
         scored: false
 
       - id: 5.1.2.7
-        description: "Ensure journald default file permissions configured"
+        description: "Ensure journald default file permissions configured (Manual)"
         type: manual
         remediation: |
           If the default configuration is not appropriate for the site specific requirements, copy /usr/lib/tmpfiles.d/systemd.conf to /etc/tmpfiles.d/systemd.conf and modify as required. Requirements is either 0640 or site policy if that is less restrictive.
         scored: false
 
       - id: 5.1.3
-        description: "Ensure all logfiles have appropriate permissions and ownership"
+        description: "Ensure all logfiles have appropriate permissions and ownership (Automated)"
         audit: |
           find /var/log -type f -exec stat --format '%n %U %G %a' {} \; | while read -r file owner group perms; do
           if [[ "$perms" =~ ^[0-7]{3}$ ]]; then
@@ -4261,9 +4320,10 @@ groups:
     checks:
       - id: 5.2.1
         description: "Ensure auditing is enabled"
+        type: "skip"
         checks:
       - id: 5.2.1.1
-        description: "Ensure auditd is installed"
+        description: "Ensure auditd is installed (Automated)"
         audit: "rpm -q audit"
         tests:
           test_items:
@@ -4276,7 +4336,7 @@ groups:
         scored: true
 
       - id: 5.2.1.2
-        description: "Ensure auditing for processes that start prior to auditd is enabled"
+        description: "Ensure auditing for processes that start prior to auditd is enabled (Automated)"
         audit: |
           grubby --info=ALL | grep -Po '\baudit=1\b'
         tests:
@@ -4290,7 +4350,7 @@ groups:
         scored: true
 
       - id: 5.2.1.3
-        description: "Ensure audit_backlog_limit is sufficient"
+        description: "Ensure audit_backlog_limit is sufficient (Automated)"
         audit: |
           grubby --info=ALL | grep -Po '\baudit_backlog_limit=\K\d+' | awk '{ if ($1 >= 8192) { print "PASS" } else { print "FAIL" } }'
         tests:
@@ -4307,7 +4367,7 @@ groups:
         scored: true
 
       - id: 5.2.1.4
-        description: "Ensure auditd service is enabled"
+        description: "Ensure auditd service is enabled (Automated)"
         audit: |
           systemctl is-enabled auditd
         tests:
@@ -4322,9 +4382,10 @@ groups:
 
       - id: 5.2.2
         description: "Configure Data Retention"
+        type: "skip"
         checks:
       - id: 5.2.2.1
-        description: "Ensure audit log storage size is configured"
+        description: "Ensure audit log storage size is configured (Automated)"
         audit: |
           grep -P '^\s*max_log_file\s*=\s*\d+' /etc/audit/auditd.conf
         tests:
@@ -4346,7 +4407,7 @@ groups:
         scored: true
 
       - id: 5.2.2.2
-        description: "Ensure audit logs are not automatically deleted"
+        description: "Ensure audit logs are not automatically deleted (Automated)"
         audit: |
           grep max_log_file_action /etc/audit/auditd.conf
         tests:
@@ -4360,7 +4421,7 @@ groups:
         scored: true
 
       - id: 5.2.2.3
-        description: "Ensure system is disabled when audit logs are full"
+        description: "Ensure system is disabled when audit logs are full (Automated)"
         audit: |
           result=0
 
@@ -4400,9 +4461,10 @@ groups:
 
       - id: 5.2.3
         description: "Configure auditd rules"
+        type: "skip"
         checks:
       - id: 5.2.3.1
-        description: "Ensure changes to system administration scope (sudoers) is collected"
+        description: "Ensure changes to system administration scope (sudoers) is collected (Automated)"
         audit: |
           awk '/^ *-w/ \
           && /\/etc\/sudoers/ \
@@ -4437,7 +4499,7 @@ groups:
 
 
       - id: 5.2.3.2
-        description: "Ensure actions as another user are always logged"
+        description: "Ensure actions as another user are always logged (Automated)"
         audit: |
           awk '/^ *-a *always,exit/ \
           && / -F *arch=b(32|64)/ \
@@ -4469,7 +4531,7 @@ groups:
 
 
       - id: 5.2.3.3
-        description: "Ensure events that modify the sudo log file are collected"
+        description: "Ensure events that modify the sudo log file are collected (Automated)"
         audit: |
           SUDO_LOG_FILE=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//' -e 's/,.*//' -e 's/\"//g')
 
@@ -4504,7 +4566,7 @@ groups:
         scored: true
 
       - id: 5.2.3.4
-        description: "Ensure events that modify date and time information are collected"
+        description: "Ensure events that modify date and time information are collected (Automated)"
         audit: |
           awk '/^ *-a *always,exit/ \
             &&/ -F *arch=b(32|64)/ \
@@ -4542,7 +4604,7 @@ groups:
 
 
       - id: 5.2.3.5
-        description: "Ensure events that modify the system's network environment are collected"
+        description: "Ensure events that modify the system's network environment are collected (Automated)"
         audit: |
           awk '/^ *-a *always,exit/ \
             &&/ -F *arch=b(32|64)/ \
@@ -4588,7 +4650,7 @@ groups:
 
 
       - id: 5.2.3.6
-        description: "Ensure use of privileged commands are collected"
+        description: "Ensure use of privileged commands are collected (Automated)"
         audit: |
           for PARTITION in $(findmnt -n -l -k -it $(awk '/nodev/ {print $2}' /proc/filesystems | paste -sd,) | grep -Pv "noexec|nosuid" | awk '{print $1}'); do
             for PRIVILEGED in $(find "${PARTITION}" -xdev -perm /6000 -type f); do
@@ -4627,7 +4689,7 @@ groups:
 
 
       - id: 5.2.3.7
-        description: "Ensure unsuccessful file access attempts are collected"
+        description: "Ensure unsuccessful file access attempts are collected (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)
           if [ -n "${UID_MIN}" ]; then
@@ -4671,7 +4733,7 @@ groups:
 
 
       - id: 5.2.3.8
-        description: "Ensure events that modify user/group information are collected"
+        description: "Ensure events that modify user/group information are collected (Automated)"
         audit: |
           if awk '/^ *-w/ \
             &&(/\/etc\/group/ || /\/etc\/passwd/ || /\/etc\/gshadow/ || /\/etc\/shadow/ || /\/etc\/security\/opasswd/) \
@@ -4703,7 +4765,7 @@ groups:
 
 
       - id: 5.2.3.9
-        description: "Ensure discretionary access control permission modification events are collected"
+        description: "Ensure discretionary access control permission modification events are collected (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)
           if [ -n "$UID_MIN" ]; then
@@ -4740,7 +4802,7 @@ groups:
 
 
       - id: 5.2.3.10
-        description: "Ensure successful file system mounts are collected"
+        description: "Ensure successful file system mounts are collected (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)
           if [ -n "$UID_MIN" ]; then
@@ -4772,7 +4834,7 @@ groups:
 
 
       - id: 5.2.3.11
-        description: "Ensure session initiation information is collected"
+        description: "Ensure session initiation information is collected (Automated)"
         audit: |
           RULE1=$(grep -P -- "^-w\s+/var/run/utmp\s+-p\s+wa\s+-k\s+session" /etc/audit/rules.d/*.rules || true)
           RULE2=$(grep -P -- "^-w\s+/var/log/wtmp\s+-p\s+wa\s+-k\s+session" /etc/audit/rules.d/*.rules || true)
@@ -4802,7 +4864,7 @@ groups:
 
 
       - id: 5.2.3.12
-        description: "Ensure login and logout events are collected"
+        description: "Ensure login and logout events are collected (Automated)"
         audit: |
           RULE1=$(grep -P -- "^-w\s+/var/log/lastlog\s+-p\s+wa\s+-k\s+logins" /etc/audit/rules.d/*.rules || true)
           RULE2=$(grep -P -- "^-w\s+/var/run/faillock\s+-p\s+wa\s+-k\s+logins" /etc/audit/rules.d/*.rules || true)
@@ -4830,7 +4892,7 @@ groups:
 
 
       - id: 5.2.3.13
-        description: "Ensure file deletion events by users are collected"
+        description: "Ensure file deletion events by users are collected (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/{print $2}' /etc/login.defs)
           if [ -n "$UID_MIN" ]; then
@@ -4866,7 +4928,7 @@ groups:
 
 
       - id: 5.2.3.14
-        description: "Ensure events that modify the system's Mandatory Access Controls are collected"
+        description: "Ensure events that modify the system's Mandatory Access Controls are collected (Automated)"
         audit: |
           ETC_SELINUX=$(grep -P -- '^\s*-w\s+/etc/selinux\s+-p\s+wa\s+(-k\s+MAC-policy|key=MAC-policy)' /etc/audit/rules.d/*.rules || true)
           SHARE_SELINUX=$(grep -P -- '^\s*-w\s+/usr/share/selinux\s+-p\s+wa\s+(-k\s+MAC-policy|key=MAC-policy)' /etc/audit/rules.d/*.rules || true)
@@ -4895,7 +4957,7 @@ groups:
 
 
       - id: 5.2.3.15
-        description: "Ensure successful and unsuccessful attempts to use the chcon command are recorded"
+        description: "Ensure successful and unsuccessful attempts to use the chcon command are recorded (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/ {print $2}' /etc/login.defs)
 
@@ -4926,7 +4988,7 @@ groups:
 
 
       - id: 5.2.3.16
-        description: "Ensure successful and unsuccessful attempts to use the setfacl command are recorded"
+        description: "Ensure successful and unsuccessful attempts to use the setfacl command are recorded (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/ {print $2}' /etc/login.defs)
 
@@ -4957,7 +5019,7 @@ groups:
 
 
       - id: 5.2.3.17
-        description: "Ensure successful and unsuccessful attempts to use the chacl command are recorded"
+        description: "Ensure successful and unsuccessful attempts to use the chacl command are recorded (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/ {print $2}' /etc/login.defs)
 
@@ -4988,7 +5050,7 @@ groups:
 
 
       - id: 5.2.3.18
-        description: "Ensure successful and unsuccessful attempts to use the usermod command are recorded"
+        description: "Ensure successful and unsuccessful attempts to use the usermod command are recorded (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/ {print $2}' /etc/login.defs)
 
@@ -5018,7 +5080,7 @@ groups:
         scored: true
 
       - id: 5.2.3.19
-        description: "Ensure kernel module loading, unloading and modification is collected"
+        description: "Ensure kernel module loading, unloading and modification is collected (Automated)"
         audit: |
           UID_MIN=$(awk '/^\s*UID_MIN/ {print $2}' /etc/login.defs)
 
@@ -5072,7 +5134,7 @@ groups:
 
 
       - id: 5.2.3.20
-        description: "Ensure the audit configuration is immutable"
+        description: "Ensure the audit configuration is immutable (Automated)"
         audit: |
           if grep -Ph -- '^\h*-e\h+2\b' /etc/audit/rules.d/*.rules | grep -q -- '-e 2'; then
             echo "audit_config_immutable"
@@ -5096,7 +5158,7 @@ groups:
 
 
       - id: 5.2.3.21
-        description: "Ensure the running and on disk configuration is the same"
+        description: "Ensure the running and on disk configuration is the same (Manual)"
         type: manual
         audit: |
           gaugenrules --check
@@ -5111,9 +5173,10 @@ groups:
 
       - id: 5.2.4
         description: "Configure auditd file access"
+        type: "skip"
         checks:
       - id: 5.2.4.1
-        text: "Ensure audit log files are mode 0640 or less permissive"
+        description: "Ensure audit log files are mode 0640 or less permissive (Automated)"
         audit: |
           if [ -f /etc/audit/auditd.conf ]; then
             log_dir=$(dirname $(awk -F "=" '/^\s*log_file/ {print $2}' /etc/audit/auditd.conf | xargs))
@@ -5141,7 +5204,7 @@ groups:
         scored: true
 
       - id: 5.2.4.2
-        text: "Ensure only authorized users own audit log files"
+        description: "Ensure only authorized users own audit log files (Automated)"
         audit: |
           if [ -f /etc/audit/auditd.conf ]; then
             log_dir=$(dirname $(awk -F "=" '/^\s*log_file/ {print $2}' /etc/audit/auditd.conf | xargs))
@@ -5158,7 +5221,7 @@ groups:
         scored: true
 
       - id: 5.2.4.3
-        text: "Ensure only authorized groups are assigned ownership of audit log files"
+        description: "Ensure only authorized groups are assigned ownership of audit log files (Automated)"
         audit: |
           grep -Piw -- '^\h*log_group\h*=\h*(adm|root)\b' /etc/audit/auditd.conf || echo "invalid_log_group_found"
           if [ -f /etc/audit/auditd.conf ]; then
@@ -5186,7 +5249,7 @@ groups:
         scored: true
 
       - id: 5.2.4.4
-        text: "Ensure the audit log directory is 0750 or more restrictive"
+        description: "Ensure the audit log directory is 0750 or more restrictive (Automated)"
         audit: |
           if [ -f /etc/audit/auditd.conf ]; then
             audit_dir=$(dirname $(awk -F"=" '/^\s*log_file\s*=\s*/ {print $2}' /etc/audit/auditd.conf | xargs))
@@ -5205,7 +5268,7 @@ groups:
         scored: true
 
       - id: 5.2.4.5
-        text: "Ensure audit configuration files are 640 or more restrictive (Automated)"
+        description: "Ensure audit configuration files are 640 or more restrictive (Automated)"
         audit: |
           find /etc/audit/ -type f \( -name '*.conf' -o -name '*.rules' \) \
           -exec stat -Lc "%n %a" {} + | \
@@ -5224,7 +5287,7 @@ groups:
 
 
       - id: 5.2.4.6
-        text: "Ensure audit configuration files are owned by root (Automated)"
+        description: "Ensure audit configuration files are owned by root (Automated)"
         audit: |
           find /etc/audit/ -type f \( -name '*.conf' -o -name '*.rules' \) ! -user root && echo "audit_config_not_owned_by_root"
         tests:
@@ -5241,7 +5304,7 @@ groups:
 
 
       - id: 5.2.4.7
-        text: "Ensure audit configuration files belong to group root (Automated)"
+        description: "Ensure audit configuration files belong to group root (Automated)"
         audit: |
           find /etc/audit/ -type f \( -name '*.conf' -o -name '*.rules' \) ! -group root && echo "audit_config_wrong_group"
         tests:
@@ -5257,7 +5320,7 @@ groups:
         scored: true
 
       - id: 5.2.4.8
-        text: "Ensure audit tools are 755 or more restrictive (Automated)"
+        description: "Ensure audit tools are 755 or more restrictive (Automated)"
         audit: |
           stat -c "%n %a" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules 2>/dev/null | \
           grep -Pv -- '^\h*\H+\h+([0-7][0,1,4,5][0,1,4,5])\h*$' && echo "audit_tools_bad_perms"
@@ -5274,7 +5337,7 @@ groups:
         scored: true
 
       - id: 5.2.4.9
-        description: "Ensure audit tools are owned by root"
+        description: "Ensure audit tools are owned by root (Automated)"
         audit: |
           audit_tools=(/sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules)
           incorrect_ownership_found=false
@@ -5307,7 +5370,7 @@ groups:
 
 
       - id: 5.2.4.10
-        text: "Ensure audit tools belong to group root (Automated)"
+        description: "Ensure audit tools belong to group root (Automated)"
         audit: |
           stat -c "%n %a %U %G" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules 2>/dev/null | \
           grep -Pv -- '^\h*\H+\h+([0-7][0,1,4,5][0,1,4,5])\h+root\h+root\h*$' && echo "audit_tools_wrong_group"
@@ -5324,12 +5387,12 @@ groups:
           This ensures audit tools are owned and grouped under root with restrictive access.
         scored: true
 
-  - id: 5.3
-    description: "Ensure logrotate is configured"
-    type: manual
-    remediation: |
-      Edit /etc/logrotate.conf and /etc/logrotate.d/* to ensure logs are rotated according to site policy.
-    scored: false
+      - id: 5.3
+        description: "Ensure logrotate is configured (Manual)"
+        type: manual
+        remediation: |
+          Edit /etc/logrotate.conf and /etc/logrotate.d/* to ensure logs are rotated according to site policy.
+        scored: false
 
   - id: 6
     description: "System Maintenance"
@@ -5338,7 +5401,7 @@ groups:
     description: "System File Permissions"
     checks:
       - id: 6.1.1
-        description: "Ensure permissions on /etc/passwd are configured"
+        description: "Ensure permissions on /etc/passwd are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/passwd
         tests:
@@ -5359,7 +5422,7 @@ groups:
         scored: true
 
       - id: 6.1.2
-        description: "Ensure permissions on /etc/passwd are configured"
+        description: "Ensure permissions on /etc/passwd are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/passwd
         tests:
@@ -5380,7 +5443,7 @@ groups:
         scored: true
 
       - id: 6.1.3
-        description: "Ensure permissions on /etc/passwd- are configured"
+        description: "Ensure permissions on /etc/passwd- are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/passwd-
         tests:
@@ -5401,7 +5464,7 @@ groups:
         scored: true
 
       - id: 6.1.4
-        description: "Ensure permissions on /etc/group are configured"
+        description: "Ensure permissions on /etc/group are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/group
         tests:
@@ -5422,7 +5485,7 @@ groups:
         scored: true
 
       - id: 6.1.5
-        description: "Ensure permissions on /etc/group- are configured"
+        description: "Ensure permissions on /etc/group- are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/group-
         tests:
@@ -5443,7 +5506,7 @@ groups:
         scored: true
 
       - id: 6.1.6
-        description: "Ensure permissions on /etc/shadow are configured"
+        description: "Ensure permissions on /etc/shadow are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/shadow
         tests:
@@ -5464,7 +5527,7 @@ groups:
         scored: true
 
       - id: 6.1.7
-        description: "Ensure permissions on /etc/shadow- are configured"
+        description: "Ensure permissions on /etc/shadow- are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/shadow-
         tests:
@@ -5485,7 +5548,7 @@ groups:
         scored: true
 
       - id: 6.1.8
-        description: "Ensure permissions on /etc/gshadow are configured"
+        description: "Ensure permissions on /etc/gshadow are configured (Automated)"
         audit: |
           stat -Lc "%n %a %u/%U %g/%G" /etc/gshadow
         tests:
@@ -5506,7 +5569,7 @@ groups:
         scored: true
 
       - id: 6.1.9
-        description: "Ensure permissions on /etc/gshadow- are configured"
+        description: "Ensure permissions on /etc/gshadow- are configured (Automated)"
         audit: |
           if [ -e /etc/gshadow- ]; then
             stat -Lc "%n %a %u/%U %g/%G" /etc/gshadow-
@@ -5532,14 +5595,14 @@ groups:
 
 
       - id: 6.1.10
-        description: "Audit system file permissions"
+        description: "Audit system file permissions (Manual)"
         type: manual
         remediation: |
           Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.
         scored: false
 
       - id: 6.1.11
-        description: "Ensure world writable files and directories are secured"
+        description: "Ensure world writable files and directories are secured (Automated)"
         audit: |
           world_files=$(find / -xdev -type f -perm -0002 \
             ! -path "/proc/*" ! -path "/sys/*" ! -path "/dev/*" \
@@ -5588,7 +5651,7 @@ groups:
         scored: true
 
       - id: 6.1.12
-        description: "Ensure no unowned or ungrouped files or directories exist"
+        description: "Ensure no unowned or ungrouped files or directories exist (Automated)"
         audit: |
           unowned_files=$(find / -xdev \( -nouser -o -nogroup \) \
             ! -path "/proc/*" \
@@ -5645,7 +5708,7 @@ groups:
 
 
       - id: 6.1.13
-        description: "Ensure SUID and SGID files are reviewed"
+        description: "Ensure SUID and SGID files are reviewed (Automated)"
         audit: |
           suid_files=$(find / -xdev -type f -perm -4000 \
             ! -path "/proc/*" \
@@ -5704,7 +5767,7 @@ groups:
     description: "Local User and Group Settings"
     checks:
       - id: 6.2.1
-        description: "Ensure accounts in /etc/passwd use shadowed passwords"
+        description: "Ensure accounts in /etc/passwd use shadowed passwords (Automated)"
         audit: |
           awk -F: '($2 != "x" ) { print $1 " is not set to shadowed passwords "}' /etc/passwd
         tests:
@@ -5720,7 +5783,7 @@ groups:
             Investigate to determine if the account is logged in and what it is being used for, to determine if it needs to be forced off.
         scored: true
       - id: 6.2.2
-        description: "Ensure /etc/shadow password fields are not empty"
+        description: "Ensure /etc/shadow password fields are not empty (Automated)"
         audit: |
           awk -F: '($2 == "" ) { print $1 " does not have a password "}' /etc/shadow
         tests:
@@ -5738,7 +5801,7 @@ groups:
 
 
       - id: 6.2.3
-        description: "Ensure all groups in /etc/passwd exist in /etc/group"
+        description: "Ensure all groups in /etc/passwd exist in /etc/group (Automated)"
         audit: |
           for i in $(cut -s -d: -f4 /etc/passwd | sort -u ); do
             grep -q -P "^.*?:[^:]*:$i:" /etc/group
@@ -5757,7 +5820,7 @@ groups:
         scored: true
 
       - id: 6.2.4
-        description: "Ensure no duplicate UIDs exist"
+        description: "Ensure no duplicate UIDs exist (Automated)"
         audit: |
           cut -f3 -d":" /etc/passwd | sort -n | uniq -c | while read x ; do
             [ -z "$x" ] && break
@@ -5778,7 +5841,7 @@ groups:
         scored: true
 
       - id: 6.2.5
-        description: "Ensure no duplicate GIDs exist"
+        description: "Ensure no duplicate GIDs exist (Automated)"
         audit: |
           cut -d: -f3 /etc/group | sort | uniq -d | while read x ; do
             echo "Duplicate GID ($x) in /etc/group"
@@ -5794,7 +5857,7 @@ groups:
         scored: true
 
       - id: 6.2.6
-        description: "Ensure no duplicate GIDs exist"
+        description: "Ensure no duplicate user names exist (Automated)"
         audit: |
           cut -d: -f1 /etc/passwd | sort | uniq -d | while read -r x; do
             echo "Duplicate login name $x in /etc/passwd"
@@ -5810,7 +5873,7 @@ groups:
         scored: true
 
       - id: 6.2.7
-        description: "Ensure no duplicate group names exist"
+        description: "Ensure no duplicate group names exist (Automated)"
         audit: |
           cut -d: -f1 /etc/group | sort | uniq -d | while read -r x; do
             echo "Duplicate group name $x in /etc/group"
@@ -5826,7 +5889,7 @@ groups:
         scored: true
 
       - id: 6.2.8
-        description: "Ensure root PATH Integrity"
+        description: "Ensure root PATH Integrity (Automated)"
         audit: |
           RPCV="$(sudo -Hiu root env | grep '^PATH' | cut -d= -f2)"
           path_safe=true
@@ -5876,7 +5939,7 @@ groups:
         scored: true
 
       - id: 6.2.9
-        description: "Ensure root is the only UID 0 account"
+        description: "Ensure root is the only UID 0 account (Automated)"
         audit: |
           awk -F: '($3 == 0) { print $1 }' /etc/passwd
         tests:
@@ -5890,7 +5953,7 @@ groups:
         scored: true
 
       - id: 6.2.10
-        description: "Ensure local interactive user home directories are configured"
+        description: "Ensure local interactive user home directories are configured (Automated)"
         audit: |
           {
             l_output="" l_output2="" l_heout2="" l_hoout2="" l_haout2=""
@@ -5973,7 +6036,7 @@ groups:
         scored: true
 
       - id: 6.2.11
-        description: "Ensure local interactive user dot files access is configured"
+        description: "Ensure local interactive user dot files access is configured (Automated)"
         audit: |
           {
             l_output="" l_output2="" l_output3="" l_output4=""
