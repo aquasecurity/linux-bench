@@ -4084,7 +4084,7 @@ groups:
       - id: 5.1.1.4
         description: "Ensure rsyslog default file permissions are configured (Automated)"
         audit: |
-          grep -Ps "^\s*\$FileCreateMode\s+0[0,2,4,6][0,2,4]0\b" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null
+          grep -Ps '^\h*\$FileCreateMode\h+0[0,2,4,6][0,2,4]0\b' /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null
         tests:
           test_items:
             - flag: "0640"
