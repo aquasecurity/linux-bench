@@ -5,92 +5,87 @@ id: 1
 description: "Initial Setup"
 type: "master"
 groups:
+  - id: 1
+    description: "Initial Setup"
+    checks:
   - id: 1.1
     description: "Filesystem Configuration"
     checks:
-      - id: 1.1.1.1a
+      - id: 1.1.1
+        description: "Disable unused filesystems"
+        type: "skip"
+        checks:
+      - id: 1.1.1.1
         description: "Ensure mounting of udf filesystems is disabled (Automated)"
-        audit: "sheltie modprobe -n -v cramfs"
+        audit: |
+          if ! sheltie modprobe -n -v udf | grep -q 'install /bin/true'; then
+            echo "config_bad"
+          fi
+
+          if sheltie grep -Fwq udf /proc/modules; then
+            echo "module_loaded"
+          fi
         tests:
           test_items:
-            - flag: "install /bin/true"
+            - flag: "config_bad"
+              set: true
+            - flag: "module_loaded"
+              set: false
         remediation: |
-          Run the following command to disable the udf module:
-           # apiclient set kernel.modules.udf.allowed=false
-
-          Run the following command to unload the udf module:
-            # rmmod udf
-        scored: true
-      - id: 1.1.1.1b
-        description: "Ensure mounting of udf filesystems is disabled (Automated)"
-        audit: "sheltie grep -Fw udf /proc/modules"
-        tests:
-          test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: ""
-        remediation: |
-          Run the following command to disable the udf module:
-           # apiclient set kernel.modules.udf.allowed=false
-
-          Run the following command to unload the udf module:
-            # rmmod udf
+          Run the following commands to disable and unload the udf module:
+            # sheltie apiclient set kernel.modules.udf.allowed=false
+            # sheltie rmmod udf
         scored: true
 
   - id: 1.2
-    description: "Configure Software Updates (Manual)"
+    description: "Configure Software Updates"
     checks:
       - id: 1.2.1
-        description: "Ensure package manager repositories are configured"
-        audit: "apiclient update check"
-        tests:
-          test_items:
-            - flag: ""
-              compare:
-                op: noteq
-                value: ""
+        description: "Ensure package manager repositories are configured (Manual)"
+        type: manual
         remediation: |
           Configure your package manager repositories according to site policy.
-        scored: true
+        scored: false
 
   - id: 1.3
     description: "Filesystem Integrity Checking"
     checks:
       - id: 1.3.1
         description: "Ensure dm-verity is configured (Automated)"
-        audit: 'sheltie grep -Fw "dm-mod.create=root,,,ro,0" /proc/cmdline && grep -Fw "root=/dev/dm-0" /proc/cmdline && grep -Fw "restart_on_corruption" /proc/cmdline'
+        audit: |
+          sheltie grep -Fw "dm-mod.create=root,,,ro,0" /proc/cmdline
+          sheltie grep -Fw "root=/dev/dm-0" /proc/cmdline
+          sheltie grep -Fw "restart_on_corruption" /proc/cmdline
         tests:
           test_items:
-            - flag: ""
+            - flag: "/proc/cmdline"
               compare:
                 op: has
                 value: "dm-mod.create=root,,,ro,0"
-            - flag: ""
+            - flag: "/proc/cmdline"
               compare:
                 op: has
                 value: "root=/dev/dm-0"
-            - flag: ""
+            - flag: "/proc/cmdline"
               compare:
                 op: has
                 value: "restart_on_corruption"
         remediation: |
-          Replace the system or reinstall the distribution.
+          dm-verity should be set up as part of your OS provisioning pipeline. If it's missing, you likely need to replace or reinstall the system with a version that includes dm-verity configured by default.
         scored: true
 
-
   - id: 1.4
-    description: ""
+    description: "Additional Process Hardening"
     checks:
       - id: 1.4.1
-        description: "Additional Process Hardening"
+        description: "Ensure setuid programs do not create core dumps (Automated)"
         audit: "sheltie sysctl fs.suid_dumpable"
         tests:
           test_items:
-            - flag: ""
+            - flag: "fs.suid_dumpable"
               compare:
                 op: eq
-                value: "fs.suid_dumpable = 0"
+                value: "0"
         remediation: |
           Run the following command to set the active kernel parameter and persist the setting:
 
@@ -105,10 +100,10 @@ groups:
         audit: "sheltie sysctl kernel.randomize_va_space"
         tests:
           test_items:
-            - flag: ""
+            - flag: "kernel.randomize_va_space"
               compare:
                 op: eq
-                value: "kernel.randomize_va_space = 2"
+                value: "2"
         remediation: |
           Run the following command to set the active kernel parameter and persist the setting:
 
@@ -123,10 +118,10 @@ groups:
         audit: "sheltie sysctl kernel.unprivileged_bpf_disabled"
         tests:
           test_items:
-            - flag: ""
+            - flag: "kernel.unprivileged_bpf_disabled"
               compare:
                 op: eq
-                value: "kernel.unprivileged_bpf_disabled = 1"
+                value: "1"
         remediation: |
           Run the following command to set the active kernel parameter and persist the setting:
 
@@ -141,10 +136,10 @@ groups:
         audit: "sheltie sysctl user.max_user_namespaces"
         tests:
           test_items:
-            - flag: ""
+            - flag: "user.max_user_namespaces"
               compare:
                 op: eq
-                value: "user.max_user_namespaces = 0"
+                value: "0"
         remediation: |
           Run the following command to set the active kernel parameter and persist the setting:
 
@@ -154,129 +149,128 @@ groups:
             EOF
         scored: true
 
-
   - id: 1.5
     description: "Mandatory Access Control"
     checks:
       - id: 1.5.1
         description: "Ensure SELinux is configured (Automated)"
-        audit: "sheltie sestatus"
+        audit: |
+          selinux_status=$(sheltie sestatus 2>/dev/null)
+
+          if echo "$selinux_status" | grep -qE "^SELinux status:\s+enabled" &&
+             echo "$selinux_status" | grep -qE "^Current mode:\s+enforcing" &&
+             echo "$selinux_status" | grep -qE "^Loaded policy name:\s+fortified"; then
+            echo "selinux_config_ok"
+          else
+            echo "selinux_config_bad"
+          fi
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: regex
-                value: 'SELinux status:\s+enabled'
-            - flag: ""
-              compare:
-                op: regex
-                value: 'Current mode:\s+enforcing'
-            - flag: ""
-              compare:
-                op: regex
-                value: 'Mode from config file:\s+enforcing'
-            - flag: ""
-              compare:
-                op: regex
-                value: 'Loaded policy name:\s+fortified'
+            - flag: "selinux_config_ok"
+              set: true
         remediation: |
-          Replace the system or reinstall the distribution.
+          This Bottlerocket system does not have SELinux fully and correctly configured.
+
+          The expected configuration requires:
+            - SELinux status: enabled
+            - Current mode: enforcing
+            - Loaded policy name: fortified
+
+          If the above are not met, you must reprovision the node with SELinux properly configured,
+          or switch to a variant of Bottlerocket that supports SELinux in `enforcing` mode with the correct policy.
         scored: true
 
+
       - id: 1.5.2
-        description: "Ensure Lockdown is configured (Automated)"
-        audit: "sheltie grep -Fw '[integrity]' /sys/kernel/security/lockdown"
+        description: "Ensure Lockdown is configured in integrity mode (Automated)"
+        audit: |
+          sheltie grep -Fw '\[integrity\]' /sys/kernel/security/lockdown || echo "lockdown_fail"
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: "none [integrity] confidentiality"
+            - flag: "[integrity]"
+              set: true
         remediation: |
-          Replace the system or reinstall the distribution.
+          Run the following command to enable Lockdown in integrity mode:
+            # apiclient set kernel.lockdown=integrity
         scored: true
+
 
       - id: 1.6
         description: "Ensure updates, patches, and additional security software are installed (Manual)"
+        tyoe: manual
         audit: "sheltie apiclient update check"
-        tests:
-          test_items:
-            - compare:
-                op: nothave
-                value: "not found"
         remediation: |
           Update the software on the system according to site policy.
           This command will apply the latest available update and reboot the system to apply it if
           necessary:
 
             # apiclient update apply --check --reboot
-        scored: true
-
-
-  - id: 2.1.1
-    description: "Time Synchronization"
+        scored: false
+  - id: 2
+    description: "Services"
     checks:
-      - id: 2.1.1.1a
+  - id: 2.1
+    description: "Special Purpose Services"
+    checks:
+      - id: 2.1.1
+        description: "Time Synchronization"
+        type: "skip"
+        checks:
+      - id: 2.1.1.1
         description: "Ensure chrony is configured (Automated)"
-        audit: 'apiclient get settings.ntp.time-servers'
+        audit: |
+          apiclient get settings.ntp.time-servers || echo "ntp_servers_missing"
+          sheltie systemctl is-active chronyd || echo "chronyd_inactive"
         tests:
           test_items:
-            - flag: ""
-              path: '{.settings.ntp.time-servers[0]}'
-              compare:
-                op: noteq
-                value: ""
+            - flag: "ntp_servers_missing"
+              set: false
+            - flag: "chronyd_inactive"
+              set: false
         remediation: |
           Configure additional time servers as needed.
-          The following command would add "2.pool.ntp.org" to the list of time servers.
+          The following command would add "2.pool.ntp.org" to the list of time servers:
 
-          # apiclient apply <<EOF
-          [settings.ntp]
-          time-servers = [ "2.pool.ntp.org" ]
-          EOF
+            # apiclient apply <<EOF
+            [settings.ntp]
+            time-servers = [ "2.pool.ntp.org" ]
+            EOF
 
-          If chrony is not running, update to a version of the OS with the correct service
-          configuration.
+          If chrony is not running, update to a version of the OS with the correct service configuration.
         scored: true
 
-      - id: 2.1.1.1b
-        description: "Ensure chrony is configured (Automated)"
-        audit: 'sheltie systemctl is-active chronyd'
-        tests:
-          test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: "active"
-        remediation: |
-          Configure additional time servers as needed.
-          The following command would add "2.pool.ntp.org" to the list of time servers.
-
-          # apiclient apply <<EOF
-          [settings.ntp]
-          time-servers = [ "2.pool.ntp.org" ]
-          EOF
-
-          If chrony is not running, update to a version of the OS with the correct service
-          configuration.
-        scored: true
-
-
+  - id: 3
+    description: "Network Configuration"
+    checks:
   - id: 3.1
     description: "Network Parameters (Host Only)"
     checks:
       - id: 3.1.1
         description: "Ensure packet redirect sending is disabled (Automated)"
-        audit: "sheltie sysctl net.ipv4.conf.all.send_redirects && sheltie sysctl net.ipv4.conf.default.send_redirects"
+        audit: |
+          all_redirects=$(sheltie sysctl net.ipv4.conf.all.send_redirects | awk '{print $3}')
+          default_redirects=$(sheltie sysctl net.ipv4.conf.default.send_redirects | awk '{print $3}')
+
+          if [ "$all_redirects" = "0" ]; then
+            echo "all_ok"
+          else
+            echo "all_fail"
+          fi
+
+          if [ "$default_redirects" = "0" ]; then
+            echo "default_ok"
+          else
+            echo "default_fail"
+          fi
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: "net.ipv4.conf.all.send_redirects = 0\nnet.ipv4.conf.default.send_redirects = 0"
+            - flag: "all_ok"
+              set: true
+            - flag: "default_ok"
+              set: true
         remediation: |
           Run the following command to set the active kernel parameters and persist the settings:
-          
+
             # apiclient apply <<EOF
             [settings.kernel.sysctl]
             "net.ipv4.conf.all.send_redirects" = "0"
@@ -293,13 +287,26 @@ groups:
     checks:
       - id: 3.2.1
         description: "Ensure source routed packets are not accepted (Automated)"
-        audit: "sheltie sysctl net.ipv4.conf.all.accept_source_route && sheltie sysctl net.ipv4.conf.default.accept_source_route && sheltie sysctl net.ipv6.conf.all.accept_source_route && sheltie sysctl net.ipv6.conf.default.accept_source_route"
+        audit: |
+          ipv4_all=$(sheltie sysctl net.ipv4.conf.all.accept_source_route | awk '{print $3}')
+          ipv4_default=$(sheltie sysctl net.ipv4.conf.default.accept_source_route | awk '{print $3}')
+          ipv6_all=$(sheltie sysctl net.ipv6.conf.all.accept_source_route | awk '{print $3}')
+          ipv6_default=$(sheltie sysctl net.ipv6.conf.default.accept_source_route | awk '{print $3}')
+
+          [ "$ipv4_all" = "0" ] && echo "ipv4_all_ok" || echo "ipv4_all_fail"
+          [ "$ipv4_default" = "0" ] && echo "ipv4_default_ok" || echo "ipv4_default_fail"
+          [ "$ipv6_all" = "0" ] && echo "ipv6_all_ok" || echo "ipv6_all_fail"
+          [ "$ipv6_default" = "0" ] && echo "ipv6_default_ok" || echo "ipv6_default_fail"
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: "net.ipv4.conf.all.accept_source_route = 0\nnet.ipv4.conf.default.accept_source_route = 0\nnet.ipv6.conf.all.accept_source_route = 0\nnet.ipv6.conf.default.accept_source_route = 0"
+            - flag: "ipv4_all_ok"
+              set: true
+            - flag: "ipv4_default_ok"
+              set: true
+            - flag: "ipv6_all_ok"
+              set: true
+            - flag: "ipv6_default_ok"
+              set: true
         remediation: |
           Run the following command to set the active kernel parameters and persist the settings:
 
@@ -310,9 +317,9 @@ groups:
             "net.ipv6.conf.all.accept_source_route" = "0"
             "net.ipv6.conf.default.accept_source_route" = "0"
             EOF
-          
-          Run the following command to flush the routing caches:
-          
+
+          Run the following commands to flush the routing caches:
+
             # sysctl -w net.ipv4.route.flush=1
             # sysctl -w net.ipv6.route.flush=1
         scored: true
@@ -320,13 +327,26 @@ groups:
 
       - id: 3.2.2
         description: "Ensure ICMP redirects are not accepted (Automated)"
-        audit: "sheltie sysctl net.ipv4.conf.all.accept_redirects && sheltie sysctl net.ipv4.conf.default.accept_redirects && sheltie sysctl net.ipv6.conf.all.accept_redirects && sheltie sysctl net.ipv6.conf.default.accept_redirects"
+        audit: |
+          ipv4_all=$(sheltie sysctl net.ipv4.conf.all.accept_redirects | awk '{print $3}')
+          ipv4_default=$(sheltie sysctl net.ipv4.conf.default.accept_redirects | awk '{print $3}')
+          ipv6_all=$(sheltie sysctl net.ipv6.conf.all.accept_redirects | awk '{print $3}')
+          ipv6_default=$(sheltie sysctl net.ipv6.conf.default.accept_redirects | awk '{print $3}')
+
+          [ "$ipv4_all" = "0" ] && echo "ipv4_all_ok" || echo "ipv4_all_fail"
+          [ "$ipv4_default" = "0" ] && echo "ipv4_default_ok" || echo "ipv4_default_fail"
+          [ "$ipv6_all" = "0" ] && echo "ipv6_all_ok" || echo "ipv6_all_fail"
+          [ "$ipv6_default" = "0" ] && echo "ipv6_default_ok" || echo "ipv6_default_fail"
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: "net.ipv4.conf.all.accept_redirects = 0\nnet.ipv4.conf.default.accept_redirects = 0\nnet.ipv6.conf.all.accept_redirects = 0\nnet.ipv6.conf.default.accept_redirects = 0"
+            - flag: "ipv4_all_ok"
+              set: true
+            - flag: "ipv4_default_ok"
+              set: true
+            - flag: "ipv6_all_ok"
+              set: true
+            - flag: "ipv6_default_ok"
+              set: true
         remediation: |
           Run the following command to set the active kernel parameters and persist the settings:
 
@@ -337,22 +357,27 @@ groups:
             "net.ipv6.conf.all.accept_redirects" = "0"
             "net.ipv6.conf.default.accept_redirects" = "0"
             EOF
-          
+
           Run the following command to flush the routing caches:
-          
+
             # sysctl -w net.ipv4.route.flush=1
             # sysctl -w net.ipv6.route.flush=1
         scored: true
 
       - id: 3.2.3
         description: "Ensure secure ICMP redirects are not accepted (Automated)"
-        audit: "sheltie sysctl net.ipv4.conf.all.secure_redirects && sheltie sysctl net.ipv4.conf.default.secure_redirects"
+        audit: |
+          ipv4_all=$(sheltie sysctl net.ipv4.conf.all.secure_redirects | awk '{print $3}')
+          ipv4_default=$(sheltie sysctl net.ipv4.conf.default.secure_redirects | awk '{print $3}')
+
+          [ "$ipv4_all" = "0" ] && echo "ipv4_secure_all_ok" || echo "ipv4_secure_all_fail"
+          [ "$ipv4_default" = "0" ] && echo "ipv4_secure_default_ok" || echo "ipv4_secure_default_fail"
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: "net.ipv4.conf.all.secure_redirects = 0\nnet.ipv4.conf.default.secure_redirects = 0"
+            - flag: "ipv4_secure_all_ok"
+              set: true
+            - flag: "ipv4_secure_default_ok"
+              set: true
         remediation: |
           Run the following command to set the active kernel parameters and persist the settings:
 
@@ -361,21 +386,26 @@ groups:
             "net.ipv4.conf.all.secure_redirects" = "0"
             "net.ipv4.conf.default.secure_redirects" = "0"
             EOF
-                      
+
           Run the following command to flush the routing cache:
-          
+
             # sysctl -w net.ipv4.route.flush=1
         scored: true
 
       - id: 3.2.4
         description: "Ensure suspicious packets are logged (Automated)"
-        audit: "sheltie sysctl net.ipv4.conf.all.log_martians && sheltie sysctl net.ipv4.conf.default.log_martians"
+        audit: |
+          ipv4_all=$(sheltie sysctl net.ipv4.conf.all.log_martians | awk '{print $3}')
+          ipv4_default=$(sheltie sysctl net.ipv4.conf.default.log_martians | awk '{print $3}')
+
+          [ "$ipv4_all" = "1" ] && echo "log_martians_all_ok" || echo "log_martians_all_fail"
+          [ "$ipv4_default" = "1" ] && echo "log_martians_default_ok" || echo "log_martians_default_fail"
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: "net.ipv4.conf.all.log_martians = 1\nnet.ipv4.conf.default.log_martians = 1"
+            - flag: "log_martians_all_ok"
+              set: true
+            - flag: "log_martians_default_ok"
+              set: true
         remediation: |
           Run the following command to set the active kernel parameters and persist the settings:
 
@@ -406,7 +436,7 @@ groups:
             [settings.kernel.sysctl]
             "net.ipv4.icmp_echo_ignore_broadcasts" = "1"
             EOF
-          
+
           Run the following command to flush the routing cache:
             # sysctl -w net.ipv4.route.flush=1
         scored: true
@@ -427,7 +457,7 @@ groups:
             [settings.kernel.sysctl]
             "net.ipv4.icmp_ignore_bogus_error_responses" = "1"
             EOF
-          
+
           Run the following command to flush the routing cache:
 
             # sysctl -w net.ipv4.route.flush=1
@@ -459,39 +489,59 @@ groups:
     checks:
       - id: 3.3.1
         description: "Ensure SCTP is disabled (Automated)"
-        audit: "sheltie grep -w sctp /proc/modules"
+        audit: |
+          modprobe_output=$(sheltie modprobe -n -v sctp)
+          echo "$modprobe_output" | grep -q 'install /bin/true' && echo "sctp_modprobe_disabled" || echo "sctp_modprobe_enabled"
+
+          lsmod_output=$(sheltie grep -w sctp /proc/modules)
+          [ -z "$lsmod_output" ] && echo "sctp_not_loaded" || echo "sctp_loaded"
         tests:
           test_items:
-            - flag: ""
-              compare:
-                op: eq
-                value: ""
+            - flag: "sctp_modprobe_disabled"
+              set: true
+            - flag: "sctp_not_loaded"
+              set: true
         remediation: |
           Run the following command to disable the sctp module:
 
             # apiclient set kernel.modules.sctp.allowed=false
+
+          Run the following command to unload the sctp module if already loaded:
+
+            # rmmod sctp
         scored: true
+
 
   - id: 3.4
     description: "Firewall Configuration"
-  - id: 3.4.1
-    description: "Configure IPv4 iptables"
     checks:
+      - id: 3.4.1
+        description: "Configure IPv4 iptables"
+        type: "skip"
+        checks:
       - id: 3.4.1.1
         description: "Ensure IPv4 default deny firewall policy (Automated)"
-        audit: "sheltie iptables -L | grep -E 'Chain INPUT \(policy DROP\)|Chain FORWARD \(policy DROP\)|Chain OUTPUT \(policy DROP\)'"
+        audit: |
+          input_policy=$(sheltie iptables -L | grep -E '^Chain INPUT' | awk '{print $3}')
+          forward_policy=$(sheltie iptables -L | grep -E '^Chain FORWARD' | awk '{print $3}')
+          output_policy=$(sheltie iptables -L | grep -E '^Chain OUTPUT' | awk '{print $3}')
+          if [ "$input_policy" = "DROP" ] && [ "$forward_policy" = "DROP" ] && [ "$output_policy" = "DROP" ]; then
+            echo "firewall_policy_ok"
+          else
+            echo "firewall_policy_not_ok"
+          fi
         tests:
           test_items:
-            - flags: ""
-              compare:
-                op: eq
-                value: "Chain INPUT (policy DROP)\nChain FORWARD (policy DROP)\nChain OUTPUT (policy DROP)"
+            - flag: "firewall_policy_ok"
+              set: true
         remediation: |
           Run the following commands to implement a default DROP policy:
 
             # iptables -P INPUT DROP
             # iptables -P OUTPUT DROP
             # iptables -P FORWARD DROP
+
+          ⚠️ Note: Ensure this change persists across reboot via your system's firewall configuration.
         scored: true
 
       - id: 3.4.1.2
@@ -504,7 +554,9 @@ groups:
             # iptables -A INPUT -i lo -j ACCEPT
             # iptables -A OUTPUT -o lo -j ACCEPT
             # iptables -A INPUT -s 127.0.0.0/8 -j DROP
-        scored: true
+
+          ⚠️ NOTE: Make sure to persist firewall rules across reboots.
+        scored: false
 
       - id: 3.4.1.3
         description: "Ensure IPv4 outbound and established connections are configured (Manual)"
@@ -522,25 +574,37 @@ groups:
             # iptables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT
         scored: false
 
-  - id: 3.4.2
-    description: "Configure IPv6 ip6tables"
-    checks:
+      - id: 3.4.2
+        description: "Configure IPv6 ip6tables"
+        type: "skip"
+        checks:
       - id: 3.4.2.1
         description: "Ensure IPv6 default deny firewall policy (Automated)"
-        audit: "sheltie ip6tables -L | grep -E 'Chain INPUT \(policy DROP\)|Chain FORWARD \(policy DROP\)|Chain OUTPUT \(policy DROP\)'"
+        audit: |
+          ip6tables_output=$(sheltie ip6tables -L)
+
+          echo "$ip6tables_output" | grep -q 'Chain INPUT (policy DROP)' && echo "ipv6_input_drop"
+          echo "$ip6tables_output" | grep -q 'Chain FORWARD (policy DROP)' && echo "ipv6_forward_drop"
+          echo "$ip6tables_output" | grep -q 'Chain OUTPUT (policy DROP)' && echo "ipv6_output_drop"
         tests:
           test_items:
-            - flags: ""
-              compare:
-                op: eq
-                value: "Chain INPUT (policy DROP)\nChain FORWARD (policy DROP)\nChain OUTPUT (policy DROP)"
+            - flag: "ipv6_input_drop"
+              set: true
+            - flag: "ipv6_forward_drop"
+              set: true
+            - flag: "ipv6_output_drop"
+              set: true
         remediation: |
-          Run the following commands to implement a default DROP policy:
+          Run the following commands to implement a default DROP policy for IPv6:
 
             # ip6tables -P INPUT DROP
             # ip6tables -P OUTPUT DROP
             # ip6tables -P FORWARD DROP
+
+          ⚠️ NOTE: This affects only the runtime firewall. Make sure to persist these settings
+          using your system’s firewall management to survive reboots.
         scored: true
+
 
       - id: 3.4.2.2
         description: "Ensure IPv6 loopback traffic is configured (Automated)"
@@ -572,12 +636,14 @@ groups:
 
   - id: 4
     description: "Logging and Auditing"
+    checks:
   - id: 4.1
     description: "Configure Logging"
     checks:
-  - id: 4.1.1
-    description: "Configure journald"
-    checks:
+      - id: 4.1.1
+        description: "Configure journald"
+        type: "skip"
+        checks:
       - id: 4.1.1.1
         description: "Ensure journald is configured to write logs to persistent disk (Automated)"
         audit: "sheltie grep -Fw Storage /usr/lib/systemd/journald.conf.d/journald.conf"

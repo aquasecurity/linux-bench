@@ -1,7 +1,7 @@
 package main
 
 import (
-	"os"
+	"encoding/json"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -121,15 +121,32 @@ func getPlatformVersion(output, platform string) string {
 
 // IsBottlerocket checks if the OS is Bottlerocket
 func isBottlerocket() bool {
-	_, err := os.Stat("/etc/os-release")
+	cmd := exec.Command("apiclient", "get", "settings.kernel.sysctl")
+	output, err := cmd.Output()
 	if err != nil {
 		return false
 	}
 
-	data, err := os.ReadFile("/etc/os-release")
-	if err != nil {
+	var response map[string]interface{}
+	if err := json.Unmarshal(output, &response); err != nil {
 		return false
 	}
 
-	return string(data) == "Bottlerocket"
+	// Check nested fields: settings → kernel → sysctl
+	settings, ok := response["settings"].(map[string]interface{})
+	if !ok {
+		return false
+	}
+
+	kernel, ok := settings["kernel"].(map[string]interface{})
+	if !ok {
+		return false
+	}
+
+	sysctl, ok := kernel["sysctl"].(map[string]interface{})
+	if !ok || len(sysctl) == 0 {
+		return false
+	}
+
+	return true
 }
