@@ -119,34 +119,29 @@ func getPlatformVersion(output, platform string) string {
 	return ""
 }
 
-// IsBottlerocket checks if the OS is Bottlerocket
 func isBottlerocket() bool {
-	cmd := exec.Command("apiclient", "get", "settings.kernel.sysctl")
+	cmd := exec.Command("apiclient", "get", "settings.updates.targets-base-url")
 	output, err := cmd.Output()
 	if err != nil {
 		return false
 	}
-
 	var response map[string]interface{}
 	if err := json.Unmarshal(output, &response); err != nil {
 		return false
 	}
-
-	// Check nested fields: settings → kernel → sysctl
+	// Check nested fields: settings → updates → targets-base-url
 	settings, ok := response["settings"].(map[string]interface{})
 	if !ok {
 		return false
 	}
-
-	kernel, ok := settings["kernel"].(map[string]interface{})
+	updates, ok := settings["updates"].(map[string]interface{})
 	if !ok {
 		return false
 	}
-
-	sysctl, ok := kernel["sysctl"].(map[string]interface{})
-	if !ok || len(sysctl) == 0 {
+	target_url, ok := updates["targets-base-url"].(string)
+	if !ok {
 		return false
 	}
-
-	return true
+	return strings.Contains(strings.ToLower(target_url), "bottlerocket")
 }
+
