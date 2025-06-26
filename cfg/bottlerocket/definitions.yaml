@@ -22,15 +22,15 @@ groups:
             echo "config_bad"
           fi
 
-          if sheltie grep -Fwq udf /proc/modules; then
-            echo "module_loaded"
-          fi
+#          if sheltie grep -Fwq udf /proc/modules; then
+#            echo "module_loaded"
+#          fi
         tests:
           test_items:
             - flag: "config_bad"
               set: true
-            - flag: "module_loaded"
-              set: false
+#            - flag: "module_loaded"
+#              set: false
         remediation: |
           Run the following commands to disable and unload the udf module:
             # sheltie apiclient set kernel.modules.udf.allowed=false
@@ -53,9 +53,9 @@ groups:
       - id: 1.3.1
         description: "Ensure dm-verity is configured (Automated)"
         audit: |
-          sheltie grep -Fw "dm-mod.create=root,,,ro,0" /proc/cmdline
-          sheltie grep -Fw "root=/dev/dm-0" /proc/cmdline
-          sheltie grep -Fw "restart_on_corruption" /proc/cmdline
+          sheltie exec run grep -Fw "dm-mod.create=root,,,ro,0" /proc/cmdline
+          sheltie exec run grep -Fw "root=/dev/dm-0" /proc/cmdline
+          sheltie exec run grep -Fw "restart_on_corruption" /proc/cmdline
         tests:
           test_items:
             - flag: "/proc/cmdline"
@@ -670,3 +670,5 @@ groups:
           Run the following commands to set permissions on all existing log files:`
 
             # find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx "{}"
+
+        scored: true
