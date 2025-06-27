@@ -17,7 +17,7 @@ func app(cmd *cobra.Command, args []string) {
 	var err error
 	platform, err := GetOperatingSystem()
 	if err != nil {
-		glog.V(1).Info(fmt.Sprintf("Failed to get operating system platform, %s", err))
+		glog.Errorf("Failed to get operating system platform: %v", err)
 	}
 	platform = strings.TrimSpace(platform)
 
