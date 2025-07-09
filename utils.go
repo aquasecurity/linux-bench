@@ -1,14 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"os/exec"
 	"regexp"
 	"strings"
 )
 
 func GetOperatingSystem() (platform string, err error) {
-	out, err := exec.Command("bash", "-c", "cat /etc/os-release").Output()
+	out, err := exec.Command("cat", "/etc/os-release").Output()
 
 	if err != nil {
 		return "", err
@@ -117,31 +116,5 @@ func getPlatformVersion(output, platform string) string {
 	}
 
 	return ""
-}
-
-func isBottlerocket() bool {
-	cmd := exec.Command("apiclient", "get", "settings.updates.targets-base-url")
-	output, err := cmd.Output()
-	if err != nil {
-		return false
-	}
-	var response map[string]interface{}
-	if err := json.Unmarshal(output, &response); err != nil {
-		return false
-	}
-	// Check nested fields: settings → updates → targets-base-url
-	settings, ok := response["settings"].(map[string]interface{})
-	if !ok {
-		return false
-	}
-	updates, ok := settings["updates"].(map[string]interface{})
-	if !ok {
-		return false
-	}
-	target_url, ok := updates["targets-base-url"].(string)
-	if !ok {
-		return false
-	}
-	return strings.Contains(strings.ToLower(target_url), "bottlerocket")
 }
 

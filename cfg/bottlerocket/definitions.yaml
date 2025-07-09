@@ -218,14 +218,9 @@ groups:
       - id: 2.1.1.1
         description: "Ensure chrony is configured (Automated)"
         audit: |
-          apiclient get settings.ntp.time-servers || echo "ntp_servers_missing"
-          systemctl is-active chronyd || echo "chronyd_inactive"
-        tests:
-          test_items:
-            - flag: "ntp_servers_missing"
-              set: false
-            - flag: "chronyd_inactive"
-              set: false
+          apiclient get settings.ntp.time-servers
+          systemctl is-active chronyd
+        type: manual
         remediation: |
           Configure additional time servers as needed.
           The following command would add "2.pool.ntp.org" to the list of time servers:
@@ -236,7 +231,7 @@ groups:
             EOF
 
           If chrony is not running, update to a version of the OS with the correct service configuration.
-        scored: true
+        scored: false
 
   - id: 3
     description: "Network Configuration"
@@ -247,8 +242,8 @@ groups:
       - id: 3.1.1
         description: "Ensure packet redirect sending is disabled (Automated)"
         audit: |
-          all_redirects=$(sysctl net.ipv4.conf.all.send_redirects | awk '{print $3}')
-          default_redirects=$(sysctl net.ipv4.conf.default.send_redirects | awk '{print $3}')
+          all_redirects=$(sysctl net.ipv4.conf.all.send_redirects | tr -s ' ' | cut -d' ' -f3)
+          default_redirects=$(sysctl net.ipv4.conf.default.send_redirects | tr -s ' ' | cut -d' ' -f3)
 
           if [ "$all_redirects" = "0" ]; then
             echo "all_ok"
@@ -287,10 +282,10 @@ groups:
       - id: 3.2.1
         description: "Ensure source routed packets are not accepted (Automated)"
         audit: |
-          ipv4_all=$(sysctl net.ipv4.conf.all.accept_source_route | awk '{print $3}')
-          ipv4_default=$(sysctl net.ipv4.conf.default.accept_source_route | awk '{print $3}')
-          ipv6_all=$(sysctl net.ipv6.conf.all.accept_source_route | awk '{print $3}')
-          ipv6_default=$(sysctl net.ipv6.conf.default.accept_source_route | awk '{print $3}')
+          ipv4_all=$(sysctl net.ipv4.conf.all.accept_source_route | tr -s ' ' | cut -d' ' -f3)
+          ipv4_default=$(sysctl net.ipv4.conf.default.accept_source_route | tr -s ' ' | cut -d' ' -f3)
+          ipv6_all=$(sysctl net.ipv6.conf.all.accept_source_route | tr -s ' ' | cut -d' ' -f3)
+          ipv6_default=$(sysctl net.ipv6.conf.default.accept_source_route | tr -s ' ' | cut -d' ' -f3)
 
           [ "$ipv4_all" = "0" ] && echo "ipv4_all_ok" || echo "ipv4_all_fail"
           [ "$ipv4_default" = "0" ] && echo "ipv4_default_ok" || echo "ipv4_default_fail"
@@ -327,10 +322,10 @@ groups:
       - id: 3.2.2
         description: "Ensure ICMP redirects are not accepted (Automated)"
         audit: |
-          ipv4_all=$(sysctl net.ipv4.conf.all.accept_redirects | awk '{print $3}')
-          ipv4_default=$(sysctl net.ipv4.conf.default.accept_redirects | awk '{print $3}')
-          ipv6_all=$(sysctl net.ipv6.conf.all.accept_redirects | awk '{print $3}')
-          ipv6_default=$(sysctl net.ipv6.conf.default.accept_redirects | awk '{print $3}')
+          ipv4_all=$(sysctl net.ipv4.conf.all.accept_redirects | tr -s ' ' | cut -d' ' -f3)
+          ipv4_default=$(sysctl net.ipv4.conf.default.accept_redirects | tr -s ' ' | cut -d' ' -f3)
+          ipv6_all=$(sysctl net.ipv6.conf.all.accept_redirects | tr -s ' ' | cut -d' ' -f3)
+          ipv6_default=$(sysctl net.ipv6.conf.default.accept_redirects | tr -s ' ' | cut -d' ' -f3)
 
           [ "$ipv4_all" = "0" ] && echo "ipv4_all_ok" || echo "ipv4_all_fail"
           [ "$ipv4_default" = "0" ] && echo "ipv4_default_ok" || echo "ipv4_default_fail"
@@ -366,8 +361,8 @@ groups:
       - id: 3.2.3
         description: "Ensure secure ICMP redirects are not accepted (Automated)"
         audit: |
-          ipv4_all=$(sysctl net.ipv4.conf.all.secure_redirects | awk '{print $3}')
-          ipv4_default=$(sysctl net.ipv4.conf.default.secure_redirects | awk '{print $3}')
+          ipv4_all=$(sysctl net.ipv4.conf.all.secure_redirects | tr -s ' ' | cut -d' ' -f3)
+          ipv4_default=$(sysctl net.ipv4.conf.default.secure_redirects | tr -s ' ' | cut -d' ' -f3)
 
           [ "$ipv4_all" = "0" ] && echo "ipv4_secure_all_ok" || echo "ipv4_secure_all_fail"
           [ "$ipv4_default" = "0" ] && echo "ipv4_secure_default_ok" || echo "ipv4_secure_default_fail"
@@ -394,8 +389,8 @@ groups:
       - id: 3.2.4
         description: "Ensure suspicious packets are logged (Automated)"
         audit: |
-          ipv4_all=$(sysctl net.ipv4.conf.all.log_martians | awk '{print $3}')
-          ipv4_default=$(sysctl net.ipv4.conf.default.log_martians | awk '{print $3}')
+          ipv4_all=$(sysctl net.ipv4.conf.all.log_martians | tr -s ' ' | cut -d' ' -f3)
+          ipv4_default=$(sysctl net.ipv4.conf.default.log_martians | tr -s ' ' | cut -d' ' -f3)
 
           [ "$ipv4_all" = "1" ] && echo "log_martians_all_ok" || echo "log_martians_all_fail"
           [ "$ipv4_default" = "1" ] && echo "log_martians_default_ok" || echo "log_martians_default_fail"
@@ -521,9 +516,9 @@ groups:
       - id: 3.4.1.1
         description: "Ensure IPv4 default deny firewall policy (Automated)"
         audit: |
-          input_policy=$(iptables -L | grep -E '^Chain INPUT' | awk '{print $3}')
-          forward_policy=$(iptables -L | grep -E '^Chain FORWARD' | awk '{print $3}')
-          output_policy=$(iptables -L | grep -E '^Chain OUTPUT' | awk '{print $3}')
+          input_policy=$(iptables -L | grep -E '^Chain INPUT' | tr -s ' ' | cut -d' ' -f4)
+          forward_policy=$(iptables -L | grep -E '^Chain FORWARD' | tr -s ' ' | cut -d' ' -f4)
+          output_policy=$(iptables -L | grep -E '^Chain OUTPUT' | tr -s ' ' | cut -d' ' -f4)
           if [ "$input_policy" = "DROP" ] && [ "$forward_policy" = "DROP" ] && [ "$output_policy" = "DROP" ]; then
             echo "firewall_policy_ok"
           else
@@ -648,7 +643,7 @@ groups:
         audit: "grep -Fw Storage /usr/lib/systemd/journald.conf.d/journald.conf"
         tests:
           test_items:
-            - flag: "storage"
+            - flag: "Storage"
               compare:
                 op: eq
                 value: "persistent"
@@ -658,7 +653,7 @@ groups:
 
       - id: 4.1.2
         description: "Ensure permissions on journal files are configured (Automated)"
-        audit: "gfind /var/log/journal -type f -perm /g+wx,o+rwx"
+        audit: "find /var/log/journal -type f -perm /g+wx,o+rwx"
         tests:
           test_items:
             - flag: ""

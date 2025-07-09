@@ -14,9 +14,15 @@ import (
 func app(cmd *cobra.Command, args []string) {
 	var version string
 	var err error
+	platform, err := GetOperatingSystem()
+	if err != nil {
+		glog.Errorf("Failed to get operating system platform: %v", err)
+	}
 
 	if linuxCisVersion != "" {
 		version = linuxCisVersion
+	} else if platform == "bottlerocket" {
+		version = "bottlerocket"
 	} else {
 		version = "2.0.0"
 	}
@@ -87,13 +93,6 @@ func getControls(path string, constraints []string) (*check.Controls, error) {
 
 func getDefinitionFilePath(version string) (string, error) {
 	filename := "definitions.yaml"
-
-	// if os is bottlerocket use the bottlerocket definitions
-	if isBottlerocket() {
-		// cfgDir = fmt.Sprintf("%s/bottlerocket", cfgDir)
-		version = "bottlerocket"
-	}
-
 	glog.V(2).Info(fmt.Sprintf("Looking for config for version %s", version))
 
 	path := filepath.Join(cfgDir, version)
