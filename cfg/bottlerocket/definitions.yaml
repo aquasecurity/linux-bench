@@ -53,23 +53,17 @@ groups:
       - id: 1.3.1
         description: "Ensure dm-verity is configured (Automated)"
         audit: |
-          grep -Fw "dm-mod.create=root,,,ro,0" /proc/cmdline
-          grep -Fw "root=/dev/dm-0" /proc/cmdline
-          grep -Fw "restart_on_corruption" /proc/cmdline
+          if grep -Fq "dm-mod.create=root,,,ro,0" /proc/cmdline \
+          && grep -Fq "root=/dev/dm-0" /proc/cmdline \
+          && grep -Fq "restart_on_corruption" /proc/cmdline; then
+            echo "config_good"
+          else
+            echo "config_bad"
+          fi
         tests:
           test_items:
-            - flag: "/proc/cmdline"
-              compare:
-                op: has
-                value: "dm-mod.create=root,,,ro,0"
-            - flag: "/proc/cmdline"
-              compare:
-                op: has
-                value: "root=/dev/dm-0"
-            - flag: "/proc/cmdline"
-              compare:
-                op: has
-                value: "restart_on_corruption"
+            - flag: "config_good"
+              set: true
         remediation: |
           dm-verity should be set up as part of your OS provisioning pipeline. If it's missing, you likely need to replace or reinstall the system with a version that includes dm-verity configured by default.
         scored: true
