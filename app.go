@@ -19,11 +19,12 @@ func app(cmd *cobra.Command, args []string) {
 		glog.Errorf("Failed to get operating system platform: %v", err)
 	}
 
-	if linuxCisVersion != "" {
+	switch {
+	case linuxCisVersion != "":
 		version = linuxCisVersion
-	} else if platform == "bottlerocket" {
+	case platform == "bottlerocket":
 		version = "bottlerocket"
-	} else {
+	default:
 		version = "2.0.0"
 	}
 
