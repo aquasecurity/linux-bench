@@ -110,6 +110,8 @@ func getPlatformVersion(output, platform string) string {
 			return vals[1][:1] // Get the major version only, examaple: 7.6 will return 7
 		case "ubuntu":
 			return vals[1][:2] // Get the major version only, examaple: 18.04 will return 18
+		case "amzn":
+			return vals[1]
 		default:
 			return ""
 		}

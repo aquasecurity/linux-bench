@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/aquasecurity/bench-common/check"
 	"github.com/aquasecurity/bench-common/util"
@@ -24,6 +25,8 @@ func app(cmd *cobra.Command, args []string) {
 		version = linuxCisVersion
 	case platform == "bottlerocket":
 		version = "bottlerocket"
+	case strings.HasPrefix(platform, "amzn2023"):
+		version = "Amazon_Linux_2023"
 	default:
 		version = "2.0.0"
 	}
