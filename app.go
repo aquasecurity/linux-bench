@@ -19,13 +19,13 @@ func app(cmd *cobra.Command, args []string) {
 	if err != nil {
 		glog.Errorf("Failed to get operating system platform: %v", err)
 	}
-	platform = strings.TrimSpace(platform)
 
-	if linuxCisVersion != "" {
+	switch {
+	case linuxCisVersion != "":
 		version = linuxCisVersion
-	} else if strings.HasPrefix(platform, "amzn2023") {
+	case strings.HasPrefix(platform, "amzn2023"):
 		version = "Amazon_Linux_2023"
-	} else {
+	default:
 		version = "2.0.0"
 	}
 
