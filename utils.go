@@ -7,7 +7,7 @@ import (
 )
 
 func GetOperatingSystem() (platform string, err error) {
-	out, err := exec.Command("bash", "-c", "cat /etc/os-release").Output()
+	out, err := exec.Command("cat", "/etc/os-release").Output()
 
 	if err != nil {
 		return "", err
@@ -119,3 +119,4 @@ func getPlatformVersion(output, platform string) string {
 
 	return ""
 }
+

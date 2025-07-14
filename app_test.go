@@ -12,14 +12,18 @@ func TestGetDefinitionFilePath(t *testing.T) {
 		t.Errorf("unexpected error: %s\n", err)
 	}
 
-	vers, err := d.Readdirnames(-1)
+	vers, err := d.Readdir(-1)
 	if err != nil {
 		t.Errorf("unexpected error: %s\n", err)
 	}
 
 	for _, ver := range vers {
+		if !ver.IsDir() {
+			t.Logf("Skipping non-directory: %v", ver.Name())
+			continue
+		}
 		t.Logf("%v", ver)
-		_, err := getDefinitionFilePath(ver)
+		_, err := getDefinitionFilePath(ver.Name())
 		if err != nil {
 			t.Errorf("unexpected error: %s\n", err)
 		}

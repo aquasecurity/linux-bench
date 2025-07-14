@@ -23,6 +23,8 @@ func app(cmd *cobra.Command, args []string) {
 	switch {
 	case linuxCisVersion != "":
 		version = linuxCisVersion
+	case platform == "bottlerocket":
+		version = "bottlerocket"
 	case strings.HasPrefix(platform, "amzn2023"):
 		version = "Amazon_Linux_2023"
 	default:
@@ -95,7 +97,6 @@ func getControls(path string, constraints []string) (*check.Controls, error) {
 
 func getDefinitionFilePath(version string) (string, error) {
 	filename := "definitions.yaml"
-
 	glog.V(2).Info(fmt.Sprintf("Looking for config for version %s", version))
 
 	path := filepath.Join(cfgDir, version)
