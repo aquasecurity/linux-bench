@@ -32,8 +32,6 @@ nfpms:
     license: Apache-2.0
     homepage: https://github.com/aquasecurity/linux-bench
     contents:
-      - src: "cfg/*"
-        dst: "/etc/linux-bench/cfg"
       - src: "cfg/**/*"
         dst: "/etc/linux-bench/cfg"
     formats:
