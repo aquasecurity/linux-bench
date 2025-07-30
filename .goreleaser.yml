@@ -24,6 +24,7 @@ archives:
     format: tar.gz
     name_template: "{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{.Arm }}{{ end }}"
     files:
+      - "cfg/*"
       - "cfg/**/*"
 nfpms:
   - vendor: Aqua Security
@@ -31,6 +32,8 @@ nfpms:
     license: Apache-2.0
     homepage: https://github.com/aquasecurity/linux-bench
     contents:
+      - src: "cfg/*"
+        dst: "/etc/linux-bench/cfg"
       - src: "cfg/**/*"
         dst: "/etc/linux-bench/cfg"
     formats:
