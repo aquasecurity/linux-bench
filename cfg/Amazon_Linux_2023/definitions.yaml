@@ -1,6 +1,6 @@
 ---
 controls:
-version: 1.0.0
+version: "Amazon Linux 2023 v1.0.0"
 id: 1
 description: "Initial Setup"
 type: "master"
