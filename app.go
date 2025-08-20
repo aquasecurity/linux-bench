@@ -27,6 +27,8 @@ func app(cmd *cobra.Command, args []string) {
 		version = "bottlerocket"
 	case strings.HasPrefix(platform, "amzn2023"):
 		version = "Amazon_Linux_2023"
+	case platform == "amzn2":
+		version = "amazon_linux_2"
 	default:
 		version = "2.0.0"
 	}
