@@ -13,6 +13,7 @@ func TestGetPlatformVersion(t *testing.T) {
 		{"version_id=7.6", "rhel", "7"},
 		{"version_id=18.04", "ubuntu", "18"},
 		{"version_id=2023", "amzn", "2023"},
+		{"version_id=2", "amzn", "2"},
 		{"version_id=foobar", "debian", ""},
 	}
 	for _, tc := range tests {
