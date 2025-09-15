@@ -504,7 +504,7 @@ groups:
         scored: true
 
 
-  - id: 1.6
+  - id: 1.5
     description: "Warning Banners"
     checks:
       - id: 1.5.1
@@ -514,7 +514,7 @@ groups:
       - id: 1.5.1.1
         description: "Ensure message of the day is configured properly (Automated)"
         audit: |
-          grep -E -i "(\\v|\\r|\\m|\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/"//g'))" /etc/motd
+          grep -E -i "(\\\\v|\\\\r|\\\\m|\\\\s|$(sed -n 's/^ID=//p' /etc/os-release | tr -d '"'))" /etc/motd
         tests:
           test_items:
             - flag: ""
@@ -529,7 +529,7 @@ groups:
       - id: 1.5.1.2
         description: "Ensure local login warning banner is configured properly (Automated)"
         audit: |
-          grep -E -i "(\\v|\\r|\\m|\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/"//g'))" /etc/issue
+          grep -E -i "(\\\\v|\\\\r|\\\\m|\\\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"'))" /etc/issue
         tests:
           test_items:
             - flag: ""
@@ -545,7 +545,7 @@ groups:
       - id: 1.5.1.3
         description: "Ensure remote login warning banner is configured properly (Automated)"
         audit: |
-          grep -E -i "(\\v|\\r|\\m|\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/"//g'))" /etc/issue.net
+          grep -E -i "(\\\\v|\\\\r|\\\\m|\\\\s|$(sed -n 's/^ID=//p' /etc/os-release | tr -d '"'))" /etc/issue.net
         tests:
           test_items:
             - flag: ""
@@ -1595,10 +1595,7 @@ groups:
         audit: "sshd -T | grep x11forwarding"
         tests:
           test_items:
-            - flag: "X11Forwarding"
-              compare:
-                op: eq
-                value: "no"
+            - flag: "no"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1607,13 +1604,11 @@ groups:
 
       - id: 5.1.7
         description: "Ensure SSH MaxAuthTries is set to 4 or less (Automated)"
-        audit: "sshd -T | grep maxauthtries"
+        audit: |
+          sshd -T | awk '/^maxauthtries/{ if ($2 <= 4) { print "PASS: MaxAuthTries is " $2 } else { print "FAIL: MaxAuthTries is " $2 } }'
         tests:
           test_items:
-            - flag: "MaxAuthTries"
-              compare:
-                op: lte
-                value: 4
+            - flag: "PASS"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1625,10 +1620,7 @@ groups:
         audit: "sshd -T | grep ignorerhosts"
         tests:
           test_items:
-            - flag: "IgnoreRhosts"
-              compare:
-                op: eq
-                value: "yes"
+            - flag: "yes"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1640,10 +1632,7 @@ groups:
         audit: "sshd -T | grep hostbasedauthentication"
         tests:
           test_items:
-            - flag: "HostbasedAuthentication"
-              compare:
-                op: eq
-                value: "no"
+            - flag: "no"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1655,10 +1644,7 @@ groups:
         audit: "sshd -T | grep permitrootlogin"
         tests:
           test_items:
-            - flag: "PermitRootLogin"
-              compare:
-                op: eq
-                value: "no"
+            - flag: "no"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1670,10 +1656,7 @@ groups:
         audit: "sshd -T | grep permitemptypasswords"
         tests:
           test_items:
-            - flag: "PermitEmptyPasswords"
-              compare:
-                op: eq
-                value: "no"
+            - flag: "no"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1685,10 +1668,7 @@ groups:
         audit: "sshd -T | grep permituserenvironment"
         tests:
           test_items:
-            - flag: "PermitUserEnvironment"
-              compare:
-                op: eq
-                value: "no"
+            - flag: "no"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1851,10 +1831,7 @@ groups:
         audit: "sshd -T | grep banner"
         tests:
           test_items:
-            - flag: "Banner"
-              compare:
-                op: eq
-                value: "/etc/issue.net"
+            - flag: "/etc/issue.net"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -1883,10 +1860,7 @@ groups:
           sshd -T | grep -i allowtcpforwarding
         tests:
           test_items:
-            - flag: "AllowTcpForwarding"
-              compare:
-                op: eq
-                value: "no"
+            - flag: "no"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
@@ -2159,7 +2133,7 @@ groups:
         audit: |
           # Check default INACTIVE setting
           inactive_default=$(useradd -D | grep INACTIVE | cut -d= -f2)
-          if [ -n "$inactive_default" ] && [ "$inactive_default" -le 30 ]; then
+          if [ -n "$inactive_default" ] && [ "$inactive_default" -ge 0 ] && [ "$inactive_default" -le 30 ]; then
             echo "default_inactive_ok"
           else
             echo "default_inactive_not_ok"
@@ -2413,17 +2387,17 @@ groups:
             echo "pam_wheel_disabled"
           fi
 
-          # Check that wheel group exists and has members
-          if grep -Eq '^wheel:' /etc/group 2>/dev/null; then
-            members=$(getent group wheel | awk -F: '{print $4}')
-            if [ -n "$members" ]; then
-              echo "wheel_group_configured"
-            else
-              echo "wheel_group_empty"
-            fi
+          members=$(awk -F: '/^wheel:/{print $4}' /etc/group)
+
+          non_root_count=$(printf '%s\n' "$members" \
+            | awk -F, '{c=0; for(i=1;i<=NF;i++) if($i!="" && $i!="root") c++; print c}')
+
+          if [ -n "$members" ] && [ "$non_root_count" -ge 1 ]; then
+            echo "wheel_group_configured"
           else
-            echo "wheel_group_missing"
+            echo "wheel_group_empty"
           fi
+
         tests:
           bin_op: and
           test_items:
@@ -2677,7 +2651,7 @@ groups:
       - id: 6.2.2
         description: 'Ensure no legacy "+" entries exist in /etc/passwd (Automated)'
         audit: |
-          grep '^\+:' /etc/passwd
+          grep -E '^\+:' /etc/passwd
         tests:
           test_items:
             - flag: ""
@@ -2691,7 +2665,7 @@ groups:
       - id: 6.2.3
         description: 'Ensure no legacy "+" entries exist in /etc/shadow (Automated)'
         audit: |
-          grep '^\+:' /etc/shadow
+          grep -E '^\+:' /etc/shadow
         tests:
           test_items:
             - flag: ""
@@ -2705,7 +2679,7 @@ groups:
       - id: 6.2.4
         description: 'Ensure no legacy "+" entries exist in /etc/group (Automated)'
         audit: |
-          grep '^\+:' /etc/group
+          grep -E '^\+:' /etc/group
         tests:
           test_items:
             - flag: ""
@@ -2918,12 +2892,11 @@ groups:
                 -xdev -type f -name '.*' ! -name '.' ! -name '..' ! -xtype l \
                 \( -perm -002 -o -perm -020 \) -print
         tests:
-          bin_op: and
           test_items:
-            - flag: "^$"
+            - flag: ""
               compare:
-                op: regex
-                value: "^$"
+                op: eq
+                value: ""
         remediation: |
           For any reported paths:
             # Remove group/other write permissions from dotfiles
@@ -2949,10 +2922,10 @@ groups:
             | xargs -r ls -l 2>/dev/null
         tests:
           test_items:
-            - flag: "^$"
+            - flag: ""
               compare:
-                op: regex
-                value: "^$"
+                op: eq
+                value: ""
         remediation: |
           Remove any `.forward` files returned by the audit. For example:
 
@@ -2990,10 +2963,10 @@ groups:
           ' /etc/passwd
         tests:
           test_items:
-            - flag: "^$"
+            - flag: ""
               compare:
-                op: regex
-                value: "^$"
+                op: eq
+                value: ""
         remediation: |
           Remove any discovered ~/.netrc files and prevent their re-creation per site policy.
             rm -f /home/<user>/.netrc    # adjust path if home is elsewhere
@@ -3038,10 +3011,10 @@ groups:
           ' /etc/passwd
         tests:
           test_items:
-            - flag: "^$"
+            - flag: ""
               compare:
-                op: regex
-                value: "^$"
+                op: eq
+                value: ""
         remediation: |
           For each reported file, restrict permissions to user-only and ensure correct ownership:
             chmod 600 /home/<user>/.netrc         # adjust path to the user’s home if different
@@ -3064,10 +3037,10 @@ groups:
             | xargs -r ls -l 2>/dev/null
         tests:
           test_items:
-            - flag: "^$"
+            - flag: ""
               compare:
-                op: regex
-                value: "^$"
+                op: eq
+                value: ""
         remediation: |
           If any ~/.rhosts files are discovered, remove them:
 
@@ -3097,10 +3070,10 @@ groups:
           ' /etc/group /etc/passwd
         tests:
           test_items:
-            - flag: "^$"
+            - flag: ""
               compare:
-                op: regex
-                value: "^$"
+                op: eq
+                value: ""
         remediation: |
           For each reported "missing_gid:<GID>":
             - Either create a group with that GID:
@@ -3202,15 +3175,17 @@ groups:
           # Check if the shadow group has members in /etc/group
           grep '^shadow:[^:]*:[^:]*:[^:]' /etc/group
 
+          # Get the shadow group GID from /etc/group
+          gid=$(awk -F: '$1=="shadow"{print $3}' /etc/group)
+
           # Check if any user has shadow as their primary group in /etc/passwd
-          gid=$(getent group shadow | awk -F: '{print $3}')
           [ -n "$gid" ] && awk -F: -v sgid="$gid" '($4 == sgid) {print "user_in_shadow:" $1}' /etc/passwd
         tests:
           test_items:
-            - flag: "^$"
+            - flag: ""
               compare:
-                op: regex
-                value: "^$"
+                op: eq
+                value: ""
         remediation: |
           Remove all users from the shadow group and ensure no user has shadow
           as their primary group.
