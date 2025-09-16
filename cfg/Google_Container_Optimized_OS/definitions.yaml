@@ -1229,9 +1229,9 @@ groups:
         description: "Ensure default deny firewall policy (Automated)"
         audit: |
           # Check IPv4 iptables default policies
-          input_policy=$(iptables -L INPUT --policy 2>/dev/null | awk '{print $3}')
-          forward_policy=$(iptables -L FORWARD --policy 2>/dev/null | awk '{print $3}')
-          output_policy=$(iptables -L OUTPUT --policy 2>/dev/null | awk '{print $3}')
+          input_policy=$(iptables -S | awk '$1=="-P" && $2=="INPUT"{print $3}')
+          forward_policy=$(iptables -S | awk '$1=="-P" && $2=="FORWARD"{print $3}')
+          output_policy=$(iptables -S | awk '$1=="-P" && $2=="OUTPUT"{print $3}')
 
           if [ "$input_policy" = "DROP" ] || [ "$input_policy" = "REJECT" ]; then
             echo "ipv4_input_drop"
@@ -1844,10 +1844,7 @@ groups:
           sshd -T | grep -i usepam
         tests:
           test_items:
-            - flag: "usepam"
-              compare:
-                op: eq
-                value: "yes"
+            - flag: "yes"
         remediation: |
           Edit the /etc/ssh/sshd_config file to set the parameter as follows:
 
