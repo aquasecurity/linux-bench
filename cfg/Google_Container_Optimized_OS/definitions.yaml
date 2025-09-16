@@ -1125,9 +1125,9 @@ groups:
         description: "Ensure IPv6 default deny firewall policy (Automated)"
         audit: |
           # Check IPv6 iptables default policies
-          input_policy=$(ip6tables -L INPUT --policy 2>/dev/null | awk '{print $3}')
-          forward_policy=$(ip6tables -L FORWARD --policy 2>/dev/null | awk '{print $3}')
-          output_policy=$(ip6tables -L OUTPUT --policy 2>/dev/null | awk '{print $3}')
+          input_policy=$(ip6tables -S | awk '$1=="-P" && $2=="INPUT"{print $3}')
+          forward_policy=$(ip6tables -S | awk '$1=="-P" && $2=="FORWARD"{print $3}')
+          output_policy=$(ip6tables -S | awk '$1=="-P" && $2=="OUTPUT"{print $3}')
 
           if [ "$input_policy" = "DROP" ] || [ "$input_policy" = "REJECT" ]; then
             echo "ipv6_input_drop"
