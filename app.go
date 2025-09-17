@@ -29,6 +29,8 @@ func app(cmd *cobra.Command, args []string) {
 		version = "Amazon_Linux_2023"
 	case platform == "amzn2":
 		version = "amazon_linux_2"
+	case platform == "cos":
+		version = "Google_Container_Optimized_OS"
 	default:
 		version = "2.0.0"
 	}

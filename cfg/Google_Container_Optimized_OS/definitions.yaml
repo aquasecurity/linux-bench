@@ -1,0 +1,3195 @@
+---
+controls:
+version: "Google Container-Optimized OS v1.2.0"
+id: 1
+description: "Initial Setup"
+type: "master"
+groups:
+  - id: 1.1
+    description: "Filesystem Configuration"
+    checks:
+      - id: 1.1.1
+        description: "Disable unused filesystems"
+        type: "skip"
+        checks:
+      - id: 1.1.1.1
+        description: "Ensure mounting of udf filesystems is disabled (Automated)"
+        audit: |
+          if modprobe -n -v udf | grep -q 'install /bin/true'; then
+            echo "install_ok"
+          else
+            echo "install_bad"
+          fi
+
+          if ! lsmod | grep -q "^udf"; then
+            echo "not_loaded"
+          else
+            echo "loaded"
+          fi
+        tests:
+          test_items:
+            - flag: "install_ok"
+              set: true
+            - flag: "not_loaded"
+              set: true
+        remediation: |
+          Edit or create a file in the /etc/modprobe.d/ directory ending in .conf
+
+          Example: vim /etc/modprobe.d/udf.conf
+
+          and add the following line:
+
+          install udf /bin/true
+          Run the following command to unload the udf module:
+
+          # rmmod udf
+        scored: true
+
+      - id: 1.1.2
+        description: "Ensure /tmp is configured (Automated)"
+        audit: |
+          if mount | grep -E '\s/tmp\s' > /dev/null; then
+            echo "tmp_mounted"
+          else
+            echo "tmp_not_mounted"
+          fi
+
+          if systemctl is-enabled tmp.mount | grep -Eq 'static'; then
+            echo "tmp_mount_enabled"
+          else
+            echo "tmp_mount_not_enabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "tmp_mounted"
+              set: true
+            - flag: "tmp_mount_enabled"
+              set: true
+        remediation: |
+          Run the following commands to configure mount options
+
+          systemctl edit tmp.mount 
+          Edit the file to define the options that needs to be set. For example:
+
+          [Mount]
+          Options=
+          Options=mode=1777,strictatime,noexec,nodev,nosuid
+          Restart the tmp.mount
+
+          systemctl daemon-reload # might be optional
+          systemctl restart tmp.mount
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+      - id: 1.1.3
+        description: "Ensure nodev option set on /tmp partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/tmp\s' > /dev/null; then
+            if mount | grep -E '\s/tmp\s' | grep -v nodev > /dev/null; then
+              echo "nodev_not_set"
+            else
+              echo "nodev_set"
+            fi
+          else
+            echo "/tmp_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "nodev_set"
+              set: true
+        remediation: |
+          Run the following command to remount /tmp :
+
+          # mount -o remount,nodev /tmp
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.4
+        description: "Ensure nosuid option set on /tmp partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/tmp\s' > /dev/null; then
+            if mount | grep -E '\s/tmp\s' | grep -v nosuid > /dev/null; then
+              echo "nosuid_not_set"
+            else
+              echo "nosuid_set"
+            fi
+          else
+            echo "/tmp_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "nosuid_set"
+              set: true
+        remediation: |
+          Run the following command to remount /tmp :
+
+          # mount -o remount,nosuid /tmp
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.5
+        description: "Ensure noexec option set on /tmp partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/tmp\s' > /dev/null; then
+            if mount | grep -E '\s/tmp\s' | grep -v noexec > /dev/null; then
+              echo "noexec_not_set"
+            else
+              echo "noexec_set"
+            fi
+          else
+            echo "/tmp_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "noexec_set"
+              set: true
+        remediation: |
+          Run the following command to remount /tmp :
+
+          # mount -o remount,noexec /tmp
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.6
+        description: "Ensure nosuid option set on /var partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/var\s' > /dev/null; then
+            if mount | grep -E '\s/var\s' | grep -v nosuid > /dev/null; then
+              echo "nosuid_not_set"
+            else
+              echo "nosuid_set"
+            fi
+          else
+            echo "/var_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "nosuid_set"
+              set: true
+        remediation: |
+          Run the following command to remount /var :
+
+          # mount -o remount,nosuid /var
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.7
+        description: "Ensure noexec option set on /var partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/var\s' > /dev/null; then
+            if mount | grep -E '\s/var\s' | grep -v noexec > /dev/null; then
+              echo "noexec_not_set"
+            else
+              echo "noexec_set"
+            fi
+          else
+            echo "/var_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "noexec_set"
+              set: true
+        remediation: |
+          Run the following command to remount /var :
+
+          # mount -o remount,noexec /var
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.8
+        description: "Ensure nodev option set on /var partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/var\s' > /dev/null; then
+            if mount | grep -E '\s/var\s' | grep -v nodev > /dev/null; then
+              echo "nodev_not_set"
+            else
+              echo "nodev_set"
+            fi
+          else
+            echo "/var_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "nodev_set"
+              set: true
+        remediation: |
+          Run the following command to remount /var :
+
+          # mount -o remount,nodev /var
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.9
+        description: "Ensure nodev option set on /home partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/home\s' > /dev/null; then
+            if mount | grep -E '\s/home\s' | grep -v nodev > /dev/null; then
+              echo "nodev_not_set"
+            else
+              echo "nodev_set"
+            fi
+          else
+            echo "/home_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "nodev_set"
+              set: true
+        remediation: |
+          Run the following command to remount /home :
+
+          # mount -o remount,nodev /home
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.10
+        description: "Ensure nodev option set on /dev/shm partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/dev/shm\s' > /dev/null; then
+            if mount | grep -E '\s/dev/shm\s' | grep -v nodev > /dev/null; then
+              echo "nodev_not_set"
+            else
+              echo "nodev_set"
+            fi
+          else
+            echo "/dev/shm_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "nodev_set"
+              set: true
+        remediation: |
+          Run the following command to remount /dev/shm :
+
+          # mount -o remount,nodev /dev/shm
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.11
+        description: "Ensure nosuid option set on /dev/shm partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/dev/shm\s' > /dev/null; then
+            if mount | grep -E '\s/dev/shm\s' | grep -v nosuid > /dev/null; then
+              echo "nosuid_not_set"
+            else
+              echo "nosuid_set"
+            fi
+          else
+            echo "/dev/shm_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "nosuid_set"
+              set: true
+        remediation: |
+          Run the following command to remount /dev/shm :
+
+          # mount -o remount,nosuid /dev/shm
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.12
+        description: "Ensure noexec option set on /dev/shm partition (Automated)"
+        audit: |
+          if mount | grep -E '\s/dev/shm\s' > /dev/null; then
+            if mount | grep -E '\s/dev/shm\s' | grep -v noexec > /dev/null; then
+              echo "noexec_not_set"
+            else
+              echo "noexec_set"
+            fi
+          else
+            echo "/dev/shm_not_mounted"
+          fi
+        tests:
+          test_items:
+            - flag: "noexec_set"
+              set: true
+        remediation: |
+          Run the following command to remount /dev/shm :
+
+          # mount -o remount,noexec /dev/shm
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.1.13
+        description: "Disable Automounting (Automated)"
+        audit: |
+          systemctl is-enabled autofs
+        tests:
+          test_items:
+            - flag: "disabled"
+              set: true
+        remediation: |
+          Run the following command to disable autofs:
+
+          # systemctl disable autofs
+        scored: true
+
+  - id: 1.2
+    description: "Filesystem integrity Checking"
+    checks:
+      - id: 1.2.1
+        description: "Ensure dm-verity is enabled (Automated)"
+        audit: |
+          if zcat /proc/config.gz 2>/dev/null | grep -q '^CONFIG_DM_VERITY=y'; then
+            echo "dm_verity_enabled"
+          else
+            echo "dm_verity_not_enabled"
+          fi
+        tests:
+          test_items:
+            - flag: "dm_verity_enabled"
+              set: true
+        remediation: |
+          dm-verity is built into the Container-Optimized OS kernel by design. 
+          If dm-verity is not enabled, update the OS image to one that includes 
+          dm-verity in the kernel configuration.
+        scored: true
+
+
+  - id: 1.3
+    description: "Secure Boot Settings"
+    checks:
+      - id: 1.3.1
+        description: "Ensure authentication is required for single user mode (Automated)"
+        audit: |
+          # Check rescue mode configuration
+          if grep -q '/systemd-sulogin-shell' /usr/lib/systemd/system/rescue.service; then
+            echo "rescue_auth_enabled"
+          else
+            echo "rescue_auth_not_enabled"
+          fi
+
+          # Check emergency mode configuration
+          if grep -q '/systemd-sulogin-shell' /usr/lib/systemd/system/emergency.service; then
+            echo "emergency_auth_enabled"
+          else
+            echo "emergency_auth_not_enabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "rescue_auth_enabled"
+              set: true
+            - flag: "emergency_auth_enabled"
+              set: true
+        remediation: |
+          Rootfs on Container-Optimized OS is read-only. 
+          If authentication is not required for single-user mode, 
+          update to an OS image where single user mode requires authentication.
+        scored: true
+
+
+  - id: 1.4
+    description: "Additional Process Hardening"
+    checks:
+      - id: 1.4.1
+        description: "Ensure core dumps are restricted (Automated)"
+        audit: |
+          if grep -Rqs '^\s*\*\s\+hard\s\+core\s\+0\b' /etc/security/limits.conf /etc/security/limits.d/* 2>/dev/null; then
+            echo "limit_hard_core_0"
+          fi
+          if sysctl fs.suid_dumpable 2>/dev/null | grep -qE '=\s*0\b'; then
+            echo "suid_dumpable_0"
+          fi
+
+          CD_SVC="$(systemctl is-enabled systemd-coredump@.service 2>/dev/null || true)"
+          CD_SOCK="$(systemctl is-enabled systemd-coredump.socket 2>/dev/null || true)"
+          if echo "$CD_SVC $CD_SOCK" | grep -Eq '\b(static|enabled)\b'; then
+            echo "coredump_installed"
+            if grep -Eq '^\s*Storage\s*=\s*none\b' /etc/systemd/coredump.conf 2>/dev/null; then
+              echo "coredump_storage_none"
+            fi
+            if grep -Eq '^\s*ProcessSizeMax\s*=\s*0\b' /etc/systemd/coredump.conf 2>/dev/null; then
+              echo "coredump_procsize_0"
+            fi
+            if [ -n "$(echo coredump_storage_none)" ] && [ -n "$(echo coredump_procsize_0)" ]; then
+              echo "coredump_compliant"
+            fi
+          else
+            echo "coredump_not_installed"
+            echo "coredump_compliant"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "limit_hard_core_0"
+              set: true
+            - flag: "suid_dumpable_0"
+              set: true
+            - flag: "coredump_compliant"
+              set: true
+        remediation: |
+          Set a hard limit for core files and disable setuid core dumps:
+            - Add to /etc/security/limits.conf or a file under /etc/security/limits.d/:
+                * hard core 0
+            - Apply at runtime:
+                sysctl -w fs.suid_dumpable=0
+
+          If systemd-coredump is installed, harden it in /etc/systemd/coredump.conf:
+            Storage=none
+            ProcessSizeMax=0
+          Then:
+            systemctl daemon-reload
+            systemctl restart systemd-coredump.socket || true
+
+          Note (Container-Optimized OS): /etc is stateless/read-only. These changes
+          will not persist across reboots. You must re-apply on each boot or use a
+          custom image/startup automation that enforces these settings.
+        scored: true
+
+      - id: 1.4.2
+        description: "Ensure XD/NX support is enabled (Automated)"
+        audit: |
+          if journalctl 2>/dev/null | grep -qi 'NX (Execute Disable) protection: active'; then
+            echo "nx_active"
+          fi
+          if [[ -n "$(grep noexec[0-9]*=off /proc/cmdline 2>/dev/null)" ]]; then
+            echo "nx_disabled_cmdline"
+          fi
+          if ! grep -Eiq ' (pae|nx) ' /proc/cpuinfo 2>/dev/null; then
+            echo "nx_not_supported_cpu"
+          fi
+          if dmesg 2>/dev/null | grep -q 'NX (Execute Disable) protection:'; then
+            if dmesg 2>/dev/null | grep -q 'NX (Execute Disable) protection: active'; then
+              echo "nx_active"
+            else
+              echo "nx_not_active"
+            fi
+          fi
+        tests:
+          test_items:
+            - flag: "nx_active"
+              set: true
+        remediation: |
+          On 64-bit systems, NX/XD support is generally enabled by default in modern kernels. 
+          If NX is not active:
+            - Ensure that the CPU supports the NX/XD bit.
+            - Verify that NX is enabled in the system BIOS/UEFI.
+            - On 32-bit systems, install and boot a kernel with PAE support.
+            - Ensure kernel boot parameters do not disable NX (remove any 'noexec=off' or similar).
+          Reboot the system after making BIOS or kernel changes.
+
+          Note: For Container-Optimized OS ARM images, this check is not applicable 
+          because ARMv6+ enables XN (Execute Never) by default and the kernel cannot disable it.
+        scored: true
+
+      - id: 1.4.3
+        description: "Ensure address space layout randomization (ASLR) is enabled (Automated)"
+        audit: |
+          if sysctl kernel.randomize_va_space 2>/dev/null | grep -q '=\s*2\b'; then
+            echo "aslr_runtime_enabled"
+          fi
+          if grep -Rqs '^\s*kernel\.randomize_va_space\s*=\s*2\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "aslr_config_enabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "aslr_runtime_enabled"
+              set: true
+            - flag: "aslr_config_enabled"
+              set: true
+        remediation: |
+          To enable ASLR, set the kernel parameter to 2:
+            sysctl -w kernel.randomize_va_space=2
+
+          To make the change persistent, add the following line to /etc/sysctl.conf 
+          or to a file under /etc/sysctl.d/:
+            kernel.randomize_va_space = 2
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only. 
+          These changes cannot be made persistent across reboots and must be 
+          reapplied on startup or via a custom image/startup script.
+        scored: true
+
+
+  - id: 1.5
+    description: "Warning Banners"
+    checks:
+      - id: 1.5.1
+        description: "Command Line Warning Banners"
+        type: "skip"
+        checks:
+      - id: 1.5.1.1
+        description: "Ensure message of the day is configured properly (Automated)"
+        audit: |
+          grep -E -i "(\\\\v|\\\\r|\\\\m|\\\\s|$(sed -n 's/^ID=//p' /etc/os-release | tr -d '"'))" /etc/motd
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Edit the /etc/motd file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , \v or references to the OS platform
+          /etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.5.1.2
+        description: "Ensure local login warning banner is configured properly (Automated)"
+        audit: |
+          grep -E -i "(\\\\v|\\\\r|\\\\m|\\\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"'))" /etc/issue
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Edit the /etc/issue file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , \v or references to the OS platform
+          # echo "Authorized uses only. All activity may be monitored and reported." > /etc/issue
+          /etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.5.1.3
+        description: "Ensure remote login warning banner is configured properly (Automated)"
+        audit: |
+          grep -E -i "(\\\\v|\\\\r|\\\\m|\\\\s|$(sed -n 's/^ID=//p' /etc/os-release | tr -d '"'))" /etc/issue.net
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Edit the /etc/issue.net file with the appropriate contents according to your site policy, remove any instances of \m , \r , \s , \v or references to the OS platform
+          # echo "Authorized uses only. All activity may be monitored and reported." > /etc/issue.net
+          /etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.5.1.4
+        description: "Ensure permissions on /etc/motd are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/motd 2>/dev/null)" || { echo "/etc/motd_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/motd)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0644) == 0644)) -eq 1 ] && \
+             [ $(((mode & 07000) == 0)) -eq 1 ]; then
+            echo "/etc/motd_perms_ok"
+          else
+            echo "/etc/motd_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "/etc/motd_perms_ok"
+              set: true
+        remediation: |
+          Run the following commands to set permissions on /etc/motd :
+          # chown root:root /etc/motd
+          # chmod 644 /etc/motd
+          /etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.5.1.5
+        description: "Ensure permissions on /etc/issue are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/issue 2>/dev/null)" || { echo "/etc/issue_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/issue)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0644) == 0644)) -eq 1 ] && \
+             [ $(((mode & 07000) == 0)) -eq 1 ]; then
+            echo "/etc/issue_perms_ok"
+          else
+            echo "/etc/issue_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "/etc/issue_perms_ok"
+              set: true
+        remediation: |
+          Run the following commands to set permissions on /etc/issue :
+          # chown root:root /etc/issue
+          # chmod 644 /etc/issue
+          /etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.5.1.5
+        description: "Ensure permissions on /etc/issue.net are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/issue.net 2>/dev/null)" || { echo "/etc/issue_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/issue.net)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0644) == 0644)) -eq 1 ] && \
+             [ $(((mode & 07000) == 0)) -eq 1 ]; then
+            echo "/etc/issue_perms_ok"
+          else
+            echo "/etc/issue_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "/etc/issue_perms_ok"
+              set: true
+        remediation: |
+          Run the following commands to set permissions on /etc/issue.net :
+          # chown root:root /etc/issue.net
+          # chmod 644 /etc/issue.net
+          /etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 1.6
+        description: "Ensure AppArmor is installed (Automated)"
+        audit: |
+          if grep -q '"name": "apparmor"' /etc/cos-package-info.json 2>/dev/null; then
+            echo "apparmor_installed"
+          else
+            echo "apparmor_not_installed"
+          fi
+        tests:
+          test_items:
+            - flag: "apparmor_installed"
+              set: true
+        remediation: |
+          AppArmor should be installed to provide mandatory access control. 
+          On Container-Optimized OS, this package must be present in the 
+          underlying OS image. If AppArmor is not installed, update to an 
+          OS image that includes the AppArmor package.
+        scored: true
+
+
+  - id: 2
+    description: "Services"
+  - id: 2.1
+    description: "Special Purpose Services"
+    checks:
+      - id: 2.1.1
+        description: "Time Synchronization"
+        checks:
+      - id: 2.1.1.1
+        description: "Ensure time synchronization is in use (Manual)"
+        audit: |
+          if grep -q '"name": "chrony"' /etc/cos-package-info.json 2>/dev/null; then
+            echo "chrony_installed"
+          else
+            echo "chrony_not_installed"
+          fi
+        tests:
+          test_items:
+            - flag: "chrony_installed"
+              set: true
+        remediation: |
+          On physical systems or VMs where host-based time synchronization is not available, 
+          use an OS image that includes the chrony package. 
+
+          On virtual systems where host-based time synchronization is available, 
+          consult your virtualization software documentation and enable host-based 
+          time synchronization instead of installing chrony.
+        scored: false
+
+      - id: 2.1.1.2
+        description: "Ensure chrony is configured (Automated)"
+        audit: |
+          if grep -Eq "^(server|pool)" /etc/chrony/chrony.conf 2>/dev/null; then
+            echo "chrony_server_configured"
+          else
+            echo "chrony_server_not_configured"
+          fi
+          if ps -eo user,comm 2>/dev/null | grep -E '^(ntp|chrony)\s+chronyd' > /dev/null; then
+            echo "chronyd_running"
+          else
+            echo "chronyd_not_running"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "chrony_server_configured"
+              set: true
+            - flag: "chronyd_running"
+              set: true
+        remediation: |
+          Update the system to an OS image that includes chrony with proper configuration.
+          Ensure /etc/chrony/chrony.conf contains one or more remote time servers, for example:
+            server <remote-server>
+          Verify chronyd is running under the ntp or chrony user:
+            ps -ef | grep chronyd
+          On Container-Optimized OS, /etc is stateless and cannot persist configuration 
+          changes across reboots. To make this setting persistent, use a custom image or 
+          startup automation to provide the correct chrony configuration.
+        scored: true
+
+      - id: 2.1.2
+        description: "Ensure X Window System is not installed (Automated)"
+        audit: "grep xorg /etc/cos-package-info.json"
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          An OS image update that does not include X Window System is required.
+        scored: true
+
+      - id: 2.1.3
+        description: "Ensure NFS and RPC are not enabled (Automated)"
+        audit: |
+          if systemctl is-enabled nfs-server 2>/dev/null | grep -q '^enabled'; then
+            echo "nfs_enabled"
+          else
+            echo "nfs_disabled"
+          fi
+          if systemctl is-enabled rpcbind 2>/dev/null | grep -q '^enabled'; then
+            echo "rpcbind_enabled"
+          else
+            echo "rpcbind_disabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "nfs_disabled"
+              set: true
+            - flag: "rpcbind_disabled"
+              set: true
+        remediation: |
+          Disable NFS and RPC services if not required:
+            systemctl --now disable nfs-server
+            systemctl --now disable rpcbind
+
+          On Container-Optimized OS, /etc is stateless and does not persist configuration 
+          across reboots. These commands must be re-applied after each boot or handled 
+          through a custom image/startup automation.
+        scored: true
+
+      - id: 2.1.4
+        description: "Ensure rsync service is not enabled (Automated)"
+        audit: "systemctl is-enabled rsyncd"
+        tests:
+          test_items:
+            - flag: "disabled"
+              set: true
+        remediation: |
+          Run the following command to disable rsyncd :
+
+          # systemctl --now disable rsyncd
+          /etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.
+        scored: true
+
+
+  - id: 3
+    description: "Network Configuration"
+  - id: 3.1
+    description: "Network Parameters (Host Only)"
+    checks:
+      - id: 3.1.1
+        description: "Ensure packet redirect sending is disabled (Automated)"
+        audit: |
+          if sysctl net.ipv4.conf.all.send_redirects 2>/dev/null | grep -q '=\s*0\b'; then
+            echo "send_redirects_all_disabled"
+          else
+            echo "send_redirects_all_enabled"
+          fi
+          if sysctl net.ipv4.conf.default.send_redirects 2>/dev/null | grep -q '=\s*0\b'; then
+            echo "send_redirects_default_disabled"
+          else
+            echo "send_redirects_default_enabled"
+          fi
+          if grep -Rqs '^\s*net\.ipv4\.conf\.all\.send_redirects\s*=\s*0\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "send_redirects_all_persist_disabled"
+          fi
+
+          if grep -Rqs '^\s*net\.ipv4\.conf\.default\.send_redirects\s*=\s*0\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "send_redirects_default_persist_disabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "send_redirects_all_disabled"
+              set: true
+            - flag: "send_redirects_default_disabled"
+              set: true
+            - flag: "send_redirects_all_persist_disabled"
+              set: true
+            - flag: "send_redirects_default_persist_disabled"
+              set: true
+        remediation: |
+          To disable packet redirect sending, set the following kernel parameters:
+            sysctl -w net.ipv4.conf.all.send_redirects=0
+            sysctl -w net.ipv4.conf.default.send_redirects=0
+            sysctl -w net.ipv4.route.flush=1
+          To make these settings persistent, add the following lines to 
+          /etc/sysctl.conf or to a file under /etc/sysctl.d/:
+            net.ipv4.conf.all.send_redirects = 0
+            net.ipv4.conf.default.send_redirects = 0
+          Note: On Container-Optimized OS, /etc is stateless/read-only. These 
+          settings cannot persist across reboots and must be reapplied on startup 
+          via custom image or automation.
+        scored: true
+
+  - id: 3.2
+    description: "Configure Network Parameters (Host and Router)"
+    checks:
+      - id: 3.3.1
+        description: "Ensure source routed packets are not accepted (Automated)"
+        audit: |
+          if [ "$(sysctl -n net.ipv4.conf.all.accept_source_route)" = "0" ] && \
+          [ "$(sysctl -n net.ipv4.conf.default.accept_source_route)" = "0" ] && \
+          [ "$(sysctl -n net.ipv6.conf.all.accept_source_route)" = "0" ] && \
+          [ "$(sysctl -n net.ipv6.conf.default.accept_source_route)" = "0" ]; then
+            echo "all_routed_packet_not_accepted"
+          else
+            echo "source_routed_packet_accepted"
+          fi
+        tests:
+          test_items:
+            - flag: "all_routed_packet_not_accepted"
+              set: true
+        remediation: |
+          Run the following commands to set the active kernel parameters:
+
+          # sysctl -w net.ipv4.conf.all.accept_source_route=0
+          # sysctl -w net.ipv4.conf.default.accept_source_route=0
+          # sysctl -w net.ipv6.conf.all.accept_source_route=0
+          # sysctl -w net.ipv6.conf.default.accept_source_route=0
+          # sysctl -w net.ipv4.route.flush=1
+          # sysctl -w net.ipv6.route.flush=1
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+
+      - id: 3.3.2
+        description: "Ensure ICMP redirects are not accepted (Automated)"
+        audit: |
+          if [ "$(sysctl -n net.ipv4.conf.all.accept_redirects)" = "0" ] && \
+             [ "$(sysctl -n net.ipv4.conf.default.accept_redirects)" = "0" ] && \
+               [ "$(sysctl -n net.ipv6.conf.all.accept_redirects)" = "0" ] && \
+               [ "$(sysctl -n net.ipv6.conf.default.accept_redirects)" = "0" ]; then
+            echo "icmp_redirects_not_accepted"
+          else
+            echo "icmp_redirects_accepted"
+          fi
+        tests:
+          test_items:
+            - flag: "icmp_redirects_not_accepted"
+              set: true
+        remediation: |
+          Run the following commands to set the active kernel parameters:
+
+          # sysctl -w net.ipv4.conf.all.accept_redirects=0
+          # sysctl -w net.ipv4.conf.default.accept_redirects=0
+          # sysctl -w net.ipv6.conf.all.accept_redirects=0
+          # sysctl -w net.ipv6.conf.default.accept_redirects=0
+          # sysctl -w net.ipv4.route.flush=1
+          # sysctl -w net.ipv6.route.flush=1
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 3.3.3
+        description: "Ensure secure ICMP redirects are not accepted (Automated)"
+        audit: |
+          if [ "$(sysctl -n net.ipv4.conf.all.secure_redirects)" = "0" ] && \
+             [ "$(sysctl -n net.ipv4.conf.default.secure_redirects)" = "0" ]; then
+            echo "secure_icmp_redirects_not_accepted"
+          else
+            echo "secure_icmp_redirects_accepted"
+          fi
+        tests:
+          test_items:
+            - flag: "secure_icmp_redirects_not_accepted"
+              set: true
+        remediation: |
+          Run the following commands to set the active kernel parameters:
+
+          # sysctl -w net.ipv4.conf.all.secure_redirects=0
+          # sysctl -w net.ipv4.conf.default.secure_redirects=0
+          # sysctl -w net.ipv4.route.flush=1
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 3.3.4
+        description: "Ensure suspicious packets are logged (Automated)"
+        audit: |
+          if [ "$(sysctl -n net.ipv4.conf.all.log_martians)" = "1" ] && \
+             [ "$(sysctl -n net.ipv4.conf.default.log_martians)" = "1" ]; then
+            echo "log_martians_enabled"
+          else
+            echo "log_martians_disabled"
+          fi
+        tests:
+          test_items:
+            - flag: "log_martians_enabled"
+              set: true
+        remediation: |
+          Run the following commands to set the active kernel parameters:
+
+          # sysctl -w net.ipv4.conf.all.log_martians=1
+          # sysctl -w net.ipv4.conf.default.log_martians=1
+          # sysctl -w net.ipv4.route.flush=1
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+
+      - id: 3.2.5
+        description: "Ensure broadcast ICMP requests are ignored (Automated)"
+        audit: |
+          # Check runtime sysctl value
+          if sysctl net.ipv4.icmp_echo_ignore_broadcasts 2>/dev/null | grep -q '=\s*1\b'; then
+            echo "icmp_broadcast_ignore_runtime"
+          else
+            echo "icmp_broadcast_ignore_not_set_runtime"
+          fi
+
+          # Check persistent sysctl configuration
+          if grep -Rqs '^\s*net\.ipv4\.icmp_echo_ignore_broadcasts\s*=\s*1\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "icmp_broadcast_ignore_persistent"
+          else
+            echo "icmp_broadcast_ignore_not_set_persistent"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "icmp_broadcast_ignore_runtime"
+              set: true
+            - flag: "icmp_broadcast_ignore_persistent"
+              set: true
+        remediation: |
+          To configure the system to ignore ICMP broadcast requests, run:
+
+            sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1
+            sysctl -w net.ipv4.route.flush=1
+
+          To make this persistent, add the following line to /etc/sysctl.conf 
+          or to a file under /etc/sysctl.d/:
+
+            net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only. These 
+          settings cannot persist across reboots and must be reapplied via 
+          startup automation or a custom image.
+        scored: true
+
+      - id: 3.2.6
+        description: "Ensure bogus ICMP responses are ignored (Automated)"
+        audit: |
+          if sysctl net.ipv4.icmp_ignore_bogus_error_responses 2>/dev/null | grep -q '=\s*1\b'; then
+            echo "icmp_bogus_ignore_runtime"
+          else
+            echo "icmp_bogus_ignore_not_set_runtime"
+          fi
+          if grep -Rqs '^\s*net\.ipv4\.icmp_ignore_bogus_error_responses\s*=\s*1\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "icmp_bogus_ignore_persistent"
+          else
+            echo "icmp_bogus_ignore_not_set_persistent"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "icmp_bogus_ignore_runtime"
+              set: true
+            - flag: "icmp_bogus_ignore_persistent"
+              set: true
+        remediation: |
+          To configure the system to ignore bogus ICMP responses, run:
+
+            sysctl -w net.ipv4.icmp_ignore_bogus_error_responses=1
+            sysctl -w net.ipv4.route.flush=1
+
+          To make this persistent, add the following line to /etc/sysctl.conf 
+          or to a file under /etc/sysctl.d/:
+
+            net.ipv4.icmp_ignore_bogus_error_responses = 1
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only. These 
+          settings cannot persist across reboots and must be reapplied via 
+          startup automation or a custom image.
+        scored: true
+
+      - id: 3.2.7
+        description: "Ensure Reverse Path Filtering is enabled (Automated)"
+        audit: |
+          # Check runtime values
+          if sysctl net.ipv4.conf.all.rp_filter 2>/dev/null | grep -q '=\s*1\b'; then
+            echo "rp_filter_all_enabled"
+          else
+            echo "rp_filter_all_disabled"
+          fi
+
+          if sysctl net.ipv4.conf.default.rp_filter 2>/dev/null | grep -q '=\s*1\b'; then
+            echo "rp_filter_default_enabled"
+          else
+            echo "rp_filter_default_disabled"
+          fi
+
+          # Check persistent configuration
+          if grep -Rqs '^\s*net\.ipv4\.conf\.all\.rp_filter\s*=\s*1\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "rp_filter_all_persist_enabled"
+          fi
+
+          if grep -Rqs '^\s*net\.ipv4\.conf\.default\.rp_filter\s*=\s*1\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "rp_filter_default_persist_enabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "rp_filter_all_enabled"
+              set: true
+            - flag: "rp_filter_default_enabled"
+              set: true
+            - flag: "rp_filter_all_persist_enabled"
+              set: true
+            - flag: "rp_filter_default_persist_enabled"
+              set: true
+        remediation: |
+          To enable Reverse Path Filtering, run:
+
+            sysctl -w net.ipv4.conf.all.rp_filter=1
+            sysctl -w net.ipv4.conf.default.rp_filter=1
+            sysctl -w net.ipv4.route.flush=1
+
+          To make these settings persistent, add the following lines to 
+          /etc/sysctl.conf or to a file under /etc/sysctl.d/:
+
+            net.ipv4.conf.all.rp_filter = 1
+            net.ipv4.conf.default.rp_filter = 1
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only. These 
+          settings cannot persist across reboots and must be reapplied via 
+          startup automation or a custom image.
+        scored: true
+
+      - id: 3.2.8
+        description: "Ensure TCP SYN Cookies is enabled (Automated)"
+        audit: |
+          # Check runtime sysctl value
+          if sysctl net.ipv4.tcp_syncookies 2>/dev/null | grep -q '=\s*1\b'; then
+            echo "tcp_syncookies_runtime_enabled"
+          else
+            echo "tcp_syncookies_runtime_disabled"
+          fi
+
+          # Check persistent sysctl configuration
+          if grep -Rqs '^\s*net\.ipv4\.tcp_syncookies\s*=\s*1\b' /etc/sysctl.conf /etc/sysctl.d/* 2>/dev/null; then
+            echo "tcp_syncookies_persistent_enabled"
+          else
+            echo "tcp_syncookies_persistent_disabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "tcp_syncookies_runtime_enabled"
+              set: true
+            - flag: "tcp_syncookies_persistent_enabled"
+              set: true
+        remediation: |
+          To enable TCP SYN Cookies, run:
+
+            sysctl -w net.ipv4.tcp_syncookies=1
+            sysctl -w net.ipv4.route.flush=1
+
+          To make this persistent, add the following line to /etc/sysctl.conf 
+          or to a file under /etc/sysctl.d/:
+
+            net.ipv4.tcp_syncookies = 1
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only. These 
+          settings cannot persist across reboots and must be reapplied via 
+          startup automation or a custom image.
+        scored: true
+
+      - id: 3.3.9
+        description: "Ensure IPv6 router advertisements are not accepted (Automated)"
+        audit: |
+          if [ "$(sysctl -n net.ipv6.conf.all.accept_ra)" = "0" ] && \
+             [ "$(sysctl -n net.ipv6.conf.default.accept_ra)" = "0" ]; then
+            echo "IPv6_router_advertisements_not_accepted"
+          else
+            echo "IPv6_router_advertisements_accepted"
+          fi
+        tests:
+          test_items:
+            - flag: "IPv6_router_advertisements_not_accepted"
+              set: true
+        remediation: |
+          Run the following commands to set the active kernel parameters:
+
+          # sysctl -w net.ipv6.conf.all.accept_ra=0
+          # sysctl -w net.ipv6.conf.default.accept_ra=0
+          # sysctl -w net.ipv6.route.flush=1
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+
+  - id: 3.3
+    description: "Firewall Configuration"
+    checks:
+      - id: 3.3.1
+        description: "Configures IPv6 iptables"
+        type: "skip"
+        checks:
+      - id: 3.3.1.1
+        description: "Ensure IPv6 default deny firewall policy (Automated)"
+        audit: |
+          # Check IPv6 iptables default policies
+          input_policy=$(ip6tables -S | awk '$1=="-P" && $2=="INPUT"{print $3}')
+          forward_policy=$(ip6tables -S | awk '$1=="-P" && $2=="FORWARD"{print $3}')
+          output_policy=$(ip6tables -S | awk '$1=="-P" && $2=="OUTPUT"{print $3}')
+
+          if [ "$input_policy" = "DROP" ] || [ "$input_policy" = "REJECT" ]; then
+            echo "ipv6_input_drop"
+          fi
+          if [ "$forward_policy" = "DROP" ] || [ "$forward_policy" = "REJECT" ]; then
+            echo "ipv6_forward_drop"
+          fi
+          if [ "$output_policy" = "DROP" ] || [ "$output_policy" = "REJECT" ]; then
+            echo "ipv6_output_drop"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "ipv6_input_drop"
+              set: true
+            - flag: "ipv6_forward_drop"
+              set: true
+            - flag: "ipv6_output_drop"
+              set: true
+        remediation: |
+          To set a default deny policy for IPv6 traffic, run:
+
+            ip6tables -P INPUT DROP
+            ip6tables -P OUTPUT DROP
+            ip6tables -P FORWARD DROP
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only and 
+          firewall rules will not persist across reboots. You must reapply 
+          these rules at each boot using startup automation or a custom image.
+        scored: true
+
+      - id: 3.3.1.2
+        description: "Ensure IPv6 loopback traffic is configured (Automated)"
+        audit: |
+          # Check INPUT chain for IPv6 loopback accept
+          if ip6tables -L INPUT -v -n 2>/dev/null | grep -q 'ACCEPT.*lo'; then
+            echo "ipv6_input_lo_accept"
+          fi
+
+          # Check INPUT chain for drop of ::1 traffic on non-loopback
+          if ip6tables -L INPUT -v -n 2>/dev/null | grep -q 'DROP.*::1'; then
+            echo "ipv6_input_drop_non_lo"
+          fi
+
+          # Check OUTPUT chain for IPv6 loopback accept
+          if ip6tables -L OUTPUT -v -n 2>/dev/null | grep -q 'ACCEPT.*lo'; then
+            echo "ipv6_output_lo_accept"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "ipv6_input_lo_accept"
+              set: true
+            - flag: "ipv6_input_drop_non_lo"
+              set: true
+            - flag: "ipv6_output_lo_accept"
+              set: true
+        remediation: |
+          Configure IPv6 loopback traffic rules:
+
+            ip6tables -A INPUT -i lo -j ACCEPT
+            ip6tables -A OUTPUT -o lo -j ACCEPT
+            ip6tables -A INPUT -s ::1 -j DROP
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only and 
+          iptables rules do not persist across reboots. You must reapply 
+          these rules at each boot using startup automation or a custom image.
+        scored: true
+
+      - id: 3.3.1.3
+        description: "Ensure IPv6 outbound and established connections are configured (Manual)"
+        audit: "ip6tables -L -v -n"
+        type: "manual"
+        remediation: |
+          Configure iptables in accordance with site policy. The following commands will implement a policy to allow all outbound connections and all established connections:
+            # ip6tables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # ip6tables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # ip6tables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # ip6tables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT
+            # ip6tables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT
+            # ip6tables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT
+        scored: false
+
+      - id: 3.3.1.4
+        description: "Ensure IPv6 firewall rules exist for all open ports (Manual)"
+        audit: "ip6tables -L INPUT -v -n"
+        type: "manual"
+        remediation: |
+          For each port identified in the audit which does not have a firewall rule establish a proper rule for accepting inbound connections:
+          # ip6tables -A INPUT -p <protocol> --dport <port> -m state --state NEW -j ACCEPT
+        scored: false
+
+
+      - id: 3.3.2
+        description: "Configure IPv4 iptables"
+        type: "skip"
+        checks:
+      - id: 3.3.2.1
+        description: "Ensure default deny firewall policy (Automated)"
+        audit: |
+          # Check IPv4 iptables default policies
+          input_policy=$(iptables -S | awk '$1=="-P" && $2=="INPUT"{print $3}')
+          forward_policy=$(iptables -S | awk '$1=="-P" && $2=="FORWARD"{print $3}')
+          output_policy=$(iptables -S | awk '$1=="-P" && $2=="OUTPUT"{print $3}')
+
+          if [ "$input_policy" = "DROP" ] || [ "$input_policy" = "REJECT" ]; then
+            echo "ipv4_input_drop"
+          fi
+          if [ "$forward_policy" = "DROP" ] || [ "$forward_policy" = "REJECT" ]; then
+            echo "ipv4_forward_drop"
+          fi
+          if [ "$output_policy" = "DROP" ] || [ "$output_policy" = "REJECT" ]; then
+            echo "ipv4_output_drop"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "ipv4_input_drop"
+              set: true
+            - flag: "ipv4_forward_drop"
+              set: true
+            - flag: "ipv4_output_drop"
+              set: true
+        remediation: |
+          To set a default deny policy for IPv4 traffic, run:
+
+            iptables -P INPUT DROP
+            iptables -P OUTPUT DROP
+            iptables -P FORWARD DROP
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only and 
+          firewall rules do not persist across reboots. You must reapply 
+          these rules at each boot using startup automation or a custom image.
+        scored: true
+
+      - id: 3.3.2.2
+        description: "Ensure loopback traffic is configured (Automated)"
+        audit: |
+          if iptables -L INPUT -v -n 2>/dev/null | grep -q 'ACCEPT.*lo'; then
+            echo "ipv4_input_lo_accept"
+          fi
+          if iptables -L INPUT -v -n 2>/dev/null | grep -q 'DROP.*127\.0\.0\.0/8'; then
+            echo "ipv4_input_drop_non_lo"
+          fi
+          if iptables -L OUTPUT -v -n 2>/dev/null | grep -q 'ACCEPT.*lo'; then
+            echo "ipv4_output_lo_accept"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "ipv4_input_lo_accept"
+              set: true
+            - flag: "ipv4_input_drop_non_lo"
+              set: true
+            - flag: "ipv4_output_lo_accept"
+              set: true
+        remediation: |
+          Configure IPv4 loopback traffic rules:
+
+            iptables -A INPUT -i lo -j ACCEPT
+            iptables -A OUTPUT -o lo -j ACCEPT
+            iptables -A INPUT -s 127.0.0.0/8 -j DROP
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only and 
+          iptables rules do not persist across reboots. You must reapply 
+          these rules at each boot using startup automation or a custom image.
+        scored: true
+
+      - id: 3.3.2.3
+        description: "Ensure outbound and established connections are configured (Manual)"
+        audit: "iptables -L -v -n"
+        type: "manual"
+        remediation: |
+          Configure iptables in accordance with site policy. The following commands will implement a policy to allow all outbound connections and all established connections:
+        
+            # iptables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # iptables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # iptables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
+            # iptables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT
+            # iptables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT
+            # iptables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT
+        scored: false
+
+      - id: 3.3.3
+        description: "Ensure iptables is installed (Automated)"
+        audit: |
+          if grep -q '"name": "iptables"' /etc/cos-package-info.json 2>/dev/null; then
+            echo "iptables_installed"
+          else
+            echo "iptables_not_installed"
+          fi
+        tests:
+          test_items:
+            - flag: "iptables_installed"
+              set: true
+        remediation: |
+          iptables must be installed for firewall configuration and management. 
+          On Container-Optimized OS, packages are part of the base image and 
+          cannot be installed manually. If iptables is not present, update to an 
+          OS image that includes the iptables package.
+        scored: true
+
+
+  - id: 4
+    description: "Logging and Auditing"
+    checks:
+  - id: 4.1
+    description: "Configure Logging"
+    checks:
+      - id: 4.1.1
+        description: "Configure Logging agent"
+        type: "skip"
+        checks:
+      - id: 4.1.1.1
+        description: "Ensure correct container image is set for stackdriver logging agent (Automated)"
+        audit: |
+          if grep -q '^LOGGING_AGENT_DOCKER_IMAGE="gcr.io/stackdriver-agents/stackdriver-logging-agent:' /etc/stackdriver/env_vars 2>/dev/null; then
+            echo "stackdriver_logging_agent_correct"
+          else
+            echo "stackdriver_logging_agent_incorrect"
+          fi
+        tests:
+          test_items:
+            - flag: "stackdriver_logging_agent_correct"
+              set: true
+        remediation: |
+          Edit the file /etc/stackdriver/env_vars and ensure the variable is set to:
+            LOGGING_AGENT_DOCKER_IMAGE="gcr.io/stackdriver-agents/stackdriver-logging-agent:<version>"
+
+          After editing, restart the stackdriver-logging service:
+            systemctl restart stackdriver-logging
+
+          Note: On Container-Optimized OS, /etc is stateless/read-only. 
+          These changes will not persist across reboots and must be 
+          reapplied at startup using automation or a custom image.
+        scored: true
+
+      - id: 4.1.1.2
+        description: "Ensure Logging Service is Running (Manual)"
+        audit: "systemctl status stackdriver-logging | grep Active"
+        type: "manual"
+        remediation: |
+          This remediation is only if you want to use one of the supported logging services described.
+
+          Stackdriver-logging Agent
+
+          Run the following command to enable stackdriver-logging :
+
+          # systemctl start stackdriver-logging
+          Fluent-bit Logging
+
+          Run the following command to enable fluent-bit :
+
+          # systemctl start fluent-bit
+          Works for Both
+
+          Simply update the instance metadata to enable logging as follows:
+
+          # gcloud compute instances add-metadata <instance-name> \
+              --zone <compute-zone> \
+              --metadata google-logging-enabled=true
+        scored: false
+
+      - id: 4.1.1.3
+        description: "Ensure logging is configured (Manual)"
+        audit: "ls -l /var/log/"
+        type: "manual"
+        remediation: |
+          Edit the contents of /etc/stackdriver/logging.config.d/*.conf if using an image with stackdriver or /usr/share/fluent-bit/fluent-bit.conf if using an image with fluent-bit as appropriate for your environment. Then run the following commands to reload the logging configuration:
+
+          For stackdriver-logging:
+
+          # systemctl restart stackdriver-logging
+          For fluent-bit:
+
+          # systemctl restart fluent-bit
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above need to be performed after every boot for images using stackdriver. This is not the case for fluent-bit as the logging agent is in /usr/share/ which isn't stateless so changes will be persistent across reboots.
+        scored: false
+
+
+      - id: 4.1.2
+        description: "Configure journald"
+        type: "skip"
+        checks:
+      - id: 4.1.2.1
+        description: "Ensure journald is configured to compress large log files (Automated)"
+        audit: |
+          grep -e Compress /etc/systemd/journald.conf
+        tests:
+          test_items:
+            - flag: "Compress=yes"
+              set: true
+        remediation: |
+          Edit the /etc/systemd/journald.conf file and add the following line:
+
+          Compress=yes
+          Reload the configuration to be effective.
+
+          # systemctl force-reload systemd-journald
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 4.1.2.2
+        description: "Ensure journald is configured to write logfiles to persistent disk (Automated)"
+        audit: |
+          grep -e Storage /etc/systemd/journald.conf
+        tests:
+          test_items:
+            - flag: "Storage=persistent"
+              set: true
+        remediation: |
+          Edit the /etc/systemd/journald.conf file and add the following line:
+
+          Storage=persistent
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: true
+
+      - id: 4.1.3
+        description: "Ensure permissions on all logfiles are configured (Automated)"
+        audit: |
+          # Find any log files in /var/log that are world-readable, writable, or executable
+          insecure_logs=$(find /var/log -type f -perm /027 2>/dev/null)
+          if [ -z "$insecure_logs" ]; then
+            echo "logfiles_permissions_ok"
+          else
+            echo "logfiles_permissions_not_ok"
+            echo "$insecure_logs"
+          fi
+        tests:
+          test_items:
+            - flag: "logfiles_permissions_ok"
+              set: true
+        remediation: |
+          To correct permissions on log files and directories under /var/log, run:
+
+            find /var/log -type f -exec chmod g-wx,o-rwx "{}" + \
+              -o -type d -exec chmod g-w,o-rwx "{}" +
+
+          This ensures that:
+            - Group has no write/execute permission on log files
+            - Others have no read, write, or execute permissions on log files
+
+          Note: On Container-Optimized OS, /var/log may be managed differently. 
+          If changes are required, they must be re-applied at startup or baked 
+          into a custom image.
+        scored: true
+
+      - id: 4.2
+        description: "Ensure logrotate is configured (Manual)"
+        type: "manual"
+        remediation: |
+          Edit /etc/logrotate.conf and /etc/logrotate.d/* to ensure logs are rotated according to site policy.
+          /etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.
+        scored: false
+
+  - id: 5
+    description: "Access, Authentication and Authorization"
+  - id: 5.1
+    description: "SSH Server Configuration"
+    checks:
+      - id: 5.1.1
+        description: "Ensure permissions on /etc/ssh/sshd_config are configured (Automated)"
+        audit: |
+          stat -Lc "%n %a %u/%U %g/%G" /etc/ssh/sshd_config
+        tests:
+          test_items:
+            - flag: "600"
+              set: true
+            - flag: "0/root 0/root"
+              set: true
+
+        remediation: |
+          Run the following commands to set ownership and permissions on /etc/ssh/sshd_config:
+
+          # chown root:root /etc/ssh/sshd_config
+          # chmod u-x,go-rwx /etc/ssh/sshd_config
+        scored: true
+
+      - id: 5.1.2
+        description: "Ensure permissions on SSH private host key files are configured (Automated)"
+        audit: |
+          insecure_keys=$(find /etc/ssh -xdev -type f -name 'ssh_host_*_key' \
+            ! -user root -o ! -group root -o -perm /137 2>/dev/null)
+
+          if [ -z "$insecure_keys" ]; then
+            echo "ssh_host_private_keys_secure"
+          else
+            echo "ssh_host_private_keys_insecure"
+            echo "$insecure_keys"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_host_private_keys_secure"
+              set: true
+        remediation: |
+          To correct permissions and ownership on SSH private host key files, run:
+
+            find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \;
+            find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \;
+
+          This ensures the files are owned by root and accessible only by root, 
+          with no permissions granted to group or other.
+        scored: true
+
+      - id: 5.1.3
+        description: "Ensure permissions on SSH public host key files are configured (Automated)"
+        audit: |
+          insecure_pub_keys=$(find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' \
+            \( ! -user root -o ! -group root -o -perm /022 \) 2>/dev/null)
+
+          if [ -z "$insecure_pub_keys" ]; then
+            echo "ssh_host_public_keys_secure"
+          else
+            echo "ssh_host_public_keys_insecure"
+            echo "$insecure_pub_keys"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_host_public_keys_secure"
+              set: true
+        remediation: |
+          To correct permissions and ownership on SSH public host key files, run:
+
+            find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \;
+            find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \;
+
+          This ensures the files are owned by root and have permissions -rw-r--r-- (0644), 
+          allowing read access but not write/execute to group or others.
+        scored: true
+
+      - id: 5.1.4
+        description: "Ensure SSH Protocol is set to 2 (Automated)"
+        audit: |
+          grep ^Protocol /etc/ssh/sshd_config
+        tests:
+          test_items:
+            - flag: "2"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          Protocol 2
+        scored: true
+
+      - id: 5.1.5
+        description: "Ensure SSH LogLevel is appropriate (Automated)"
+        audit: |
+          sshd -T | grep loglevel
+        tests:
+          bin_op: or
+          test_items:
+            - flag: "VERBOSE"
+            - flag: "INFO"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          LogLevel VERBOSE
+          OR
+
+          LogLevel INFO
+        scored: true
+
+      - id: 5.1.6
+        description: "Ensure SSH X11 forwarding is disabled (Automated)"
+        audit: "sshd -T | grep x11forwarding"
+        tests:
+          test_items:
+            - flag: "no"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          X11Forwarding no
+        scored: true
+
+      - id: 5.1.7
+        description: "Ensure SSH MaxAuthTries is set to 4 or less (Automated)"
+        audit: |
+          sshd -T | awk '/^maxauthtries/{ if ($2 <= 4) { print "PASS: MaxAuthTries is " $2 } else { print "FAIL: MaxAuthTries is " $2 } }'
+        tests:
+          test_items:
+            - flag: "PASS"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          MaxAuthTries 4
+        scored: true
+
+      - id: 5.1.8
+        description: "Ensure SSH IgnoreRhosts is enabled (Automated)"
+        audit: "sshd -T | grep ignorerhosts"
+        tests:
+          test_items:
+            - flag: "yes"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          IgnoreRhosts yes
+        scored: true
+
+      - id: 5.1.9
+        description: "Ensure SSH HostbasedAuthentication is disabled (Automated)"
+        audit: "sshd -T | grep hostbasedauthentication"
+        tests:
+          test_items:
+            - flag: "no"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          HostbasedAuthentication no
+        scored: true
+
+      - id: 5.1.10
+        description: "Ensure SSH root login is disabled (Automated)"
+        audit: "sshd -T | grep permitrootlogin"
+        tests:
+          test_items:
+            - flag: "no"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          PermitRootLogin no
+        scored: true
+
+      - id: 5.1.11
+        description: "Ensure SSH PermitEmptyPasswords is disabled (Automated)"
+        audit: "sshd -T | grep permitemptypasswords"
+        tests:
+          test_items:
+            - flag: "no"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          PermitEmptyPasswords no
+        scored: true
+
+      - id: 5.1.12
+        description: "Ensure SSH PermitUserEnvironment is disabled (Automated)"
+        audit: "sshd -T | grep permituserenvironment"
+        tests:
+          test_items:
+            - flag: "no"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          PermitUserEnvironment no
+        scored: true
+
+      - id: 5.1.13
+        description: "Ensure only strong Ciphers are used (Automated)"
+        audit: |
+          weak_ciphers=$(sshd -T 2>/dev/null | grep -i ciphers | grep -E '3des-cbc|aes128-cbc|aes192-cbc|aes256-cbc|arcfour|arcfour128|arcfour256|blowfish-cbc|cast128-cbc|rijndael-cbc@lysator.liu.se')
+          if [ -z "$weak_ciphers" ]; then
+            echo "ssh_strong_ciphers_only"
+          else
+            echo "ssh_weak_ciphers_found"
+            echo "$weak_ciphers"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_strong_ciphers_only"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to configure only strong ciphers. 
+          For example, add or update the line:
+
+            Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+
+          After making changes, restart the SSH service:
+
+            systemctl restart sshd
+
+          This removes weak ciphers such as 3des-cbc, aes*-cbc, arcfour, blowfish-cbc, cast128-cbc, and rijndael-cbc@lysator.liu.se.
+        scored: true
+
+      - id: 5.1.14
+        description: "Ensure only strong MAC algorithms are used (Automated)"
+        audit: |
+          weak_macs=$(sshd -T 2>/dev/null | grep -i macs | grep -E 'hmac-md5|hmac-md5-96|hmac-ripemd160|hmac-sha1[^2]|hmac-sha1-96|umac-64@openssh.com|umac-128@openssh.com|hmac-md5-etm@openssh.com|hmac-md5-96-etm@openssh.com|hmac-ripemd160-etm@openssh.com|hmac-sha1-etm@openssh.com|hmac-sha1-96-etm@openssh.com|umac-64-etm@openssh.com|umac-128-etm@openssh.com')
+          if [ -z "$weak_macs" ]; then
+            echo "ssh_strong_macs_only"
+          else
+            echo "ssh_weak_macs_found"
+            echo "$weak_macs"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_strong_macs_only"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file and configure only strong MAC algorithms. 
+          For example, add or update the line:
+
+            MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+
+          After making changes, restart the SSH service:
+
+            systemctl restart sshd
+
+          This removes weak MAC algorithms such as MD5, SHA1, 96-bit, RIPEMD160, and UMAC variants.
+        scored: true
+
+      - id: 5.1.15
+        description: "Ensure only strong Key Exchange algorithms are used (Automated)"
+        audit: |
+          weak_kex=$(sshd -T 2>/dev/null | grep -i kexalgorithms | grep -E 'diffie-hellman-group1-sha1|diffie-hellman-group14-sha1|diffie-hellman-group-exchange-sha1')
+          if [ -z "$weak_kex" ]; then
+            echo "ssh_strong_kex_only"
+          else
+            echo "ssh_weak_kex_found"
+            echo "$weak_kex"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_strong_kex_only"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file and configure only strong key exchange algorithms.
+          For example, add or update the line:
+
+            KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,\
+            diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,\
+            diffie-hellman-group18-sha512,ecdh-sha2-nistp521,\
+            ecdh-sha2-nistp384,ecdh-sha2-nistp256,\
+            diffie-hellman-group-exchange-sha256
+
+          After making changes, restart the SSH service:
+
+            systemctl restart sshd
+
+          This removes weak KEX algorithms such as diffie-hellman-group1-sha1,
+          diffie-hellman-group14-sha1, and diffie-hellman-group-exchange-sha1.
+        scored: true
+
+      - id: 5.1.16
+        description: "Ensure SSH Idle Timeout Interval is configured (Automated)"
+        audit: |
+          # Check ClientAliveInterval (should be between 1 and 300)
+          interval=$(sshd -T 2>/dev/null | grep -i clientaliveinterval | awk '{print $2}')
+          if [ -n "$interval" ] && [ "$interval" -ge 1 ] && [ "$interval" -le 300 ]; then
+            echo "ssh_client_alive_interval_configured"
+          else
+            echo "ssh_client_alive_interval_not_configured"
+          fi
+
+          # Check ClientAliveCountMax (should be <= 3, ideally 0)
+          countmax=$(sshd -T 2>/dev/null | grep -i clientalivecountmax | awk '{print $2}')
+          if [ -n "$countmax" ] && [ "$countmax" -le 3 ]; then
+            echo "ssh_client_alive_countmax_configured"
+          else
+            echo "ssh_client_alive_countmax_not_configured"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "ssh_client_alive_interval_configured"
+              set: true
+            - flag: "ssh_client_alive_countmax_configured"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file and configure the following parameters 
+          according to site policy (recommended values shown):
+
+            ClientAliveInterval 300
+            ClientAliveCountMax 0
+
+          After making changes, restart the SSH service:
+
+            systemctl restart sshd
+
+          This ensures idle SSH sessions are terminated after 5 minutes of inactivity.
+        scored: true
+
+      - id: 5.1.17
+        description: "Ensure SSH LoginGraceTime is set to one minute or less (Automated)"
+        audit: |
+          grace=$(sshd -T 2>/dev/null | grep -i logingracetime | awk '{print $2}')
+          if [ -n "$grace" ] && [ "$grace" -ge 1 ] && [ "$grace" -le 60 ]; then
+            echo "ssh_logingracetime_configured"
+          else
+            echo "ssh_logingracetime_not_configured"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_logingracetime_configured"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file and configure the following parameter:
+
+            LoginGraceTime 60
+
+          After making changes, restart the SSH service:
+
+            systemctl restart sshd
+
+          This ensures SSH connections that do not authenticate within one minute 
+          are automatically terminated.
+        scored: true
+
+      - id: 5.1.18
+        description: "Ensure SSH warning banner is configured (Automated)"
+        audit: "sshd -T | grep banner"
+        tests:
+          test_items:
+            - flag: "/etc/issue.net"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          Banner /etc/issue.net
+        scored: true
+
+      - id: 5.1.19
+        description: "Ensure SSH PAM is enabled (Automated)"
+        audit: |
+          sshd -T | grep -i usepam
+        tests:
+          test_items:
+            - flag: "yes"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          UsePAM yes
+        scored: true
+
+      - id: 5.1.20
+        description: "Ensure SSH AllowTcpForwarding is disabled (Automated)"
+        audit: |
+          sshd -T | grep -i allowtcpforwarding
+        tests:
+          test_items:
+            - flag: "no"
+        remediation: |
+          Edit the /etc/ssh/sshd_config file to set the parameter as follows:
+
+          AllowTcpForwarding no
+        scored: true
+
+      - id: 5.1.21
+        description: "Ensure SSH MaxStartups is configured (Automated)"
+        audit: |
+          maxstartups=$(sshd -T 2>/dev/null | grep -i maxstartups | awk '{print $2}')
+          if [ "$maxstartups" = "10:30:60" ]; then
+            echo "ssh_maxstartups_configured"
+          else
+            echo "ssh_maxstartups_not_configured"
+            echo "current_value=$maxstartups"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_maxstartups_configured"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file and configure the following parameter 
+          (or adjust according to site policy):
+
+            MaxStartups 10:30:60
+
+          After making changes, restart the SSH service:
+
+            systemctl restart sshd
+
+          This limits the number of concurrent unauthenticated connections to 
+          protect against denial of service attacks on the SSH daemon.
+        scored: true
+
+      - id: 5.1.22
+        description: "Ensure SSH MaxSessions is set to 4 or less (Automated)"
+        audit: |
+          maxsessions=$(sshd -T 2>/dev/null | grep -i maxsessions | awk '{print $2}')
+          if [ -n "$maxsessions" ] && [ "$maxsessions" -le 4 ]; then
+            echo "ssh_maxsessions_configured"
+          else
+            echo "ssh_maxsessions_not_configured"
+            echo "current_value=$maxsessions"
+          fi
+        tests:
+          test_items:
+            - flag: "ssh_maxsessions_configured"
+              set: true
+        remediation: |
+          Edit the /etc/ssh/sshd_config file and configure the following parameter 
+          (or adjust according to site policy):
+
+            MaxSessions 4
+
+          After making changes, restart the SSH service:
+
+            systemctl restart sshd
+
+          This ensures the number of concurrent open SSH sessions per connection 
+          is limited to reduce denial of service risks.
+        scored: true
+
+  - id: 5.2
+    description: "Configure PAM"
+    checks:
+      - id: 5.2.1
+        description: "Ensure password creation requirements are configured (Automated)"
+        audit: |
+          if grep -q '^min=disabled,disabled,disabled,disabled,14' /etc/security/passwdqc.conf 2>/dev/null &&
+             grep -q '^max=40' /etc/security/passwdqc.conf 2>/dev/null &&
+             grep -q '^passphrase=3' /etc/security/passwdqc.conf 2>/dev/null &&
+             grep -q '^match=4' /etc/security/passwdqc.conf 2>/dev/null &&
+             grep -q '^similar=deny' /etc/security/passwdqc.conf 2>/dev/null &&
+             grep -q '^random=47' /etc/security/passwdqc.conf 2>/dev/null &&
+             grep -q '^enforce=everyone' /etc/security/passwdqc.conf 2>/dev/null &&
+             grep -q '^retry=3' /etc/security/passwdqc.conf 2>/dev/null; then
+            echo "passwdqc_conf_configured"
+          else
+            echo "passwdqc_conf_not_configured"
+          fi
+
+          # Verify PAM system-auth includes pam_passwdqc.so with the config file
+          if grep -Eq '^\s*password\s+required\s+pam_passwdqc\.so.*config=/etc/security/passwdqc.conf' /etc/pam.d/system-auth 2>/dev/null; then
+            echo "pam_passwdqc_enabled"
+          else
+            echo "pam_passwdqc_not_enabled"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "passwdqc_conf_configured"
+              set: true
+            - flag: "pam_passwdqc_enabled"
+              set: true
+        remediation: |
+          Edit /etc/security/passwdqc.conf and configure password policies. Example:
+
+            min=disabled,disabled,disabled,disabled,14
+            max=40
+            passphrase=3
+            match=4
+            similar=deny
+            random=47
+            enforce=everyone
+            retry=3
+
+          Edit /etc/pam.d/system-auth and ensure the following line is present:
+
+            password    required    pam_passwdqc.so config=/etc/security/passwdqc.conf
+
+          This enforces strong password creation rules as per organizational policy.
+        scored: true
+
+      - id: 5.2.2
+        description: "Ensure password reuse is limited (Manual)"
+        type: "manual"
+        remediation: |
+          Set remembered password history to conform to site policy. Many distributions provide tools for updating PAM configuration, consult your documentation for details. If no tooling is provided edit the appropriate /etc/pam.d/ configuration file and add or modify the pam_pwhistory.so or pam_unix.so lines to include the remember option:
+          password required pam_pwhistory.so remember=5
+          password required pam_unix.so remember=5
+        scored: false
+
+      - id: 5.2.3
+        description: "Ensure password hashing algorithm is SHA-512 (Manual)"
+        type: "manual"
+        remediation: |
+          Set remembered password history to conform to site policy. Many distributions provide tools for updating PAM configuration, consult your documentation for details. If no tooling is provided edit the appropriate /etc/pam.d/ configuration file and add or modify the pam_pwhistory.so or pam_unix.so lines to include the remember option:
+          password required pam_pwhistory.so remember=5
+          password required pam_unix.so remember=5
+        scored: false
+
+  - id: 5.3
+    description: "User Accounts and Environment"
+    checks:
+      - id: 5.3.1
+        description: "Set Shadow Password Suite Parameters"
+        type: "skip"
+        checks:
+      - id: 5.3.1.1
+        description: "Ensure password expiration is 365 days or less (Automated)"
+        audit: |
+          # Check system-wide default in login.defs
+          if grep -Eq '^\s*PASS_MAX_DAYS\s+[0-9]+' /etc/login.defs 2>/dev/null; then
+            value=$(grep -E '^\s*PASS_MAX_DAYS' /etc/login.defs | awk '{print $2}')
+            if [ "$value" -le 365 ]; then
+              echo "login_defs_pass_max_days_ok"
+            else
+              echo "login_defs_pass_max_days_not_ok"
+            fi
+          else
+            echo "login_defs_pass_max_days_not_set"
+          fi
+
+          # Check individual users in /etc/shadow
+          users_noncompliant=$(grep -E '^[^:]+:[^!*]' /etc/shadow | cut -d: -f1,5 | awk -F: '$2 > 365 {print $1":"$2}')
+          if [ -z "$users_noncompliant" ]; then
+            echo "user_pass_max_days_ok"
+          else
+            echo "user_pass_max_days_not_ok"
+            echo "$users_noncompliant"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "login_defs_pass_max_days_ok"
+              set: true
+            - flag: "user_pass_max_days_ok"
+              set: true
+        remediation: |
+          Set the system-wide maximum password age in /etc/login.defs:
+
+            PASS_MAX_DAYS 365
+
+          Update existing users that exceed the configured maximum with:
+
+            chage --maxdays 365 <user>
+
+          This ensures that all users must change their passwords at least 
+          once every 365 days or sooner as per site policy.
+        scored: true
+
+      - id: 5.3.1.2
+        description: "Ensure minimum days between password changes is 7 or more (Automated)"
+        audit: |
+          # Check system-wide default in login.defs
+          if grep -Eq '^\s*PASS_MIN_DAYS\s+[0-9]+' /etc/login.defs 2>/dev/null; then
+            value=$(grep -E '^\s*PASS_MIN_DAYS' /etc/login.defs | awk '{print $2}')
+            if [ "$value" -ge 7 ]; then
+              echo "login_defs_pass_min_days_ok"
+            else
+              echo "login_defs_pass_min_days_not_ok"
+            fi
+          else
+            echo "login_defs_pass_min_days_not_set"
+          fi
+
+          # Check individual users in /etc/shadow
+          users_noncompliant=$(grep -E '^[^:]+:[^!*]' /etc/shadow | cut -d: -f1,4 | awk -F: '$2 < 7 {print $1":"$2}')
+          if [ -z "$users_noncompliant" ]; then
+            echo "user_pass_min_days_ok"
+          else
+            echo "user_pass_min_days_not_ok"
+            echo "$users_noncompliant"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "login_defs_pass_min_days_ok"
+              set: true
+            - flag: "user_pass_min_days_ok"
+              set: true
+        remediation: |
+          Set the system-wide minimum password age in /etc/login.defs:
+
+            PASS_MIN_DAYS 7
+
+          Update existing users that do not meet the configured minimum with:
+
+            chage --mindays 7 <user>
+
+          This ensures that users must wait at least 7 days between password changes, 
+          preventing attempts to bypass password reuse restrictions.
+        scored: true
+
+      - id: 5.3.1.3
+        description: "Ensure password expiration warning days is 7 or more (Automated)"
+        audit: |
+          # Check system-wide default in login.defs
+          if grep -Eq '^\s*PASS_WARN_AGE\s+[0-9]+' /etc/login.defs 2>/dev/null; then
+            value=$(grep -E '^\s*PASS_WARN_AGE' /etc/login.defs | awk '{print $2}')
+            if [ "$value" -ge 7 ]; then
+              echo "login_defs_pass_warn_age_ok"
+            else
+              echo "login_defs_pass_warn_age_not_ok"
+            fi
+          else
+            echo "login_defs_pass_warn_age_not_set"
+          fi
+
+          # Check individual users in /etc/shadow
+          users_noncompliant=$(grep -E '^[^:]+:[^!*]' /etc/shadow | cut -d: -f1,6 | awk -F: '$2 < 7 {print $1":"$2}')
+          if [ -z "$users_noncompliant" ]; then
+            echo "user_pass_warn_age_ok"
+          else
+            echo "user_pass_warn_age_not_ok"
+            echo "$users_noncompliant"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "login_defs_pass_warn_age_ok"
+              set: true
+            - flag: "user_pass_warn_age_ok"
+              set: true
+        remediation: |
+          Set the system-wide password warning age in /etc/login.defs:
+
+            PASS_WARN_AGE 7
+
+          Update existing users that do not meet the configured minimum with:
+
+            chage --warndays 7 <user>
+
+          This ensures users are notified at least 7 days before their password expires, 
+          giving them sufficient time to choose a secure new password.
+        scored: true
+
+      - id: 5.3.1.4
+        description: "Ensure inactive password lock is 30 days or less (Automated)"
+        audit: |
+          # Check default INACTIVE setting
+          inactive_default=$(useradd -D | grep INACTIVE | cut -d= -f2)
+          if [ -n "$inactive_default" ] && [ "$inactive_default" -ge 0 ] && [ "$inactive_default" -le 30 ]; then
+            echo "default_inactive_ok"
+          else
+            echo "default_inactive_not_ok"
+          fi
+
+          # Check individual users in /etc/shadow
+          users_noncompliant=$(grep -E '^[^:]+:[^!*]' /etc/shadow | cut -d: -f1,7 | awk -F: '$2 > 30 || $2 == "" {print $1":"$2}')
+          if [ -z "$users_noncompliant" ]; then
+            echo "user_inactive_ok"
+          else
+            echo "user_inactive_not_ok"
+            echo "$users_noncompliant"
+          fi
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "default_inactive_ok"
+              set: true
+            - flag: "user_inactive_ok"
+              set: true
+        remediation: |
+          Set the default password inactivity lockout period to 30 days:
+
+            useradd -D -f 30
+
+          Update existing users with:
+
+            chage --inactive 30 <user>
+
+          This ensures accounts are disabled no later than 30 days after password expiration.
+        scored: true
+
+      - id: 5.3.1.5
+        description: "Ensure all users last password change date is in the past (Automated)"
+        audit: |
+          # Check if any users have a password last change date in the future
+          for usr in $(cut -d: -f1 /etc/shadow); do
+            last_change=$(chage --list "$usr" | grep '^Last password change' | cut -d: -f2)
+            if [ -n "$last_change" ] && [ "$last_change" \> "$(date)" ]; then
+              echo "future_password_change:$usr:$last_change"
+            fi
+          done
+
+          # If no output above, system is compliant
+          if ! grep -q '^future_password_change' <<<"$(for usr in $(cut -d: -f1 /etc/shadow); do chage --list "$usr" | grep '^Last password change'; done)"; then
+            echo "all_password_changes_in_past"
+          fi
+        tests:
+          test_items:
+            - flag: "all_password_changes_in_past"
+              set: true
+        remediation: |
+          Investigate any users with a password change date set in the future. 
+          Corrective actions may include:
+            - Locking the affected account
+            - Expiring the password
+            - Resetting the password manually
+
+          Ensure all users’ "Last password change" dates are set to the past 
+          to enforce proper password expiration policies.
+        scored: true
+
+      - id: 5.3.2
+        description: "Ensure system accounts are secured (Automated)"
+        audit: |
+          # Derive system UID range from /etc/login.defs
+          SYS_UID_MIN=$(awk '/^\s*SYS_UID_MIN/{print $2}' /etc/login.defs)
+          SYS_UID_MAX=$(awk '/^\s*SYS_UID_MAX/{print $2}' /etc/login.defs)
+          NOLOGIN_BIN=$(command -v nologin || echo /sbin/nologin)
+
+          # 1) Report system accounts (non-root) with interactive shells
+          awk -F: -v min="$SYS_UID_MIN" -v max="$SYS_UID_MAX" -v nologin="$NOLOGIN_BIN" '
+            ($1!="root" && $1!="sync" && $1!="shutdown" && $1!="halt" && $1!~/^\+/ &&
+             $3>=min && $3<=max && $7!=nologin && $7!="/bin/false") { print "bad_shell:" $1 ":" $7 }
+          ' /etc/passwd
+
+          # 2) Report unlocked system accounts (non-root)
+          awk -F: -v min="$SYS_UID_MIN" -v max="$SYS_UID_MAX" '
+            ($1!="root" && $1!~/^\+/ && $3>=min && $3<=max) { print $1 }
+          ' /etc/passwd \
+            | xargs -I '{}' sh -c 'passwd -S "{}" 2>/dev/null | awk '\''($2!="L" && $2!="LK"){print "unlocked_sys_acct:" $1}'\'' '
+
+          # 3) If neither issue was found, mark compliant
+          if ! (grep -q '^bad_shell:' || grep -q '^unlocked_sys_acct:') <<EOF
+          $(awk -F: -v min="$SYS_UID_MIN" -v max="$SYS_UID_MAX" -v nologin="$NOLOGIN_BIN" '
+            ($1!="root" && $1!="sync" && $1!="shutdown" && $1!="halt" && $1!~/^\+/ &&
+            $3>=min && $3<=max && $7!=nologin && $7!="/bin/false") { print "bad_shell:" $1 ":" $7 }
+          ' /etc/passwd)
+          $(awk -F: -v min="$SYS_UID_MIN" -v max="$SYS_UID_MAX" '
+          ($1!="root" && $1!~/^\+/ && $3>=min && $3<=max) { print $1 }
+          ' /etc/passwd | xargs -I '{ }' sh -c 'passwd -S "{}" 2>/dev/null | awk '\''($2!="L" && $2!="LK"){print "unlocked_sys_acct:" $1}'\'' ')
+          EOF
+          then
+          echo "system_accounts_secured"
+          fi
+        tests:
+          test_items:
+              - flag: "system_accounts_secured"
+                set: true
+        remediation: |
+          Set non-interactive shells for system accounts and lock them if not needed.
+          
+          - For any account reported with an interactive shell:
+              usermod -s "$(command -v nologin || echo /sbin/nologin)" <user>
+          
+          - For any account reported as unlocked:
+              usermod -L <user>
+          
+          Bulk examples:
+            # Set nologin for all non-exempt system accounts
+            awk -F: -v min=$(awk '/^\s*SYS_UID_MIN/{print $2}' /etc/login.defs) \
+                     -v max=$(awk '/^\s*SYS_UID_MAX/{print $2}' /etc/login.defs) \
+                     -v nologin=$(command -v nologin || echo /sbin/nologin) \
+              '($1!="root" && $1!="sync" && $1!="shutdown" && $1!="halt" && $1!~/^\+/ && $3>=min && $3<=max && $7!=nologin && $7!="/bin/false"){print $1}' /etc/passwd \
+              | xargs -I{} usermod -s "$nologin" {}
+          
+            # Lock all non-root system accounts
+            awk -F: -v min=$(awk '/^\s*SYS_UID_MIN/{print $2}' /etc/login.defs) \
+                     -v max=$(awk '/^\s*SYS_UID_MAX/{print $2}' /etc/login.defs) \
+              '($1!="root" && $1!~/^\+/ && $3>=min && $3<=max){print $1}' /etc/passwd \
+              | xargs -I{} usermod -L {}
+
+        scored: true
+
+      - id: 5.3.3
+        description: "Ensure default group for the root account is GID 0"
+        audit: |
+          grep "^root:" /etc/passwd | cut -f4 -d:
+        tests:
+          test_items:
+            - flag: "0"
+        remediation: |
+          Run the following command to set the root user default group to GID 0 :
+          # usermod -g 0 root
+        scored: true
+
+      - id: 5.3.4
+        description: "Ensure default user umask is 027 or more restrictive (Automated)"
+        audit: |
+          # Files commonly setting default umask
+          FILES="$(ls -1 /etc/profile /etc/bash.bashrc /etc/bash/bashrc /etc/profile.d/*.sh 2>/dev/null || true)"
+
+          any=0
+          bad=0
+          ok=0
+
+          for f in $FILES; do
+            # pick the last explicit "umask NNN" if multiple exist in a file
+            v="$(awk '/^[[:space:]]*umask[[:space:]]+[0-7]{3}([[:space:]]|$)/{val=$2} END{if(val!="") print val}' "$f")"
+            [ -n "$v" ] || continue
+            any=1
+            if [ $((8#$v)) -ge $((8#027)) ]; then
+              echo "ok_umask:$f:$v"
+              ok=1
+            else
+              echo "bad_umask:$f:$v"
+              bad=1
+            fi
+          done
+
+          if [ "$any" -eq 0 ]; then
+            echo "no_umask_config"
+          fi
+          if [ "$bad" -eq 0 ] && [ "$ok" -eq 1 ]; then
+            echo "default_umask_ok"
+          fi
+        tests:
+          test_items:
+            - flag: "default_umask_ok"
+              set: true
+        remediation: |
+          Set a restrictive default umask (027 or more restrictive) in global shell init files.
+
+          Edit these (as applicable) and ensure the *effective/last* line is:
+            umask 027
+
+            - /etc/profile
+            - /etc/bash.bashrc or /etc/bash/bashrc (distro dependent)
+            - /etc/profile.d/*.sh
+
+          Notes:
+          - Larger octal umask values are *more* restrictive. Examples that pass: 027, 037, 077.
+          - Remove or override any weaker lines (e.g., 022) that appear earlier in sourced files.
+        scored: true
+
+      - id: 5.3.5
+        description: "Ensure default user shell timeout is 900 seconds or less (Automated)"
+        audit: |
+          FILES="/etc/profile /etc/bash.bashrc /etc/bash/bashrc"
+
+          any=0
+          bad=0
+          ok=0
+
+          for f in $FILES; do
+            [ -f "$f" ] || continue
+            val=$(awk -F= '/^[[:space:]]*TMOUT[[:space:]]*=/ {v=$2} END{if(v!="") print v}' "$f")
+            if [ -n "$val" ]; then
+              any=1
+              if [ "$val" -le 900 ]; then
+                echo "ok_tmout:$f:$val"
+                ok=1
+              else
+                echo "bad_tmout:$f:$val"
+                bad=1
+              fi
+            fi
+          done
+
+          if [ "$any" -eq 0 ]; then
+            echo "no_tmout_config"
+          fi
+          if [ "$bad" -eq 0 ] && [ "$ok" -eq 1 ]; then
+            echo "tmout_configured"
+          fi
+        tests:
+          test_items:
+            - flag: "tmout_configured"
+              set: true
+        remediation: |
+          Set a restrictive default shell timeout (TMOUT) in global shell init files.
+
+          Edit the following (and equivalents for other supported shells) and ensure they contain:
+            TMOUT=900
+            readonly TMOUT
+            export TMOUT
+
+          Files to edit:
+            - /etc/profile
+            - /etc/bash.bashrc or /etc/bash/bashrc
+            - /etc/profile.d/*.sh (if used)
+
+          This ensures shell sessions automatically terminate after 15 minutes or less of inactivity.
+        scored: true
+
+      - id: 5.4
+        description: "Ensure root login is restricted to system console (Manual)"
+        type: "manual"
+        audit: "cat /etc/securetty"
+        remediation: |
+          Remove entries for any consoles that are not in a physically secure location.
+        scored: false
+
+      - id: 5.5
+        description: "Ensure access to the su command is restricted (Automated)"
+        audit: |
+          # Check that pam_wheel.so is enabled in /etc/pam.d/su
+          if grep -Eq '^\s*auth\s+required\s+pam_wheel.so\s+use_uid' /etc/pam.d/su 2>/dev/null; then
+            echo "pam_wheel_enabled"
+          else
+            echo "pam_wheel_disabled"
+          fi
+
+          members=$(awk -F: '/^wheel:/{print $4}' /etc/group)
+
+          non_root_count=$(printf '%s\n' "$members" \
+            | awk -F, '{c=0; for(i=1;i<=NF;i++) if($i!="" && $i!="root") c++; print c}')
+
+          if [ -n "$members" ] && [ "$non_root_count" -ge 1 ]; then
+            echo "wheel_group_configured"
+          else
+            echo "wheel_group_empty"
+          fi
+
+        tests:
+          bin_op: and
+          test_items:
+            - flag: "pam_wheel_enabled"
+              set: true
+            - flag: "wheel_group_configured"
+              set: true
+        remediation: |
+          Restrict access to the su command by configuring PAM and the wheel group.
+
+          1. Edit /etc/pam.d/su and ensure the following line exists:
+               auth required pam_wheel.so use_uid
+
+          2. Ensure the wheel group exists in /etc/group and includes authorized users:
+               wheel:x:10:root,<user1>,<user2>
+
+          On Container-Optimized OS, /etc is stateless/read-only. These changes 
+          cannot persist across reboots and must be applied at startup or baked 
+          into a custom image.
+        scored: true
+
+
+  - id: 6
+    description: "System Maintenance"
+    checks:
+  - id: 6.1
+    description: "System File Permissions"
+    checks:
+      - id: 6.1.1
+        description: "Ensure permissions on /etc/passwd are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/passwd 2>/dev/null)" || { echo "passwd_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/passwd)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0644) == 0644)) -eq 1 ]; then
+            echo "passwd_perms_ok"
+          else
+            echo "passwd_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "passwd_perms_ok"
+        remediation: |
+          Run the following commands to remove excess permissions, set owner, and set group on /etc/passwd:
+
+          # chmod u-x,go-wx /etc/passwd
+          # chown root:root /etc/passwd
+        scored: true
+
+      - id: 6.1.2
+        description: "Ensure permissions on /etc/shadow are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/shadow 2>/dev/null)" || { echo "shadow_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/shadow)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0640) == 0640)) -eq 1 ]; then
+            echo "shadow_perms_ok"
+          else
+            echo "shadow_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "shadow_perms_ok"
+        remediation: |
+          Run the one of the following chown commands as appropriate and the chmod to set permissions on /etc/shadow :
+
+          # chown root:root /etc/shadow
+          # chown root:shadow /etc/shadow
+
+          # chmod o-rwx,g-wx /etc/shadow
+        scored: true
+
+      - id: 6.1.3
+        description: "Ensure permissions on /etc/group are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/group 2>/dev/null)" || { echo "group_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/group)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0644) == 0644)) -eq 1 ]; then
+            echo "group_perms_ok"
+          else
+            echo "group_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "group_perms_ok"
+        remediation: |
+          Run the following command to set permissions on /etc/group :
+
+          # chown root:root /etc/group
+          # chmod 644 /etc/group
+        scored: true
+
+      - id: 6.1.4
+        description: "Ensure permissions on /etc/gshadow are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/gshadow 2>/dev/null)" || { echo "gshadow_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/gshadow)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0640) == 0640)) -eq 1 ]; then
+            echo "gshadow_perms_ok"
+          else
+            echo "gshadow_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "gshadow_perms_ok"
+        remediation: |
+          Run the one of the following chown commands as appropriate and the chmod to set permissions on /etc/gshadow :
+
+          # chown root:root /etc/gshadow
+          # chown root:shadow /etc/gshadow
+
+          # chmod o-rwx,g-rw /etc/gshadow
+        scored: true
+
+      - id: 6.1.5
+        description: "Ensure permissions on /etc/passwd- are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/passwd- 2>/dev/null)" || { echo "passwd_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/passwd-)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0644) == 0644)) -eq 1 ] && \
+             [ $(((mode & 07000) == 0)) -eq 1 ]; then
+            echo "passwd_perms_ok"
+          else
+            echo "passwd_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "passwd_perms_ok"
+        remediation: |
+          Run the following commands to remove excess permissions, set owner, and set group on /etc/passwd:
+
+          # chmod u-x,go-wx /etc/passwd-
+          # chown root:root /etc/passwd-
+        scored: true
+
+      - id: 6.1.6
+        description: "Ensure permissions on /etc/shadow- are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/shadow- 2>/dev/null)" || { echo "shadow_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/shadow-)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0640) == 0640)) -eq 1 ]; then
+            echo "shadow_perms_ok"
+          else
+            echo "shadow_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "shadow_perms_ok"
+        remediation: |
+          Run the one of the following chown commands as appropriate and the chmod to set permissions on /etc/shadow :
+
+          # chown root:root /etc/shadow-
+          # chown root:shadow /etc/shadow-
+
+          # chmod o-rwx,g-wx /etc/shadow-
+        scored: true
+
+      - id: 6.1.7
+        description: "Ensure permissions on /etc/group- are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/group- 2>/dev/null)" || { echo "group_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/group-)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0644) == 0644)) -eq 1 ] && \
+             [ $(((mode & 07000) == 0)) -eq 1 ]; then
+            echo "group_perms_ok"
+          else
+            echo "group_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "group_perms_ok"
+        remediation: |
+          Run the following command to set permissions on /etc/group :
+
+          # chown root:root /etc/group-
+          # chmod 644 /etc/group-
+        scored: true
+
+      - id: 6.1.8
+        description: "Ensure permissions on /etc/gshadow- are configured (Automated)"
+        audit: |
+          mode_str="$(stat -Lc '%a' /etc/gshadow- 2>/dev/null)" || { echo "gshadow_perms_bad"; exit 0; }
+          uid_gid="$(stat -Lc '%u %g' /etc/gshadow-)"
+          mode=$(( 8#$mode_str ))
+
+          if [ "$uid_gid" = "0 0" ] && \
+             [ $(((mode | 0640) == 0640)) -eq 1 ]; then
+            echo "gshadow_perms_ok"
+          else
+            echo "gshadow_perms_bad"
+          fi
+        tests:
+          test_items:
+            - flag: "gshadow_perms_ok"
+        remediation: |
+          Run the one of the following chown commands as appropriate and the chmod to set permissions on /etc/gshadow :
+
+          # chown root:root /etc/gshadow-
+          # chown root:shadow /etc/gshadow-
+
+          # chmod o-rwx,g-rw /etc/gshadow-
+        scored: true
+
+  - id: 6.2
+    description: "User and Group Settings"
+    checks:
+      - id: 6.2.1
+        description: "Ensure password fields are not empty (Automated)"
+        audit: |
+          # Check for any accounts with empty password fields
+          empty_pw_accounts=$(awk -F: '($2 == "") {print $1}' /etc/shadow 2>/dev/null)
+
+          if [ -z "$empty_pw_accounts" ]; then
+            echo "no_empty_passwords"
+          else
+            echo "empty_passwords_found"
+            echo "$empty_pw_accounts"
+          fi
+        tests:
+          test_items:
+            - flag: "no_empty_passwords"
+              set: true
+        remediation: |
+          Lock any accounts with empty password fields to prevent unauthorized access:
+
+            passwd -l <username>
+
+          Then investigate the account usage and determine whether the account 
+          should be assigned a proper password, disabled, or removed.
+        scored: true
+
+      - id: 6.2.2
+        description: 'Ensure no legacy "+" entries exist in /etc/passwd (Automated)'
+        audit: |
+          grep -E '^\+:' /etc/passwd
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Remove any legacy '+' entries from /etc/passwd if they exist.
+        scored: true
+
+      - id: 6.2.3
+        description: 'Ensure no legacy "+" entries exist in /etc/shadow (Automated)'
+        audit: |
+          grep -E '^\+:' /etc/shadow
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Remove any legacy '+' entries from /etc/shadow if they exist.
+        scored: true
+
+      - id: 6.2.4
+        description: 'Ensure no legacy "+" entries exist in /etc/group (Automated)'
+        audit: |
+          grep -E '^\+:' /etc/group
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Remove any legacy '+' entries from /etc/group if they exist.
+        scored: true
+
+      - id: 6.2.5
+        description: 'Ensure root is the only UID 0 account (Automated)'
+        audit: |
+          awk -F: '($3 == 0) { print $1 }' /etc/passwd
+        tests:
+          test_items:
+            - flag: "root"
+        remediation: |
+          Remove any users other than root with UID 0 or assign them a new UID if appropriate.
+        scored: true
+
+      - id: 6.2.6
+        description: "Ensure root PATH Integrity (Automated)"
+        audit: |
+          # Get root's PATH
+          PATH_VAL="$(sudo -Hiu root env | grep '^PATH' | cut -d= -f2)"
+          
+          # Check for empty directory (::) or trailing colon (:) in PATH
+          echo "$PATH_VAL" | grep -q "::" && echo "bad_path_empty_dir"
+          echo "$PATH_VAL" | grep -q ":$" && echo "bad_path_trailing_colon"
+          
+          # Check each directory in PATH
+          for dir in $(echo "$PATH_VAL" | tr ":" " "); do
+            if [ -d "$dir" ]; then
+              perm=$(ls -ldH "$dir")
+              echo "$perm" | awk '{if(substr($1,6,1)!="-") print "bad_path_group_writable:"$9;
+                                   if(substr($1,9,1)!="-") print "bad_path_world_writable:"$9;
+                                   if($3!="root") print "bad_path_not_owned_by_root:"$9}'
+            else
+              base_dir=$(echo "$dir" | cut -d "/" -f2)
+              rw=$(findmnt -T "/$base_dir" 2>/dev/null | sed '1d' | grep -v "\sro,")
+              if [ -n "$rw" ]; then
+                echo "bad_path_not_directory:$dir"
+              fi
+            fi
+          done
+          
+          # If no bad_* flags found, mark as ok
+          if ! grep -q '^bad_path_' <<<"$(echo)"; then
+            echo "root_path_ok"
+          fi
+        tests:
+          test_items:
+            - flag: "root_path_ok"
+              set: true
+        remediation: |
+          Correct any issues with root's PATH:
+          
+          - Remove empty directory entries (::) and trailing colons (:).
+          - Ensure all directories in root's PATH:
+              * exist and are valid directories
+              * are owned by root
+              * are not group- or world-writable
+          - If a directory cannot be corrected, justify and document the reason.
+          
+          Example fix commands:
+            chown root:root <dir>
+            chmod go-w <dir>
+          
+          This ensures root does not unintentionally execute from insecure directories.
+        scored: true
+
+      - id: 6.2.7
+        description: "Ensure all users' home directories exist (Automated)"
+        audit: |
+          # Exclude system accounts and users with nologin/false shells
+          grep -E -v '^(halt|sync|shutdown)' /etc/passwd \
+            | awk -F: '($7 != "'"$(which nologin)"'" && $7 != "/bin/false") {print $1 " " $6}' \
+            | while read -r user dir; do
+                if [ ! -d "$dir" ]; then
+                  echo "missing_home:$user:$dir"
+                fi
+              done
+
+          # If no missing homes found, mark compliant
+          if ! grep -q '^missing_home:' <<<"$(grep -E -v '^(halt|sync|shutdown)' /etc/passwd | awk -F: '($7 != "'"$(which nologin)"'" && $7 != "/bin/false") {print $1 " " $6}' | while read -r user dir; do [ ! -d "$dir" ] && echo "missing_home:$user:$dir"; done)"; then
+            echo "all_home_dirs_exist"
+          fi
+        tests:
+          test_items:
+            - flag: "all_home_dirs_exist"
+              set: true
+        remediation: |
+          For each reported user, create the missing home directory and ensure 
+          the correct ownership and permissions are applied. For example:
+
+            mkdir -p <home_directory>
+            chown <user>:<user_group> <home_directory>
+            chmod 700 <home_directory>
+
+          If the user should not have a home directory, remove the account or 
+          assign an appropriate one as per site policy.
+        scored: true
+
+      - id: 6.2.8
+        description: "Ensure users' home directories permissions are 750 or more restrictive (Automated)"
+        audit: |
+          # Check all non-system, login-capable users' home directories
+          # Policy: no group write, no permissions for others (i.e., <= 750)
+          issues=0
+          while IFS=' ' read -r user dir; do
+            # Skip if home missing (covered by 6.2.7)
+            [ -d "$dir" ] || { echo "home_missing:$user:$dir"; issues=$((issues+1)); continue; }
+
+            perm=$(stat -Lc '%a' "$dir" 2>/dev/null || echo "000")
+            # Extract group and other octal digits
+            g=$(( (perm/10)%10 ))
+            o=$(( perm%10 ))
+
+            # Flag if group has write bit, or others have any bit
+            if [ $((g & 2)) -ne 0 ]; then
+              echo "bad_perm_group_write:$user:$dir:$perm"
+              issues=$((issues+1))
+            fi
+            if [ "$o" -ne 0 ]; then
+              echo "bad_perm_others_set:$user:$dir:$perm"
+              issues=$((issues+1))
+            fi
+          done < <(grep -E -v '^(halt|sync|shutdown):' /etc/passwd \
+                  | awk -F: '($7 != "'"$(which nologin 2>/dev/null || echo /sbin/nologin)"'" && $7 != "/bin/false") {print $1" "$6}')
+
+          # If no problems found, mark compliant
+          [ "$issues" -eq 0 ] && echo "homes_perms_ok"
+        tests:
+          test_items:
+            - flag: "homes_perms_ok"
+              set: true
+        remediation: |
+          Adjust home directory permissions so group has no write access and
+          "others" have no permissions (e.g., 750 or 700).
+
+          For each reported user (examples):
+            chmod 750 <home_dir>     # or 700 if your policy prefers
+            # Ensure group has no write and others have no permissions:
+            chmod g-w,o-rwx <home_dir>
+
+          Bulk example (careful; review first):
+            while IFS=':' read -r u _ _ _ _ d s; do
+              [ -d "$d" ] || continue
+              [ "$s" != "$(which nologin 2>/dev/null || echo /sbin/nologin)" ] && [ "$s" != "/bin/false" ] || continue
+              chmod g-w,o-rwx "$d"
+            done < /etc/passwd
+        scored: true
+
+      - id: 6.2.9
+        description: "Ensure users own their home directories (Automated)"
+        audit: |
+          awk -F: '
+            BEGIN {
+              nologin="/sbin/nologin"
+              cmd="which nologin 2>/dev/null"; if ((cmd | getline out) > 0 && out != "") nologin=out; close(cmd)
+              issues=0
+            }
+            $1 !~ /^(halt|sync|shutdown)$/ && $7 != nologin && $7 != "/bin/false" {
+              user=$1; dir=$6
+
+              cmd="[ -d \"" dir "\" ] && echo OK || echo MISSING"
+              cmd | getline exists; close(cmd)
+              if (exists != "OK") { print "home_missing:" user ":" dir; issues++; next }
+
+              # ownership correct?
+              cmd="stat -L -c %U \"" dir "\" 2>/dev/null"
+              cmd | getline owner; close(cmd)
+              if (owner != user) { print "home_not_owned_by_user:" user ":" dir ":" owner; issues++ }
+            }
+            END { if (issues == 0) print "homes_owned_ok" }
+          ' /etc/passwd
+        tests:
+          test_items:
+            - flag: "homes_owned_ok"
+              set: true
+        remediation: |
+          Change ownership of any non-compliant home directories so the user owns their home:
+
+            chown <user>:<primary_group_or_user> <home_dir>
+
+          Examples:
+            # If user's primary group equals username (common on many distros):
+            chown -R alice:alice /home/alice
+
+            # If using a specific primary group:
+            id -gn alice  # get primary group
+            chown -R alice:$(id -gn alice) /home/alice
+
+          Also ensure the directory exists for each user (if missing, create and set ownership):
+            mkdir -p /home/<user>
+            chown <user>:$(id -gn <user>) /home/<user>
+
+          Note: Creation/placement of home directories should follow your site policy (e.g., /home vs custom paths).
+        scored: true
+
+      - id: 6.2.10
+        description: "Ensure users' dot files are not group or world writable (Automated)"
+        audit: |
+          awk -F: '($1!="root" && $1!="halt" && $1!="sync" && $1!="shutdown" && $7!~/nologin|false/) {print $6}' /etc/passwd \
+            | xargs -r -I{} sh -c '[ -d "$1" ] || echo "MISSING_HOME:$1"' _ {}
+
+          awk -F: '($1!="root" && $1!="halt" && $1!="sync" && $1!="shutdown" && $7!~/nologin|false/) {print $6}' /etc/passwd \
+            | xargs -r find 2>/dev/null \
+                -xdev -type f -name '.*' ! -name '.' ! -name '..' ! -xtype l \
+                \( -perm -002 -o -perm -020 \) -print
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          For any reported paths:
+            # Remove group/other write permissions from dotfiles
+            chmod go-w <file>
+
+          If a home directory is missing, create it and set correct ownership/permissions:
+            mkdir -p <home_dir>
+            chown <user>:<user> <home_dir>
+            chmod 0750 <home_dir>
+
+          Note: On Container-Optimized OS, /etc is stateless. Persist changes via image
+          customization or automation that re-applies permissions at boot.
+        scored: true
+
+      - id: 6.2.11
+        description: "Ensure no users have .forward files (Automated)"
+        rationale: |
+          `.forward` files can cause mail to be forwarded externally or allow command
+          execution, creating risks of data exfiltration or privilege abuse.
+        audit: |
+          # Find all interactive users' home directories and directly search for .forward files
+          awk -F: '($1!="root" && $1!="halt" && $1!="sync" && $1!="shutdown" && $7!~/nologin|false/) {print $6"/.forward"}' /etc/passwd \
+            | xargs -r ls -l 2>/dev/null
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Remove any `.forward` files returned by the audit. For example:
+
+            rm -f /home/<user>/.forward
+
+          Apply this for each affected user directory. Establish monitoring or 
+          automated policies to prevent users from creating `.forward` files again.
+
+          Note: On Container-Optimized OS, /etc is stateless. Use automation or 
+          custom images to ensure these settings persist across reboots.
+        scored: true
+
+      - id: 6.2.12
+        description: "Ensure no users have .netrc files (Automated)"
+        audit: |
+          # Report any login-capable users that have a ~/.netrc (regular file, not symlink)
+          awk -F: '
+            BEGIN {
+              nologin="/sbin/nologin"
+              cmd="which nologin 2>/dev/null"; if ((cmd | getline out) > 0 && out != "") nologin=out; close(cmd)
+            }
+            $1 !~ /^(root|halt|sync|shutdown)$/ && $7 != nologin && $7 != "/bin/false" {
+              user=$1; dir=$6; p=dir "/.netrc"
+
+              # If home directory missing, note it (matches original audit intent)
+              cmd="[ -d \"" dir "\" ] && echo OK || echo MISSING"
+              cmd | getline exists; close(cmd)
+              if (exists != "OK") { print "home_missing:" user ":" dir; next }
+
+              # Flag only if .netrc exists as a regular file and is not a symlink
+              cmd="[ ! -h \"" p "\" ] && [ -f \"" p "\" ] && echo NETRC_EXISTS || true"
+              cmd | getline has; close(cmd)
+              if (has == "NETRC_EXISTS") print "netrc_exists:" user ":" p
+            }
+          ' /etc/passwd
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Remove any discovered ~/.netrc files and prevent their re-creation per site policy.
+            rm -f /home/<user>/.netrc    # adjust path if home is elsewhere
+
+          Consider adding monitoring or a login script check to alert on creation of ~/.netrc,
+          since it stores plaintext credentials and is not permitted by policy.
+        scored: true
+
+      - id: 6.2.13
+        description: "Ensure users' .netrc files are not group or world accessible (Automated)"
+        audit: |
+          # Report any login-capable users whose ~/.netrc is readable/writable/executable
+          # by group/other (i.e., permissions not 600 or more restrictive).
+          awk -F: '
+            BEGIN {
+              nologin="/sbin/nologin"
+              cmd="which nologin 2>/dev/null"; if ((cmd | getline out) > 0 && out != "") nologin=out; close(cmd)
+            }
+            $1 !~ /^(root|halt|sync|shutdown)$/ && $7 != nologin && $7 != "/bin/false" {
+              user=$1; dir=$6; p=dir "/.netrc"
+
+              # Only evaluate regular, non-symlink ~/.netrc files
+              cmd="[ ! -h \"" p "\" ] && [ -f \"" p "\" ] && echo REG || true"
+              cmd | getline ok; close(cmd)
+              if (ok != "REG") next
+
+              # Fetch numeric mode like 600; flag if group/other have any bits
+              cmd="stat -Lc %a \"" p "\" 2>/dev/null"
+              if ((cmd | getline mode) > 0) {
+                close(cmd)
+                if (mode ~ /^[0-7]{3}$/) {
+                  g=substr(mode,2,1)+0; o=substr(mode,3,1)+0
+                  if (g>0 || o>0) print "netrc_weak_perms:" user ":" p ":" mode
+                } else {
+                  print "netrc_perm_unreadable:" user ":" p
+                }
+              } else {
+                close(cmd)
+                print "netrc_stat_failed:" user ":" p
+              }
+            }
+          ' /etc/passwd
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          For each reported file, restrict permissions to user-only and ensure correct ownership:
+            chmod 600 /home/<user>/.netrc         # adjust path to the user’s home if different
+            chown <user>:<user_or_primary_group> /home/<user>/.netrc
+
+          Consider monitoring to prevent re-creation of insecure permissions on ~/.netrc files.
+        scored: true
+
+      - id: 6.2.14
+        description: "Ensure no users have .rhosts files (Automated)"
+        audit: |
+          # List login-capable users' home directories and check directly for ~/.rhosts files
+          awk -F: '
+            BEGIN {
+              nologin="/sbin/nologin"
+              cmd="which nologin 2>/dev/null"; if ((cmd | getline out) > 0 && out != "") nologin=out; close(cmd)
+            }
+            $1 !~ /^(root|halt|sync|shutdown)$/ && $7 != nologin && $7 != "/bin/false" {print $6"/.rhosts"}
+          ' /etc/passwd \
+            | xargs -r ls -l 2>/dev/null
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          If any ~/.rhosts files are discovered, remove them:
+
+            rm -f /home/<user>/.rhosts
+
+          Adjust paths if users’ home directories differ.
+
+          Consider establishing monitoring or login-time checks to ensure .rhosts
+          files are not recreated by users, as they pose a significant security risk.
+        scored: true
+
+      - id: 6.2.15
+        description: "Ensure all groups in /etc/passwd exist in /etc/group (Automated)"
+        audit: |
+          # Show any GIDs referenced by /etc/passwd that do not exist in /etc/group
+          awk -F: '
+            FNR==NR {               # First pass: load valid group IDs from /etc/group
+              if ($3 ~ /^[0-9]+$/) g[$3]=1
+              next
+            }
+            {                       # Second pass: collect all GIDs referenced in /etc/passwd
+              if ($4 ~ /^[0-9]+$/) gids[$4]=1
+            }
+            END {                   # Report any missing group IDs
+              for (id in gids) if (!(id in g)) print "missing_gid:" id
+            }
+          ' /etc/group /etc/passwd
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          For each reported "missing_gid:<GID>":
+            - Either create a group with that GID:
+                groupadd -g <GID> <group_name>
+            - Or update /etc/passwd entries that reference the non-existent GID to a valid group:
+                usermod -g <valid_GID_or_group> <user>
+
+          After changes, re-run the audit to confirm no output (compliance).
+        scored: true
+
+
+      - id: 6.2.16
+        description: "Ensure no duplicate UIDs exist (Automated)"
+        audit: |
+          cut -f3 -d":" /etc/passwd | sort -n | uniq -c | while read x ; do
+            [ -z "$x" ] && break
+            set - $x
+            if [ $1 -gt 1 ]; then
+            users=$(awk -F: '($3 == n) { print $1 }' n=$2 /etc/passwd | xargs)
+            echo "Duplicate UID ($2): $users"
+            fi
+          done
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Based on the results of the audit script, establish unique UIDs and review all files owned by the shared UIDs to determine which UID they are supposed to belong to.
+        scored: true
+
+      - id: 6.2.17
+        description: "Ensure no duplicate GIDs exist (Automated)"
+        audit: |
+          cut -f3 -d":" /etc/group | sort -n | uniq -c | while read x ; do
+            [ -z "$x" ] && break
+            set - $x
+            if [ $1 -gt 1 ]; then
+              groups=$(awk -F: '($3 == n) { print $1 }' n=$2 /etc/group | xargs)
+              echo "Duplicate GID ($2): $groups"
+            fi
+          done
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Based on the results of the audit script, establish unique GIDs and review all files owned by the shared GID to determine which group they are supposed to belong to.
+        scored: true
+
+      - id: 6.2.18
+        description: "Ensure no duplicate user names exist (Automated)"
+        audit: |
+          cut -f1 -d":" /etc/passwd | sort -n | uniq -c | while read x ; do
+            [ -z "$x" ] && break
+            set - $x
+            if [ $1 -gt 1 ]; then
+              uids=$(awk -F: '($1 == n) { print $3 }' n=$2 /etc/passwd | xargs)
+              echo "Duplicate User Name ($2): $uids"
+            fi
+          done
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Based on the results of the audit script, establish unique user names for the users. File ownerships will automatically reflect the change as long as the users have unique UIDs.
+        scored: true
+
+      - id: 6.2.19
+        description: "Ensure no duplicate group names exist (Automated)"
+        audit: |
+          cut -f1 -d":" /etc/group | sort -n | uniq -c | while read x ; do
+            [ -z "$x" ] && break
+            set - $x
+            if [ $1 -gt 1 ]; then
+              gids=$(gawk -F: '($1 == n) { print $3 }' n=$2 /etc/group | xargs)
+              echo "Duplicate Group Name ($2): $gids"
+            fi
+          done
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Based on the results of the audit script, establish unique names for the user groups. File group ownerships will automatically reflect the change as long as the groups have unique GIDs.
+        scored: true
+
+      - id: 6.2.20
+        description: "Ensure shadow group is empty (Automated)"
+        audit: |
+          # Check if the shadow group has members in /etc/group
+          grep '^shadow:[^:]*:[^:]*:[^:]' /etc/group
+
+          # Get the shadow group GID from /etc/group
+          gid=$(awk -F: '$1=="shadow"{print $3}' /etc/group)
+
+          # Check if any user has shadow as their primary group in /etc/passwd
+          [ -n "$gid" ] && awk -F: -v sgid="$gid" '($4 == sgid) {print "user_in_shadow:" $1}' /etc/passwd
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: eq
+                value: ""
+        remediation: |
+          Remove all users from the shadow group and ensure no user has shadow
+          as their primary group.
+
+          1. Edit /etc/group and remove any users listed in the shadow group entry.
+          2. For users with shadow as their primary group, change their primary group:
+               usermod -g <valid_group> <user>
+
+          After remediation, re-run the audit to ensure no output is returned.
+        scored: true
