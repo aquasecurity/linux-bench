@@ -31,6 +31,8 @@ func app(cmd *cobra.Command, args []string) {
 		version = "amazon_linux_2"
 	case platform == "cos":
 		version = "Google_Container_Optimized_OS"
+	case strings.HasPrefix(platform, "azurelinux3"):
+		version = "Azure_linux_3"
 	default:
 		version = "2.0.0"
 	}
