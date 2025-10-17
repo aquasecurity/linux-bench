@@ -2115,7 +2115,7 @@ groups:
         tests:
           test_items:
             - flag: "package iptables is not installed"
-              set: falserpm -q nftables &>/dev/null && echo "nftables is installed"stat /etc/crontabsystemctl is-enabled systemd-journald.service
+              set: true
         remediation: |
           Run the following command to install iptables:
 
