@@ -1383,7 +1383,7 @@ groups:
                 # apt-get install libselinux1
                 # zypper install libselinux
                 The previous commands install SELinux, use the appropriate package if AppArmor is desired.
-
+      scored: true
   - id: 1.6.2
     description: "Configure SELinux"
     checks:
