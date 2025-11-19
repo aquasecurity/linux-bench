@@ -25,36 +25,40 @@ groups:
           fi
 
           # How would modprobe handle it?
-          loadable="$(modprobe -n -v "$m" 2>/dev/null)"
-          [ "$(printf '%s\n' "$loadable" | wc -l)" -gt 1 ] && loadable="$(printf '%s\n' "$loadable" | grep -P "(^\s*install|\b$m)\b")"
+          loadable="$(modprobe -n -v "$m" 2>/dev/null || true)"
+          [ "$(printf '%s\n' "$loadable" | wc -l)" -gt 1 ] && loadable="$(printf '%s\n' "$loadable" | grep -P "(^\s*install|\b$m)\b" || true)"
 
           if printf '%s' "$loadable" | grep -Eq '^\s*install\s+/bin/(false|true)\b'; then
-            echo "install_ok"
+            install_status="install_ok"
           else
-            echo "install_bad"
+            install_status="install_bad"
           fi
+          echo "$install_status"
 
           # Deny list present?
           if modprobe --showconfig 2>/dev/null | grep -Pq '^\s*blacklist\s+'"$m"'\b'; then
-            echo "blacklist_ok"
+            blacklist_status="blacklist_ok"
           else
-            echo "blacklist_bad"
+            blacklist_status="blacklist_bad"
           fi
+          echo "$blacklist_status"
 
           # Currently loaded?
           if ! lsmod | grep -q "^$m\b"; then
-            echo "not_loaded"
+            load_status="not_loaded"
           else
-            echo "loaded"
+            load_status="loaded"
           fi
+          echo "$load_status"
 
           # Final one-line verdict flag (so tests can be simple)
-          if grep -q '^install_ok$' <<<"$(echo install_ok)" \
-             && grep -q '^blacklist_ok$' <<<"$(echo blacklist_ok)" \
-             && grep -q '^not_loaded$'  <<<"$(echo not_loaded)"; then
+          if [ "$install_status" = "install_ok" ] \
+             && [ "$blacklist_status" = "blacklist_ok" ] \
+             && [ "$load_status" = "not_loaded" ]; then
             echo "squashfs_disabled_ok:present_but_blocked"
           fi
         tests:
+          bin_op: or
           test_items:
             - flag: "squashfs_disabled_ok:module_absent"
               set: true
@@ -77,7 +81,6 @@ groups:
         audit: |
           m="udf"
 
-          # Pass case 1: module absent from this kernel
           if modprobe -n -v "$m" 2>&1 | grep -Piq "\bFATAL:\s+Module\s+$m\s+not\s+found\b"; then
             echo "udf_disabled_ok:module_absent"
             exit 0
@@ -108,9 +111,9 @@ groups:
           fi
 
           # Pass case 2: present but blocked and not loaded -> emit a single verdict flag
-          if printf '%s\n' "install_ok" "blacklist_ok" "not_loaded" | grep -qx "install_ok" \
-             && printf '%s\n' "install_ok" "blacklist_ok" "not_loaded" | grep -qx "blacklist_ok" \
-             && printf '%s\n' "install_ok" "blacklist_ok" "not_loaded" | grep -qx "not_loaded"; then
+          if [ "$install_status" = "install_ok" ] \
+             && [ "$blacklist_status" = "blacklist_ok" ] \
+             && [ "$load_status" = "not_loaded" ]; then
             echo "udf_disabled_ok:present_but_blocked"
           fi
         tests:
