@@ -35,6 +35,8 @@ func app(cmd *cobra.Command, args []string) {
 		version = "Red_hat_enterprise_linux_9"
 	case strings.HasPrefix(platform, "azurelinux3"):
 		version = "Azure_linux_3"
+	case platform == "ubuntu24":
+		version = "Ubuntu_24.04"
 	default:
 		version = "2.0.0"
 	}
