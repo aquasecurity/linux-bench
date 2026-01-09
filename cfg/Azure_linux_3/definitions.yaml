@@ -2275,7 +2275,9 @@ groups:
 
           if [ ! -f "$CRON_HOURLY" ]; then
             echo "cron_hourly_missing"
-          elif stat -L "$CRON_HOURLY" | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
+          elif [ "$(stat -Lc %U:%G "$CRON_HOURLY" 2>/dev/null)" = "root:root" ] && \
+               [ "$(stat -Lc %a "$CRON_HOURLY" 2>/dev/null)" -le 700 ] && \
+               [ "$(stat -Lc %a "$CRON_HOURLY" 2>/dev/null)" -ge 0 ]; then
             echo "cron_hourly_permission_ok"
           else
             echo "cron_hourly_permission_bad"
@@ -2299,7 +2301,8 @@ groups:
 
           if [ ! -f "$CRON_DAILY" ]; then
             echo "cron_daily_missing"
-          elif stat -L "$CRON_DAILY" | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
+          elif [ "$(stat -Lc %U:%G "$CRON_DAILY" 2>/dev/null)" = "root:root" ] && \
+               [ "$(stat -Lc %a "$CRON_DAILY" 2>/dev/null)" -le 700 ]; then
             echo "cron_daily_permission_ok"
           else
             echo "cron_daily_permission_bad"
