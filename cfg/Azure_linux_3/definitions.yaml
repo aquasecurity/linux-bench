@@ -1430,9 +1430,9 @@ groups:
         tests:
           bin_op: or
           test_items:
-            - flag: "nfs-utils_not_installed"
+            - flag: "nfs_utils_not_installed"
               set: true
-            - flag: "nfs-server_masked"
+            - flag: "nfs_server_masked"
               set: true
         remediation: |
           Run the following command to remove nfs-utils:
@@ -2115,7 +2115,7 @@ groups:
         tests:
           test_items:
             - flag: "package iptables is not installed"
-              set: true
+              set: false
         remediation: |
           Run the following command to install iptables:
 
@@ -2240,18 +2240,27 @@ groups:
       - id: 5.1.2
         description: "Ensure permissions on /etc/crontab are configured (Automated)"
         audit: |
-          perms=$(stat -Lc '%a' /etc/crontab)
-          owner=$(stat -Lc '%u' /etc/crontab)
-          group=$(stat -Lc '%g' /etc/crontab)
+          CRONTAB="/etc/crontab"
 
-          if [ "$perms" -le 600 ] && [ "$owner" -eq 0 ] && [ "$group" -eq 0 ]; then
-            echo "crontab_perms_ok"
+          if [ ! -f "$CRONTAB" ]; then
+            echo "crontab_missing"
           else
-            echo "crontab_perms_bad"
+            perms=$(stat -Lc '%a' "$CRONTAB")
+            owner=$(stat -Lc '%u' "$CRONTAB")
+            group=$(stat -Lc '%g' "$CRONTAB")
+
+            if [ "$perms" -le 600 ] && [ "$owner" -eq 0 ] && [ "$group" -eq 0 ]; then
+              echo "crontab_perms_ok"
+            else
+              echo "crontab_perms_bad"
+            fi
           fi
         tests:
+          bin_op: or
           test_items:
             - flag: "crontab_perms_ok"
+              set: true
+            - flag: "crontab_missing"
               set: true
         remediation: |
           # Set correct ownership and permissions on /etc/crontab
@@ -2262,15 +2271,23 @@ groups:
       - id: 5.1.3
         description: "Ensure permissions on /etc/cron.hourly are configured (Automated)"
         audit: |
-          if stat -L /etc/cron.hourly | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
+          CRON_HOURLY="/etc/cron.hourly"
+
+          if [ ! -d "$CRON_HOURLY" ]; then
+            echo "cron_hourly_missing"
+          elif [ "$(stat -Lc %U:%G "$CRON_HOURLY" 2>/dev/null)" = "root:root" ] && \
+               [ "$(stat -Lc %a "$CRON_HOURLY" 2>/dev/null)" -le 700 ] && \
+               [ "$(stat -Lc %a "$CRON_HOURLY" 2>/dev/null)" -ge 0 ]; then
             echo "cron_hourly_permission_ok"
           else
             echo "cron_hourly_permission_bad"
           fi
         tests:
+          bin_op: or
           test_items:
             - flag: "cron_hourly_permission_ok"
               set: true
+            - flag: "cron_hourly_missing"
         remediation: |
           # Set correct ownership and permissions on /etc/cron.hourly
           chown root:root /etc/cron.hourly
@@ -2280,15 +2297,22 @@ groups:
       - id: 5.1.4
         description: "Ensure permissions on /etc/cron.daily are configured (Automated)"
         audit: |
-          if stat -L /etc/cron.daily | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
+          CRON_DAILY="/etc/cron.daily"
+
+          if [ ! -d "$CRON_DAILY" ]; then
+            echo "cron_daily_missing"
+          elif [ "$(stat -Lc %U:%G "$CRON_DAILY" 2>/dev/null)" = "root:root" ] && \
+               [ "$(stat -Lc %a "$CRON_DAILY" 2>/dev/null)" -le 700 ]; then
             echo "cron_daily_permission_ok"
           else
-          echo "cron_daily_permission_bad"
+            echo "cron_daily_permission_bad"
           fi
         tests:
+          bin_op: or
           test_items:
             - flag: "cron_daily_permission_ok"
               set: true
+            - flag: "cron_daily_missing"
         remediation: |
           -- IF -- Cron is being used to execute batch jobs on the system:
 
@@ -2302,15 +2326,27 @@ groups:
       - id: 5.1.5
         description: "Ensure permissions on /etc/cron.weekly are configured (Automated)"
         audit: |
-          if stat -L /etc/cron.weekly | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
-            echo "cron_weekly_permission_ok"
+          CRON_WEEKLY="/etc/cron.weekly"
+
+          if [ ! -d "$CRON_WEEKLY" ]; then
+            echo "cron_weekly_missing"
           else
-          echo "cron_weekly_permission_bad"
+            perms=$(stat -Lc '%a' "$CRON_WEEKLY")
+            owner=$(stat -Lc '%u' "$CRON_WEEKLY")
+            group=$(stat -Lc '%g' "$CRON_WEEKLY")
+
+            if [ "$perms" -eq 700 ] && [ "$owner" -eq 0 ] && [ "$group" -eq 0 ]; then
+              echo "cron_weekly_permission_ok"
+            else
+              echo "cron_weekly_permission_bad"
+            fi
           fi
         tests:
+          bin_op: or
           test_items:
             - flag: "cron_weekly_permission_ok"
               set: true
+            - flag: "cron_weekly_missing"
         remediation: |
           -- IF -- Cron is being used to execute batch jobs on the system:
 
@@ -2324,15 +2360,27 @@ groups:
       - id: 5.1.6
         description: "Ensure permissions on /etc/cron.monthly are configured (Automated)"
         audit: |
-          if stat -L /etc/cron.monthly | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
-            echo "cron_monthly_permission_ok"
+          CRON_MONTHLY="/etc/cron.monthly"
+
+          if [ ! -d "$CRON_MONTHLY" ]; then
+            echo "cron_monthly_missing"
           else
-            echo "cron_monthly_permission_bad"
+            perms=$(stat -Lc '%a' "$CRON_MONTHLY")
+            owner=$(stat -Lc '%u' "$CRON_MONTHLY")
+            group=$(stat -Lc '%g' "$CRON_MONTHLY")
+
+            if [ "$perms" -eq 700 ] && [ "$owner" -eq 0 ] && [ "$group" -eq 0 ]; then
+              echo "cron_monthly_permission_ok"
+            else
+              echo "cron_monthly_permission_bad"
+            fi
           fi
         tests:
+          bin_op: or
           test_items:
             - flag: "cron_monthly_permission_ok"
               set: true
+            - flag: "cron_monthly_missing"
         remediation: |
           Run the following commands to set ownership and permissions on /etc/cron.monthly :
 
@@ -2344,15 +2392,27 @@ groups:
       - id: 5.1.7
         description: "Ensure permissions on /etc/cron.d are configured (Automated)"
         audit: |
-          if stat -L /etc/cron.d | grep -qE 'Access:\s+\(0700/drwx------\)\s+Uid:\s+\(\s*0/\s*root\)\s+Gid:\s+\(\s*0/\s*root\)'; then
-            echo "cron_d_permission_ok"
+          CRON_D="/etc/cron.d"
+
+          if [ ! -d "$CRON_D" ]; then
+            echo "cron_d_missing"
           else
-          echo "cron_d_permission_bad"
+            perms=$(stat -Lc '%a' "$CRON_D")
+            owner=$(stat -Lc '%u' "$CRON_D")
+            group=$(stat -Lc '%g' "$CRON_D")
+
+            if [ "$perms" -eq 700 ] && [ "$owner" -eq 0 ] && [ "$group" -eq 0 ]; then
+              echo "cron_d_permission_ok"
+            else
+              echo "cron_d_permission_bad"
+            fi
           fi
         tests:
+          bin_op: or
           test_items:
             - flag: "cron_d_permission_ok"
               set: true
+            - flag: "cron_d_missing"
         remediation: |
 
           Run the following commands to set ownership and permissions on /etc/cron.d :
