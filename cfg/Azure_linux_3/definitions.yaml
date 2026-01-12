@@ -2273,7 +2273,7 @@ groups:
         audit: |
           CRON_HOURLY="/etc/cron.hourly"
 
-          if [ ! -f "$CRON_HOURLY" ]; then
+          if [ ! -d "$CRON_HOURLY" ]; then
             echo "cron_hourly_missing"
           elif [ "$(stat -Lc %U:%G "$CRON_HOURLY" 2>/dev/null)" = "root:root" ] && \
                [ "$(stat -Lc %a "$CRON_HOURLY" 2>/dev/null)" -le 700 ] && \
@@ -2299,7 +2299,7 @@ groups:
         audit: |
           CRON_DAILY="/etc/cron.daily"
 
-          if [ ! -f "$CRON_DAILY" ]; then
+          if [ ! -d "$CRON_DAILY" ]; then
             echo "cron_daily_missing"
           elif [ "$(stat -Lc %U:%G "$CRON_DAILY" 2>/dev/null)" = "root:root" ] && \
                [ "$(stat -Lc %a "$CRON_DAILY" 2>/dev/null)" -le 700 ]; then
@@ -2328,7 +2328,7 @@ groups:
         audit: |
           CRON_WEEKLY="/etc/cron.weekly"
 
-          if [ ! -f "$CRON_WEEKLY" ]; then
+          if [ ! -d "$CRON_WEEKLY" ]; then
             echo "cron_weekly_missing"
           else
             perms=$(stat -Lc '%a' "$CRON_WEEKLY")
@@ -2362,7 +2362,7 @@ groups:
         audit: |
           CRON_MONTHLY="/etc/cron.monthly"
 
-          if [ ! -f "$CRON_MONTHLY" ]; then
+          if [ ! -d "$CRON_MONTHLY" ]; then
             echo "cron_monthly_missing"
           else
             perms=$(stat -Lc '%a' "$CRON_MONTHLY")
@@ -2394,7 +2394,7 @@ groups:
         audit: |
           CRON_D="/etc/cron.d"
 
-          if [ ! -f "$CRON_D" ]; then
+          if [ ! -d "$CRON_D" ]; then
             echo "cron_d_missing"
           else
             perms=$(stat -Lc '%a' "$CRON_D")
