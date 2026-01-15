@@ -8,6 +8,7 @@ builds:
     binary: linux-bench
     goos:
       - linux
+      - windows
     goarch:
       - amd64
       - arm
